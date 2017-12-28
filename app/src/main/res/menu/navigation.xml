@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item
+            android:id="@+id/my_collection"
+            android:icon="@drawable/my_collection"
+            android:title="@string/text_my_collection">
+        </item>
+
+        <item
+            android:id="@+id/take_photo"
+            android:icon="@drawable/log_off"
+            android:title="@string/text_log_off">
+
+        </item>
+
+</menu>

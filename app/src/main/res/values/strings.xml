@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PhotoDance</string>
+    <string name="toolbar_account">Account</string>
+    <string name="toolbar_take_photo">Take Photo</string>
+    <string name="text_my_collection">我的收藏</string>
+    <string name="text_log_off">注销</string>
+    <string name="take_photo">拍照</string>
+    <string name="select_from_photo_album">从相册中选择</string>
+    <string name="cancel">取消</string>
+</resources>
