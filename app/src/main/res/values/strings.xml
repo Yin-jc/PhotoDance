@@ -7,4 +7,11 @@
     <string name="take_photo">拍照</string>
     <string name="select_from_photo_album">从相册中选择</string>
     <string name="cancel">取消</string>
+    <string name="login_user_name">用户名</string>
+    <string name="login_password">密码</string>
+    <string name="text_login">登录</string>
+    <string name="text_register">注册</string>
+    <string name="please_register">没有账户？请先注册</string>
+    <string name="register_user_name">请输入用户名</string>
+    <string name="register_password">请输入密码</string>
 </resources>

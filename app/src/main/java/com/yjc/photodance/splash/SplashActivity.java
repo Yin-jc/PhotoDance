@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.main.LoginActivity;
 import com.yjc.photodance.main.MainActivity;
 import com.yjc.photodance.R;
@@ -27,8 +28,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
-        isLogin = pref.getBoolean("login", false);
+        isLogin = SharedPreferenceDao.getInstance().getBoolean("login");
 
         /**
          * 延时3s加载跳转主界面

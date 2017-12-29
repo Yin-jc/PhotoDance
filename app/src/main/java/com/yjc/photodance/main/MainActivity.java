@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.yjc.photodance.R;
+import com.yjc.photodance.common.SharedPreferenceDao;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,20 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //10s后将设置为未登录状态
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(10000);
+                    SharedPreferenceDao.getInstance().saveBoolean("login", false);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

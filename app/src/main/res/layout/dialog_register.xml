@@ -4,73 +4,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/userHeadImage"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
-        android:src="@drawable/personal_center"/>
+    <ImageView
+        android:id="@+id/dismiss"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="15dp"
+        android:src="@drawable/dismiss"
+        android:layout_alignParentEnd="true"/>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/login_user_name"
+        android:id="@+id/register_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/userHeadImage"
-        android:paddingTop="20dp"
+        android:layout_below="@+id/dismiss"
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/login_user_name_edit"
+            android:id="@+id/register_user_name_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/login_user_name"
+            android:hint="@string/register_user_name"
             android:textColorHint="@color/color_red"
             android:textColor="@color/color_black"
             android:inputType="text"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/login_password"
+        android:id="@+id/register_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_user_name"
+        android:layout_below="@+id/register_user_name"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingBottom="20dp">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/login_password_edit"
+            android:id="@+id/register_password_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/login_password"
+            android:hint="@string/register_password"
             android:textColorHint="@color/color_red"
             android:textColor="@color/color_black"
             android:inputType="textPassword"/>
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:id="@+id/login_btn"
-        android:layout_width="300dp"
+        android:id="@+id/register_btn"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:layout_centerHorizontal="true"
-        android:text="@string/text_login"
-        android:layout_below="@+id/login_password"
+        android:text="@string/text_register"
+        android:layout_below="@+id/register_password"
         android:textColor="@color/color_black"
-        android:background="@drawable/blue_button_enabled_shape"/>
-
-    <TextView
-        android:id="@+id/register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="@string/please_register"
-        android:textColor="@color/color_black"
-        android:layout_below="@+id/login_btn"
-        android:layout_centerHorizontal="true"
-        android:padding="30dp"/>
-
+        android:background="@drawable/blue_button_selector"/>
 
 </RelativeLayout>
