@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.yjc.photodance.R;
+import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.common.SharedPreferenceDao;
 
 import java.io.File;
@@ -30,7 +31,6 @@ public class MainActivity extends AppCompatActivity{
     private ImageView takePhoto;
     private DrawerLayout drawer;
     private NavigationView navigation;
-    private SelectPicPopupWindow popupWindow;
 
     private boolean isSetHeadImage = false;
 
@@ -60,27 +60,12 @@ public class MainActivity extends AppCompatActivity{
         drawer=findViewById(R.id.drawer_layout);
         navigation=findViewById(R.id.nav_view);
 
-        popupWindow=new SelectPicPopupWindow(this, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()){
-                    case R.id.take_photo:
-                        takePhoto();
-                        break;
-                    case R.id.select_photo:
-                        selectPhoto();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
 
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //拍照
-                takePhoto();
+                MultiMedia.takePhoto();
             }
         });
 
@@ -88,9 +73,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 if(!isSetHeadImage){
-                    popupWindow.showAtLocation(MainActivity.this.findViewById(R.id.drawer_layout),
-                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL,
-                        0, 0);
+
                     isSetHeadImage = true;
                 }else {
                     //打开侧滑菜单
@@ -99,34 +82,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-    }
-
-    private void takePhoto(){
-
-        //创建File对象，用于存储照片
-        //存放在当前应用缓存数据的位置，可以跳过权限验证
-        File photo=new File(getExternalCacheDir() , "photo.jpg");
-        if(photo.exists()){
-            photo.delete();
-        }
-        try {
-            photo.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //Android 7.0 之后不可以直接使用Uri
-        if(Build.VERSION.SDK_INT >= 24){
-            photoUri = FileProvider.getUriForFile(MainActivity.this,
-                    "com.yjc.photodance.fileprovider", photo);
-        }else {
-            photoUri=Uri.fromFile(photo);
-        }
-
-        //启动相机程序
-        Intent intent=new Intent("android.media.action.IMAGE_CAPTURE");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-        startActivity(intent);
     }
 
     private void selectPhoto(){

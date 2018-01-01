@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/login_activity"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/userHeadImage"
+        android:id="@+id/userHeadImage_login"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_centerHorizontal="true"
@@ -16,7 +17,7 @@
         android:id="@+id/login_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/userHeadImage"
+        android:layout_below="@+id/userHeadImage_login"
         android:paddingTop="20dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp">

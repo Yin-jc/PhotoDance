@@ -12,11 +12,14 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.yjc.photodance.R;
+import com.yjc.photodance.common.MultiMedia;
+import com.yjc.photodance.common.MyApplicationContext;
 import com.yjc.photodance.common.SharedPreferenceDao;
 
 /**
@@ -31,6 +34,9 @@ public class RegisterDialog extends Dialog {
     private TextInputEditText registerPasswordEdit;
     private Button register;
     private ImageView dismiss;
+    private ImageView userHeadImage;
+    private SelectPicPopupWindow popupWindow;
+    private View loginView;
     private Context mContext;
     private String username;
     private String password;
@@ -40,8 +46,19 @@ public class RegisterDialog extends Dialog {
         mContext = context;
     }
 
+    public RegisterDialog(@NonNull Context context,View view) {
+        super(context);
+        mContext = context;
+        loginView = view;
+    }
+
     public RegisterDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
+        mContext = context;
+    }
+
+    public RegisterDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
+        super(context, cancelable, cancelListener);
         mContext = context;
     }
 
@@ -56,6 +73,7 @@ public class RegisterDialog extends Dialog {
         registerPasswordEdit = registerPassword.findViewById(R.id.register_password_edit);
         register = findViewById(R.id.register_btn);
         dismiss = findViewById(R.id.dismiss);
+        userHeadImage = findViewById(R.id.userHeadImage);
 
         //设置可以计数
         registerUsername.setCounterEnabled(true);
@@ -130,5 +148,33 @@ public class RegisterDialog extends Dialog {
                 dismiss();
             }
         });
+
+        userHeadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: 2018/1/1/001 打开系统相册
+//                dismiss();
+//                popupWindow.showAtLocation(loginView,
+//                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL,
+//                        0, 0);
+            }
+        });
+
+        popupWindow=new SelectPicPopupWindow(MyApplicationContext.getMyApplicationContext(),
+                new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()){
+                    case R.id.take_photo:
+                        MultiMedia.takePhoto();
+                        break;
+                    case R.id.select_photo:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
     }
 }

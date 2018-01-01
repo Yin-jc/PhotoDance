@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        userHeadImage = findViewById(R.id.userHeadImage);
+        userHeadImage = findViewById(R.id.userHeadImage_login);
         loginUsername = findViewById(R.id.login_user_name);
         loginPassword = findViewById(R.id.login_password);
         loginUsernameEdit = loginUsername.findViewById(R.id.login_user_name_edit);
@@ -49,7 +49,8 @@ public class LoginActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RegisterDialog dialog = new RegisterDialog(LoginActivity.this);
+                RegisterDialog dialog = new RegisterDialog(LoginActivity.this,
+                        LoginActivity.this.findViewById(R.id.login_activity));
                 dialog.show();
             }
         });
