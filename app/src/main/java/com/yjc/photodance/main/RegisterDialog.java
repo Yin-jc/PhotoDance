@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.common.MyApplicationContext;
 import com.yjc.photodance.common.SharedPreferenceDao;
+import com.yjc.photodance.dao.Account;
 
 /**
  * Created by Administrator on 2017/12/29/029.
@@ -39,7 +41,7 @@ public class RegisterDialog extends Dialog {
     private TextInputEditText registerPasswordEdit;
     private Button register;
     private ImageView dismiss;
-    private ImageView userHeadImage;
+    private Bitmap userHeadImage;
     private SelectPicPopupWindow popupWindow;
     private View loginView;
     private Context mContext;
@@ -52,10 +54,10 @@ public class RegisterDialog extends Dialog {
         mContext = context;
     }
 
-    public RegisterDialog(@NonNull Context context,View view) {
+    public RegisterDialog(@NonNull Context context, Bitmap userHeadImage) {
         super(context);
         mContext = context;
-        loginView = view;
+        this.userHeadImage = userHeadImage;
     }
 
     public RegisterDialog(@NonNull Context context, int themeResId) {
@@ -80,7 +82,6 @@ public class RegisterDialog extends Dialog {
         register = findViewById(R.id.register_btn);
         register.setEnabled(false);
         dismiss = findViewById(R.id.dismiss);
-        userHeadImage = findViewById(R.id.userHeadImage);
 
         //设置可以计数
         registerUsername.setCounterEnabled(true);
@@ -161,10 +162,17 @@ public class RegisterDialog extends Dialog {
             @Override
             public void onClick(View view) {
 
-                SharedPreferenceDao.getInstance().saveString("username", username);
-                SharedPreferenceDao.getInstance().saveString("password", password);
-                SharedPreferenceDao.getInstance().saveBoolean("register", true);
-                SharedPreferenceDao.getInstance().saveBoolean("login", true);
+//                SharedPreferenceDao.getInstance().saveString("username", username);
+//                SharedPreferenceDao.getInstance().saveString("password", password);
+//                SharedPreferenceDao.getInstance().saveBoolean("register", true);
+//                SharedPreferenceDao.getInstance().saveBoolean("login", true);
+                Account account = new Account();
+                account.setUserName(username);
+                account.setPassword(password);
+                account.setUserHeadImage(userHeadImage);
+                account.setRegister(true);
+                account.setLogin(true);
+                account.save();
 
                 Intent intent = new Intent(mContext, MainActivity.class);
                 mContext.startActivity(intent);
@@ -179,18 +187,17 @@ public class RegisterDialog extends Dialog {
             }
         });
 
-        userHeadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                dismiss();
-                //隐藏软键盘,再执行一次会弹出软键盘
-                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-//                popupWindow.showAtLocation(findViewById(R.id.register_dialog),
-//                        Gravity.BOTTOM, 0, 0);
-            }
-        });
-
+//        userHeadImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                dismiss();
+//                //隐藏软键盘,再执行一次会弹出软键盘
+//                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+////                popupWindow.showAtLocation(findViewById(R.id.register_dialog),
+////                        Gravity.BOTTOM, 0, 0);
+//            }
+//        });
 
     }
 

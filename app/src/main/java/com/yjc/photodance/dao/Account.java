@@ -13,6 +13,8 @@ public class Account extends DataSupport{
     private String userName;
     private String password;
     private Bitmap userHeadImage;
+    private boolean isLogin;
+    private boolean isRegister;
 
     public String getUserName() {
         return userName;
@@ -36,5 +38,21 @@ public class Account extends DataSupport{
 
     public void setUserHeadImage(Bitmap userHeadImage) {
         this.userHeadImage = userHeadImage;
+    }
+
+    public boolean isLogin() {
+        return isLogin;
+    }
+
+    public void setLogin(boolean login) {
+        isLogin = login;
+    }
+
+    public boolean isRegister() {
+        return isRegister;
+    }
+
+    public void setRegister(boolean register) {
+        isRegister = register;
     }
 }

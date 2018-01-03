@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.common.SharedPreferenceDao;
+import com.yjc.photodance.dao.Account;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,9 @@ public class MainActivity extends AppCompatActivity{
             public void run() {
                 try {
                     Thread.sleep(10000);
-                    SharedPreferenceDao.getInstance().saveBoolean("login", false);
+                    Account account = new Account();
+                    account.setLogin(false);
+                    account.updateAll();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

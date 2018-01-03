@@ -6,20 +6,28 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.yjc.photodance.dao.Account;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.MyApplicationContext;
 
 import org.litepal.LitePal;
+import org.w3c.dom.Text;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -32,11 +40,13 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
     private CircleImageView userHeadImage;
     private PopupWindow popupWindow;
     private Bitmap userHeadImageBitmap;
+    private TextView next;
 
     private static final int CHOOSE_PHOTO = 1;
     private static final int TAKE_PHOTO = 2;
 
     private String imagePath;
+    private Uri photoUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +61,7 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         switch (view.getId()){
                             case R.id.take_photo:
-//                                takePhoto();
+                                takePhoto();
                                 break;
                             case R.id.select_photo:
                                 selectPhoto();
@@ -70,13 +80,51 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
                         Gravity.BOTTOM, 0, 0);
             }
         });
+
+        next = findViewById(R.id.next);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoLoginActivity();
+            }
+        });
     }
 
     private void selectPhoto(){
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(intent, CHOOSE_PHOTO);
+    }
+
+    private void takePhoto(){
+
+        //创建File对象，用于存储照片
+        //存放在当前应用关联缓存目录，可以跳过权限验证
+        File photo=new File(MyApplicationContext.getMyApplicationContext().getExternalCacheDir() ,
+                "photo.jpg");
+        if(photo.exists()){
+            photo.delete();
+        }
+        try {
+            photo.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Android 7.0 之后不可以直接使用Uri
+        if(Build.VERSION.SDK_INT >= 24){
+            photoUri = FileProvider.getUriForFile(MyApplicationContext.getMyApplicationContext(),
+                    "com.yjc.photodance.fileprovider", photo);
+        }else {
+            photoUri= Uri.fromFile(photo);
+        }
+
+        //启动相机程序
+        Intent intent=new Intent("android.media.action.IMAGE_CAPTURE");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(intent, TAKE_PHOTO);
     }
 
     @Override
@@ -86,22 +134,41 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
                 if(resultCode == RESULT_OK){
                     imagePath = handleImage(data);
                     userHeadImageBitmap = BitmapFactory.decodeFile(imagePath);
-                    Account account = new Account();
-                    account.setUserName("only_userHeadImage");
-                    account.setPassword("only_userHeadImage");
-                    account.setUserHeadImage(userHeadImageBitmap);
-                    account.save();
+                    saveUserHeadImageToDB();
                     userHeadImage.setImageBitmap(userHeadImageBitmap);
+                    popupWindow.dismiss();
+                    next.setVisibility(View.VISIBLE);
+//                    gotoLoginActivity();
                 }
                 break;
 
             case TAKE_PHOTO:
+                    if(resultCode == RESULT_OK){
+                        try {
+                            userHeadImageBitmap = BitmapFactory.decodeStream(getContentResolver().
+                                    openInputStream(photoUri));
+                            saveUserHeadImageToDB();
+                            userHeadImage.setImageBitmap(userHeadImageBitmap);
+                            popupWindow.dismiss();
+                            next.setVisibility(View.VISIBLE);
+//                            gotoLoginActivity();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                break;
 
+            default:
                 break;
         }
 
     }
 
+    /**
+     * Android4.4之后选取图片之后不再返回真实Uri，需要对返回的封装后的Uri进行解析
+     * @param data
+     * @return
+     */
     private String handleImage(Intent data) {
         String imagePath = null;
         Uri uri = data.getData();
@@ -141,6 +208,19 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
             cursor.close();
         }
         return path;
+    }
+
+    private void gotoLoginActivity(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void saveUserHeadImageToDB(){
+        Account account = new Account();
+        account.setUserName("only_userHeadImage");
+        account.setPassword("only_userHeadImage");
+        account.setUserHeadImage(userHeadImageBitmap);
+        account.save();
     }
 
 }

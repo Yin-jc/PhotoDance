@@ -2,6 +2,7 @@ package com.yjc.photodance.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -18,6 +19,11 @@ import android.widget.Toast;
 
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.SharedPreferenceDao;
+import com.yjc.photodance.dao.Account;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -34,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText loginPasswordEdit;
     private Button login;
     private TextView register;
+    private Bitmap userHeadImageBitmap;
+    private List<Account> accounts;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +57,12 @@ public class LoginActivity extends AppCompatActivity {
 //        login.setEnabled(false);
         register = findViewById(R.id.register);
 
+        accounts = DataSupport.select("userHeadImage")
+                .where("username = ?", "only_userHeadImage")
+                .find(Account.class);
+        userHeadImageBitmap = accounts.get(0).getUserHeadImage();
+        userHeadImage.setImageBitmap(userHeadImageBitmap);
+
         //隐藏软键盘
 //        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
@@ -57,8 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RegisterDialog dialog = new RegisterDialog(LoginActivity.this,
-                        LoginActivity.this.findViewById(R.id.login_activity));
+                RegisterDialog dialog = new RegisterDialog(LoginActivity.this);
 //                dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
 //                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 dialog.show();
@@ -71,10 +84,12 @@ public class LoginActivity extends AppCompatActivity {
                 String username = loginUsernameEdit.getText().toString();
                 String password = loginPasswordEdit.getText().toString();
 
-                String usernameRegistered = SharedPreferenceDao.getInstance().
-                        getString("username");
-                String passwordRegistered = SharedPreferenceDao.getInstance().
-                        getString("password");
+//                List<>
+
+//                String usernameRegistered = SharedPreferenceDao.getInstance().
+//                        getString("username");
+//                String passwordRegistered = SharedPreferenceDao.getInstance().
+//                        getString("password");
 
                 if(username.equals(usernameRegistered) && password.equals(passwordRegistered)){
                     Intent intent = new Intent(LoginActivity.this,
@@ -88,15 +103,6 @@ public class LoginActivity extends AppCompatActivity {
 //                finish();
             }
         });
-
-        userHeadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: 2017/12/29/029 弹出popupWindow 进行头像选择 保存到本机
-                // TODO：更换MainActivity中左上角的头像，以及drawerLayout中的头像
-            }
-        });
-
     }
 
     @Override
