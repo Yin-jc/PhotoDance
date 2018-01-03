@@ -3,6 +3,7 @@ package com.yjc.photodance.main;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +15,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -40,6 +45,7 @@ public class RegisterDialog extends Dialog {
     private Context mContext;
     private String username;
     private String password;
+    private int height;
 
     public RegisterDialog(@NonNull Context context) {
         super(context);
@@ -72,6 +78,7 @@ public class RegisterDialog extends Dialog {
         registerUsernameEdit = registerUsername.findViewById(R.id.register_user_name_edit);
         registerPasswordEdit = registerPassword.findViewById(R.id.register_password_edit);
         register = findViewById(R.id.register_btn);
+        register.setEnabled(false);
         dismiss = findViewById(R.id.dismiss);
         userHeadImage = findViewById(R.id.userHeadImage);
 
@@ -84,10 +91,31 @@ public class RegisterDialog extends Dialog {
         //计数的最大值
         registerPassword.setCounterMaxLength(10);
 
+//        popupWindow=new SelectPicPopupWindow(MyApplicationContext.getMyApplicationContext(),
+//                new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        switch (view.getId()){
+//                            case R.id.take_photo:
+//                                MultiMedia.takePhoto();
+//                                break;
+//                            case R.id.select_photo:
+//                                MultiMedia.selectPhoto();
+//                                break;
+//                            default:
+//                                break;
+//                        }
+//                    }
+//                });
+//
+//        //获取PopupWindow的高度
+//        popupWindow.getContentView().measure(0,0);
+//        height = popupWindow.getContentView().getMeasuredHeight();
+
         registerUsernameEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+//                register.setEnabled(false);
             }
 
             @Override
@@ -97,7 +125,7 @@ public class RegisterDialog extends Dialog {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                register.setEnabled(true);
+//                register.setEnabled(true);
                 username = registerUsernameEdit.getText().toString();
                 if(TextUtils.isEmpty(username)){
                     registerUsername.setError("用户名不能为空");
@@ -109,7 +137,7 @@ public class RegisterDialog extends Dialog {
         registerPasswordEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+//                register.setEnabled(false);
             }
 
             @Override
@@ -135,10 +163,12 @@ public class RegisterDialog extends Dialog {
 
                 SharedPreferenceDao.getInstance().saveString("username", username);
                 SharedPreferenceDao.getInstance().saveString("password", password);
+                SharedPreferenceDao.getInstance().saveBoolean("register", true);
                 SharedPreferenceDao.getInstance().saveBoolean("login", true);
 
                 Intent intent = new Intent(mContext, MainActivity.class);
                 mContext.startActivity(intent);
+                cancel();
             }
         });
 
@@ -152,29 +182,16 @@ public class RegisterDialog extends Dialog {
         userHeadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 2018/1/1/001 打开系统相册
 //                dismiss();
-//                popupWindow.showAtLocation(loginView,
-//                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL,
-//                        0, 0);
+                //隐藏软键盘,再执行一次会弹出软键盘
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+//                popupWindow.showAtLocation(findViewById(R.id.register_dialog),
+//                        Gravity.BOTTOM, 0, 0);
             }
         });
 
-        popupWindow=new SelectPicPopupWindow(MyApplicationContext.getMyApplicationContext(),
-                new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()){
-                    case R.id.take_photo:
-                        MultiMedia.takePhoto();
-                        break;
-                    case R.id.select_photo:
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
 
     }
+
 }

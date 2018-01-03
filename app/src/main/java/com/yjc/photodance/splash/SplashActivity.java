@@ -18,6 +18,7 @@ import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.main.LoginActivity;
 import com.yjc.photodance.main.MainActivity;
 import com.yjc.photodance.R;
+import com.yjc.photodance.main.SelectUserHeadImageActivity;
 
 /**
  * Created by Administrator on 2017/12/28/028.
@@ -28,6 +29,7 @@ public class SplashActivity extends AppCompatActivity {
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private boolean isLogin;
+    private boolean isRegister;
     private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CALL_PHONE};
 
@@ -37,6 +39,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         isLogin = SharedPreferenceDao.getInstance().getBoolean("login");
+        isRegister = SharedPreferenceDao.getInstance().getBoolean("register");
 
 //        gotoLoginOrMainActivity();
 
@@ -47,6 +50,9 @@ public class SplashActivity extends AppCompatActivity {
                         != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(SplashActivity.this,
                             permissions,1);
+                }else {
+                    //此分支为用户已授予权限后再次打开应用，直接启动
+                    gotoLoginOrMainActivity();
                 }
             }
         }
@@ -80,12 +86,16 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(isLogin){
+                if(isLogin) {
                     Intent homeIntent = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(homeIntent);
-                }else {
+                }else if(isRegister){
                     Intent loginIntent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
+                } else {
+                    Intent selectUserHeadImageIntent = new Intent(SplashActivity.this,
+                            SelectUserHeadImageActivity.class);
+                    startActivity(selectUserHeadImageIntent);
                 }
                 //结束此Activity
                 finish();

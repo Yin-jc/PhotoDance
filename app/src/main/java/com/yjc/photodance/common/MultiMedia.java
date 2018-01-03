@@ -1,9 +1,11 @@
 package com.yjc.photodance.common;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 
 import com.yjc.photodance.main.MainActivity;
@@ -18,6 +20,7 @@ import java.io.IOException;
 public class MultiMedia {
 
     private static Uri photoUri;
+    private static final Context sContext = MyApplicationContext.getMyApplicationContext();
 
     public static void takePhoto(){
 
@@ -45,6 +48,30 @@ public class MultiMedia {
         //启动相机程序
         Intent intent=new Intent("android.media.action.IMAGE_CAPTURE");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-        MyApplicationContext.getMyApplicationContext().startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        sContext.startActivity(intent);
     }
+
+    public static void selectPhoto(){
+
+//        Intent intent = new Intent("android.intent.action.GET_CONTENT");
+//        intent.setType("image/*");
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+//        Intent intent = new Intent();
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        intent.setType("image/*");
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        //根据版本号不同使用不同的Action
+//        if (Build.VERSION.SDK_INT <19) {
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//        }else {
+//            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+//        }
+
+//        sContext.startActivity(intent);
+
+    }
+
+
 }

@@ -3,13 +3,16 @@ package com.yjc.photodance.common;
 import android.app.Application;
 import android.content.Context;
 
+import org.litepal.LitePalApplication;
+import org.litepal.tablemanager.Connector;
+
 /**
  * Created by Administrator on 2017/12/29/029.
  * 获取全局Context
  * 务必记得此Application要在AndroidManifest中处理
  */
 
-public class MyApplicationContext extends Application {
+public class MyApplicationContext extends LitePalApplication {
 
     private static Context mContext;
 
@@ -17,6 +20,7 @@ public class MyApplicationContext extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+
     }
 
     public static Context getMyApplicationContext(){

@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--PopupWindow弹出和收回动画-->
+    <style name="popupWindow_translate">
+        <item name="android:windowEnterAnimation">@anim/popup_window_out_translate</item>
+        <item name="android:windowExitAnimation">@anim/popup_window_back_translate</item>
+    </style>
+
 </resources>

@@ -54,8 +54,8 @@ public class SelectPicPopupWindow extends PopupWindow {
         //设置SelectPicPopupWindow弹出窗体可点击
         this.setFocusable(true);
 
-//        //设置SelectPicPopupWindow弹出窗体动画效果
-//        this.setAnimationStyle(R.style.AnimBottom);
+        //设置SelectPicPopupWindow弹出窗体动画效果
+        this.setAnimationStyle(R.style.popupWindow_translate);
 
         //实例化一个ColorDrawable颜色为透明
         ColorDrawable dw = new ColorDrawable(0x00000000);

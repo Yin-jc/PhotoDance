@@ -1,5 +1,6 @@
 package com.yjc.photodance.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +46,12 @@ public class LoginActivity extends AppCompatActivity {
         loginUsernameEdit = loginUsername.findViewById(R.id.login_user_name_edit);
         loginPasswordEdit = loginPassword.findViewById(R.id.login_password_edit);
         login = findViewById(R.id.login_btn);
+//        login.setEnabled(false);
         register = findViewById(R.id.register);
+
+        //隐藏软键盘
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 
 
         register.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +59,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 RegisterDialog dialog = new RegisterDialog(LoginActivity.this,
                         LoginActivity.this.findViewById(R.id.login_activity));
+//                dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
+//                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 dialog.show();
             }
         });
@@ -74,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "用户名或密码错误",
                             Toast.LENGTH_SHORT).show();
                 }
+
+//                finish();
             }
         });
 
@@ -85,6 +97,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
+    //改变background的透明度
+    public void backgroundAlpha(float bgAlpha)
+    {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
 
