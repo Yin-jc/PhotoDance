@@ -15,10 +15,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.yjc.photodance.common.SharedPreferenceDao;
+import com.yjc.photodance.dao.Account;
 import com.yjc.photodance.main.LoginActivity;
 import com.yjc.photodance.main.MainActivity;
 import com.yjc.photodance.R;
 import com.yjc.photodance.main.SelectUserHeadImageActivity;
+
+import org.litepal.crud.DataSupport;
+import org.litepal.tablemanager.Connector;
 
 /**
  * Created by Administrator on 2017/12/28/028.
@@ -38,8 +42,11 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        isLogin = SharedPreferenceDao.getInstance().getBoolean("login");
-        isRegister = SharedPreferenceDao.getInstance().getBoolean("register");
+//        isLogin = SharedPreferenceDao.getInstance().getBoolean("login");
+//        isRegister = SharedPreferenceDao.getInstance().getBoolean("register");
+        Account account = DataSupport.findLast(Account.class);
+        isLogin = account.isLogin();
+        isRegister = account.isRegister();
 
 //        gotoLoginOrMainActivity();
 

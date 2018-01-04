@@ -1,6 +1,8 @@
 package com.yjc.photodance.main;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -21,8 +23,11 @@ import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.dao.Account;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -41,19 +46,19 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         //10s后将设置为未登录状态
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                    Account account = new Account();
-                    account.setLogin(false);
-                    account.updateAll();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(2000);
+////                    Account account = new Account();
+////                    account.setLogin(false);
+////                    account.updateAll();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,6 +68,14 @@ public class MainActivity extends AppCompatActivity{
         drawer=findViewById(R.id.drawer_layout);
         navigation=findViewById(R.id.nav_view);
 
+//        Bitmap userHeadImage = getIntent().getExtras().getParcelable("userHeadImageBitmap");
+        Account account = DataSupport.findLast(Account.class);
+        personalCenter.setImageBitmap(BitmapFactory.decodeByteArray(account.getUserHeadImage(),
+                0, account.getUserHeadImage().length));
+
+//        Account account1 = new Account();
+        account.setLogin(false);
+        account.updateAll();
 
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override

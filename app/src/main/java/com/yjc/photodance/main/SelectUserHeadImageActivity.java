@@ -13,16 +13,19 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.yjc.photodance.common.LitePalForBitmap;
 import com.yjc.photodance.dao.Account;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.MyApplicationContext;
 
 import org.litepal.LitePal;
+import org.litepal.tablemanager.Connector;
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -53,7 +56,7 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_userheadimage);
 
-        LitePal.getDatabase();
+
 
         popupWindow=new SelectPicPopupWindow(MyApplicationContext.getMyApplicationContext(),
                 new View.OnClickListener() {
@@ -133,7 +136,8 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
             case CHOOSE_PHOTO:
                 if(resultCode == RESULT_OK){
                     imagePath = handleImage(data);
-                    userHeadImageBitmap = BitmapFactory.decodeFile(imagePath);
+//                    userHeadImageBitmap = BitmapFactory.decodeFile(imagePath);
+                    userHeadImageBitmap = LitePalForBitmap.compressWithInsampleSize(imagePath);
                     saveUserHeadImageToDB();
                     userHeadImage.setImageBitmap(userHeadImageBitmap);
                     popupWindow.dismiss();
@@ -212,15 +216,23 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
 
     private void gotoLoginActivity(){
         Intent intent = new Intent(this, LoginActivity.class);
+//        Bundle bundle = new Bundle();
+//        //Bitmap默认实现Parcelable接口，直接传递即可
+//        bundle.putParcelable("userHeadImageBitmap", userHeadImageBitmap);
+//        intent.putExtras(bundle);
         startActivity(intent);
+        finish();
     }
 
     private void saveUserHeadImageToDB(){
+//        int size = LitePalForBitmap.compressWithInsampleSize(imagePath).getByteCount() / 1024 / 1024;
+//        Log.d("Bitmap Size", Integer.toString(size));
         Account account = new Account();
         account.setUserName("only_userHeadImage");
         account.setPassword("only_userHeadImage");
-        account.setUserHeadImage(userHeadImageBitmap);
+        account.setUserHeadImage(LitePalForBitmap.img(userHeadImageBitmap));
         account.save();
+//        Log.d("Save Success", Boolean.toString(b));
     }
 
 }

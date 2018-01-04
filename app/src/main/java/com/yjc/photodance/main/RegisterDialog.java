@@ -24,10 +24,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.yjc.photodance.R;
+import com.yjc.photodance.common.LitePalForBitmap;
 import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.common.MyApplicationContext;
 import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.dao.Account;
+
+import org.litepal.crud.DataSupport;
 
 /**
  * Created by Administrator on 2017/12/29/029.
@@ -41,7 +44,7 @@ public class RegisterDialog extends Dialog {
     private TextInputEditText registerPasswordEdit;
     private Button register;
     private ImageView dismiss;
-    private Bitmap userHeadImage;
+    private byte[] userHeadImage;
     private SelectPicPopupWindow popupWindow;
     private View loginView;
     private Context mContext;
@@ -54,7 +57,7 @@ public class RegisterDialog extends Dialog {
         mContext = context;
     }
 
-    public RegisterDialog(@NonNull Context context, Bitmap userHeadImage) {
+    public RegisterDialog(@NonNull Context context, byte[] userHeadImage) {
         super(context);
         mContext = context;
         this.userHeadImage = userHeadImage;
@@ -173,6 +176,9 @@ public class RegisterDialog extends Dialog {
                 account.setRegister(true);
                 account.setLogin(true);
                 account.save();
+
+                //删除数据库中临时的数据
+//                DataSupport.deleteAll(Account.class, "username = ?", "only_userHeadImage");
 
                 Intent intent = new Intent(mContext, MainActivity.class);
                 mContext.startActivity(intent);

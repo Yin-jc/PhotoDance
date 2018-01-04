@@ -12,7 +12,7 @@ public class Account extends DataSupport{
 
     private String userName;
     private String password;
-    private Bitmap userHeadImage;
+    private byte[] userHeadImage;
     private boolean isLogin;
     private boolean isRegister;
 
@@ -32,11 +32,11 @@ public class Account extends DataSupport{
         this.password = password;
     }
 
-    public Bitmap getUserHeadImage() {
+    public byte[] getUserHeadImage() {
         return userHeadImage;
     }
 
-    public void setUserHeadImage(Bitmap userHeadImage) {
+    public void setUserHeadImage(byte[] userHeadImage) {
         this.userHeadImage = userHeadImage;
     }
 

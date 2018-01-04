@@ -3,6 +3,7 @@ package com.yjc.photodance.main;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText loginPasswordEdit;
     private Button login;
     private TextView register;
-    private Bitmap userHeadImageBitmap;
+    private byte[] userHeadImageBitmap;
     private List<Account> accounts;
 
     @Override
@@ -57,11 +58,17 @@ public class LoginActivity extends AppCompatActivity {
 //        login.setEnabled(false);
         register = findViewById(R.id.register);
 
-        accounts = DataSupport.select("userHeadImage")
-                .where("username = ?", "only_userHeadImage")
-                .find(Account.class);
-        userHeadImageBitmap = accounts.get(0).getUserHeadImage();
-        userHeadImage.setImageBitmap(userHeadImageBitmap);
+//        accounts = DataSupport.select("userHeadImage")
+//                .where("username = ?", "only_userHeadImage")
+//                .find(Account.class);
+//        accounts = DataSupport.findAll(Account.class);
+        Account account = DataSupport.findLast(Account.class);
+        userHeadImageBitmap = account.getUserHeadImage();
+//        userHeadImageBitmap = getIntent().getExtras().getParcelable("userHeadImageBitmap");
+        if(userHeadImageBitmap != null) {
+            userHeadImage.setImageBitmap(BitmapFactory.decodeByteArray(userHeadImageBitmap,
+                    0, userHeadImageBitmap.length));
+        }
 
         //隐藏软键盘
 //        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -71,7 +78,8 @@ public class LoginActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RegisterDialog dialog = new RegisterDialog(LoginActivity.this);
+                RegisterDialog dialog = new RegisterDialog(LoginActivity.this,
+                        userHeadImageBitmap);
 //                dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
 //                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 dialog.show();
@@ -84,7 +92,11 @@ public class LoginActivity extends AppCompatActivity {
                 String username = loginUsernameEdit.getText().toString();
                 String password = loginPasswordEdit.getText().toString();
 
-//                List<>
+                List<Account> accounts = DataSupport.findAll(Account.class);
+                Account account = accounts.get(0);
+
+                String usernameRegistered = account.getUserName();
+                String passwordRegistered = account.getPassword();
 
 //                String usernameRegistered = SharedPreferenceDao.getInstance().
 //                        getString("username");
@@ -92,8 +104,12 @@ public class LoginActivity extends AppCompatActivity {
 //                        getString("password");
 
                 if(username.equals(usernameRegistered) && password.equals(passwordRegistered)){
+                    Account account1 = new Account();
+                    account1.setLogin(true);
+                    account1.updateAll();
                     Intent intent = new Intent(LoginActivity.this,
                             MainActivity.class);
+//                    intent.putExtras(getIntent().getExtras());
                     startActivity(intent);
                 }else {
                     Toast.makeText(LoginActivity.this, "用户名或密码错误",
