@@ -17,7 +17,7 @@ public class LitePalForBitmap {
         return baos.toByteArray();
     }
 
-    public static Bitmap compressWithInsampleSize(String imagePath){
+    public static Bitmap compressWithinsampleSize(String imagePath){
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 8;
         return BitmapFactory.decodeFile(imagePath, options);

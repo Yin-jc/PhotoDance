@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
@@ -15,30 +16,40 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.dao.Account;
+import com.yjc.photodance.dao.Navigation;
+import com.yjc.photodance.dao.NavigationAdapter;
 
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity{
 
 //    public static final int TAKE_PHOTO = 1;
     private Uri photoUri;
-    private ImageView personalCenter;
+    private CircleImageView personalCenter;
     private ImageView takePhoto;
     private DrawerLayout drawer;
     private NavigationView navigation;
+    private Account account;
+    private List<Navigation> navigationList;
+    private CircleImageView userHeadImage;
 
-    private boolean isSetHeadImage = false;
+//    private boolean isSetHeadImage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +79,22 @@ public class MainActivity extends AppCompatActivity{
         drawer=findViewById(R.id.drawer_layout);
         navigation=findViewById(R.id.nav_view);
 
-//        Bitmap userHeadImage = getIntent().getExtras().getParcelable("userHeadImageBitmap");
-        Account account = DataSupport.findLast(Account.class);
-        personalCenter.setImageBitmap(BitmapFactory.decodeByteArray(account.getUserHeadImage(),
-                0, account.getUserHeadImage().length));
+//        navigationList = new ArrayList<>();
+//        Navigation navigation_collection = new Navigation("我的收藏", R.drawable.my_collection);
+//        navigationList.add(navigation_collection);
+//        Navigation navigation_logOff = new Navigation("注销", R.drawable.log_off);
+//        navigationList.add(navigation_logOff);
+//        NavigationAdapter adapter = new NavigationAdapter(this, R.layout.navigation_item,
+//                navigationList);
+//        ListView listView = findViewById(R.id.navigation_listView);
+//        listView.setAdapter(adapter);
 
-//        Account account1 = new Account();
-        account.setLogin(false);
-        account.updateAll();
+//        Bitmap userHeadImage = getIntent().getExtras().getParcelable("userHeadImageBitmap");
+        //获取头像
+        account = DataSupport.findLast(Account.class);
+        Bitmap userHeadImageBitmap = BitmapFactory.decodeByteArray(account.getUserHeadImage(),
+                0, account.getUserHeadImage().length);
+        personalCenter.setImageBitmap(userHeadImageBitmap);
 
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,19 +107,28 @@ public class MainActivity extends AppCompatActivity{
         personalCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isSetHeadImage){
+            account.setLogin(false);
+            account.updateAll();
+            //打开侧滑菜单
+            drawer.openDrawer(GravityCompat.START);
+            }
+        });
 
-                    isSetHeadImage = true;
-                }else {
-                    //打开侧滑菜单
-                    drawer.openDrawer(GravityCompat.START);
-                }
+        //必须要现获取header
+        View headerView = navigation.getHeaderView(0);
+        //头部图片
+        userHeadImage = headerView.findViewById(R.id.userHeadImage);
+        userHeadImage.setImageBitmap(userHeadImageBitmap);
+
+        //navigation item点击事件
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                // TODO: 2018/1/4/004 处理点击事件
+                return false;
             }
         });
 
     }
 
-    private void selectPhoto(){
-        // TODO: 2017/12/28/028 ContentProvider读取相册内容
-    }
 }

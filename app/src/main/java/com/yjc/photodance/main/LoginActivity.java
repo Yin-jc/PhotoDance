@@ -92,8 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                 String username = loginUsernameEdit.getText().toString();
                 String password = loginPasswordEdit.getText().toString();
 
-                List<Account> accounts = DataSupport.findAll(Account.class);
-                Account account = accounts.get(0);
+                Account account = DataSupport.findLast(Account.class);
 
                 String usernameRegistered = account.getUserName();
                 String passwordRegistered = account.getPassword();

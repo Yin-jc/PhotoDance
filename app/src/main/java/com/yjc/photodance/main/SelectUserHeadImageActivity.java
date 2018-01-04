@@ -137,7 +137,7 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
                 if(resultCode == RESULT_OK){
                     imagePath = handleImage(data);
 //                    userHeadImageBitmap = BitmapFactory.decodeFile(imagePath);
-                    userHeadImageBitmap = LitePalForBitmap.compressWithInsampleSize(imagePath);
+                    userHeadImageBitmap = LitePalForBitmap.compressWithinsampleSize(imagePath);
                     saveUserHeadImageToDB();
                     userHeadImage.setImageBitmap(userHeadImageBitmap);
                     popupWindow.dismiss();
