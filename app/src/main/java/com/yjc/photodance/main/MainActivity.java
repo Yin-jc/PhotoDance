@@ -13,6 +13,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,12 +23,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.bumptech.glide.Glide;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.MultiMedia;
+import com.yjc.photodance.common.NetworkWithOkHttp;
 import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.dao.Account;
 import com.yjc.photodance.dao.Navigation;
 import com.yjc.photodance.dao.NavigationAdapter;
+import com.yjc.photodance.dao.Photo;
+import com.yjc.photodance.dao.PhotoAdapter;
 
 import org.litepal.crud.DataSupport;
 
@@ -48,6 +54,7 @@ public class MainActivity extends AppCompatActivity{
     private Account account;
     private List<Navigation> navigationList;
     private CircleImageView userHeadImage;
+    private List<Photo> photos;
 
 //    private boolean isSetHeadImage = false;
 
@@ -55,6 +62,8 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        photos = NetworkWithOkHttp.NetworkRequest();
 
         //10s后将设置为未登录状态
 //        new Thread(new Runnable() {
@@ -78,6 +87,9 @@ public class MainActivity extends AppCompatActivity{
         takePhoto=findViewById(R.id.take_photo);
         drawer=findViewById(R.id.drawer_layout);
         navigation=findViewById(R.id.nav_view);
+
+//        Glide.with(this).load("http://7xi8d6.com1.z0.glb.clouddn.com/20171228085004_5yEHju_Screenshot.jpeg")
+//                .into(takePhoto);
 
 //        navigationList = new ArrayList<>();
 //        Navigation navigation_collection = new Navigation("我的收藏", R.drawable.my_collection);
@@ -129,6 +141,13 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        StaggeredGridLayoutManager layoutManager = new
+                StaggeredGridLayoutManager(3,
+                StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        PhotoAdapter adapter = new PhotoAdapter(this, photos);
+        recyclerView.setAdapter(adapter);
     }
 
 }

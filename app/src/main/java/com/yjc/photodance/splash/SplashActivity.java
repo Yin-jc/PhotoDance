@@ -60,6 +60,15 @@ public class SplashActivity extends AppCompatActivity {
                 }else {
                     //此分支为用户已授予权限后再次打开应用，直接启动
                     gotoLoginOrMainActivity();
+
+                    //临时测试用
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+//                            startActivity(intent);
+//                        }
+//                    }, 2000);
                 }
             }
         }
