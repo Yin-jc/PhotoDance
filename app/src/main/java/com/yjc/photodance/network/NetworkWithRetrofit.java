@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import com.yjc.photodance.api.ApiConfig;
 import com.yjc.photodance.api.PhotoApi;
 import com.yjc.photodance.dao.Photo;
 import com.yjc.photodance.dao.PhotoAdapter;
@@ -28,13 +29,13 @@ public class NetworkWithRetrofit {
 
     // TODO: 2018/1/5/005 做一个单例
 
-    public static final String BASE_URL = "http://gank.io/api/";
+
 
     public NetworkWithRetrofit() {
 
         //创建Retrofit实例，配置接口和转换器
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(ApiConfig.getBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();

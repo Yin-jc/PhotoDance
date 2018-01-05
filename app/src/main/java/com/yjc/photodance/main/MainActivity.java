@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.yjc.photodance.R;
+import com.yjc.photodance.api.ApiConfig;
 import com.yjc.photodance.api.PhotoApi;
 import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.dao.PhotoData;
@@ -147,6 +148,8 @@ public class MainActivity extends AppCompatActivity{
         StaggeredGridLayoutManager layoutManager = new
                 StaggeredGridLayoutManager(3,
                 StaggeredGridLayoutManager.VERTICAL);
+        //StaggeredGridLayoutManager设置空隙处理方式为 不处理
+//        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new PhotoAdapter(this);
         recyclerView.setAdapter(adapter);
@@ -155,7 +158,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void getPhotos(){
 
-        RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotoData(50, 1)
+        RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotoData(50, 2)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<PhotoData>() {
@@ -168,6 +171,8 @@ public class MainActivity extends AppCompatActivity{
             public void onNext(PhotoData data) {
                 adapter.setPhotos(data.results);
                 adapter.notifyDataSetChanged();
+                Log.d("MainActivity", "onNext");
+//                Log.d("MainActivity", data.photos.get(0).id);
             }
 
             @Override

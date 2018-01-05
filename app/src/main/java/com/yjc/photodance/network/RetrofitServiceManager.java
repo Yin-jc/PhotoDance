@@ -1,6 +1,7 @@
 package com.yjc.photodance.network;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import com.yjc.photodance.api.ApiConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitServiceManager {
 
-    public static final String BASE_URL = "http://gank.io/api/";
+//    public static final String BASE_URL = "http://gank.io/api/";
     private static final int DEFAULT_TIME_OUT = 5;//超时时间 5s
     private static final int DEFAULT_READ_TIME_OUT = 10;
     private Retrofit mRetrofit;
@@ -42,7 +43,7 @@ public class RetrofitServiceManager {
                 .client(builder.build())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(BASE_URL)
+                .baseUrl(ApiConfig.getBaseUrl())
                 .build();
     }
 

@@ -76,10 +76,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         //Item的宽度，或图片的宽度
         int width = screenWidth/3;
 
+        // TODO: 2018/1/5/005 设置放置的行数 
+
         RequestOptions options = new RequestOptions()
                 .placeholder(R.mipmap.splash_image)
                 .override(width, SIZE_ORIGINAL)
-                .fitCenter();
+                .centerCrop();
 
         Glide.with(mContext).asBitmap().load(photoUrl).apply(options).into(holder.image);
     }
