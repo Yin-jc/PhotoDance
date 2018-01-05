@@ -10,30 +10,14 @@ import java.net.URL;
 
 public class Photo {
 
-//    @SerializedName("_id")
-    private String id;
+    public String _id;
+    public String createdAt;
+    public String desc;
+    public String publishedAt;
+    public String source;
+    public String type;
+    public String url;
+    public boolean used;
+    public String who;
 
-//    @SerializedName("url")
-    private String photoUrl;
-
-    public Photo(String id, String photoUrl) {
-        this.id = id;
-        this.photoUrl = photoUrl;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }

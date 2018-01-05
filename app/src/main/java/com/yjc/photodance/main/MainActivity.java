@@ -1,14 +1,10 @@
 package com.yjc.photodance.main;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,32 +12,36 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
 
-import com.bumptech.glide.Glide;
 import com.yjc.photodance.R;
+import com.yjc.photodance.api.PhotoApi;
 import com.yjc.photodance.common.MultiMedia;
-import com.yjc.photodance.common.NetworkWithOkHttp;
-import com.yjc.photodance.common.SharedPreferenceDao;
+import com.yjc.photodance.dao.PhotoData;
+import com.yjc.photodance.network.NetworkWithOkHttp;
 import com.yjc.photodance.dao.Account;
 import com.yjc.photodance.dao.Navigation;
-import com.yjc.photodance.dao.NavigationAdapter;
 import com.yjc.photodance.dao.Photo;
 import com.yjc.photodance.dao.PhotoAdapter;
+import com.yjc.photodance.network.NetworkWithRetrofit;
+import com.yjc.photodance.network.RetrofitServiceManager;
 
 import org.litepal.crud.DataSupport;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity{
     private List<Navigation> navigationList;
     private CircleImageView userHeadImage;
     private List<Photo> photos;
+    private PhotoAdapter adapter;
+    private RecyclerView recyclerView;
 
 //    private boolean isSetHeadImage = false;
 
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        photos = NetworkWithOkHttp.NetworkRequest();
+//        photos = NetworkWithOkHttp.NetworkRequest();
 
         //10s后将设置为未登录状态
 //        new Thread(new Runnable() {
@@ -141,13 +143,43 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         StaggeredGridLayoutManager layoutManager = new
                 StaggeredGridLayoutManager(3,
                 StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        PhotoAdapter adapter = new PhotoAdapter(this, photos);
+        adapter = new PhotoAdapter(this);
         recyclerView.setAdapter(adapter);
+        getPhotos();
+    }
+
+    private void getPhotos(){
+
+        RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotoData(50, 1)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<PhotoData>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(PhotoData data) {
+                adapter.setPhotos(data.results);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d("MainActivity", "onComplete");
+            }
+        });
     }
 
 }

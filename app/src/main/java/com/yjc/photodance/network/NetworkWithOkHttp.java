@@ -1,4 +1,4 @@
-package com.yjc.photodance.common;
+package com.yjc.photodance.network;
 
 import android.util.Log;
 
@@ -76,7 +76,7 @@ public class NetworkWithOkHttp {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String id = jsonObject.getString("_id");
                         String url = jsonObject.getString("url");
-                        mPhotos.add(new Photo(id, url));
+//                        mPhotos.add(new Photo(id, url));
                     }
                 }catch (IOException e) {
                     e.printStackTrace();
