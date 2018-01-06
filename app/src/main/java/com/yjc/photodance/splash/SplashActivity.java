@@ -2,12 +2,10 @@ package com.yjc.photodance.splash;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -16,13 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.dao.Account;
-import com.yjc.photodance.main.LoginActivity;
-import com.yjc.photodance.main.MainActivity;
+import com.yjc.photodance.ui.LoginActivity;
+import com.yjc.photodance.ui.MainActivity;
 import com.yjc.photodance.R;
-import com.yjc.photodance.main.SelectUserHeadImageActivity;
+import com.yjc.photodance.ui.SelectUserHeadImageActivity;
 
 import org.litepal.crud.DataSupport;
-import org.litepal.tablemanager.Connector;
 
 /**
  * Created by Administrator on 2017/12/28/028.
@@ -30,9 +27,8 @@ import org.litepal.tablemanager.Connector;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
     private boolean isLogin;
+    private boolean isLogin_pref;
     private boolean isRegister;
     private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CALL_PHONE};
@@ -42,13 +38,11 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-//        isLogin = SharedPreferenceDao.getInstance().getBoolean("login");
-//        isRegister = SharedPreferenceDao.getInstance().getBoolean("register");
+        isLogin_pref = SharedPreferenceDao.getInstance().getBoolean("login");
+
         Account account = DataSupport.findLast(Account.class);
         isLogin = account.isLogin();
         isRegister = account.isRegister();
-
-//        gotoLoginOrMainActivity();
 
         //Android 6.0及以上动态获取权限
         if(Build.VERSION.SDK_INT >= 23) {
@@ -60,15 +54,6 @@ public class SplashActivity extends AppCompatActivity {
                 }else {
                     //此分支为用户已授予权限后再次打开应用，直接启动
                     gotoLoginOrMainActivity();
-
-                    //临时测试用
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-//                            startActivity(intent);
-//                        }
-//                    }, 2000);
                 }
             }
         }
@@ -102,7 +87,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(isLogin) {
+                if(isLogin && isLogin_pref) {
                     Intent homeIntent = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(homeIntent);
                 }else if(isRegister){

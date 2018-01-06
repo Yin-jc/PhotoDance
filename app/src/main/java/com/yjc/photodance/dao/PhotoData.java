@@ -1,6 +1,6 @@
 package com.yjc.photodance.dao;
 
-import com.yjc.photodance.Bean.Photo;
+import com.yjc.photodance.BeanForJson.Photo;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
 
 public class PhotoData {
 
-    public List<Photo> results;
+    public List<Photo> data;
 }

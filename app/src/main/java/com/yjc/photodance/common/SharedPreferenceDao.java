@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.yjc.photodance.MyApplication;
+
 /**
  * Created by Administrator on 2017/12/29/029.
  * 静态内部类的方式实现单例模式
@@ -24,7 +26,7 @@ public class SharedPreferenceDao {
 
     public static class SharedPreferenceDaoInner{
         private static final SharedPreferenceDao INSTANCE =
-                new SharedPreferenceDao(MyApplicationContext.getMyApplicationContext());
+                new SharedPreferenceDao(MyApplication.getMyApplicationContext());
     }
 
 //    //存储

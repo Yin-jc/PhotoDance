@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 
-import com.yjc.photodance.main.MainActivity;
+import com.yjc.photodance.MyApplication;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,14 +19,14 @@ import java.io.IOException;
 public class MultiMedia {
 
     private static Uri photoUri;
-    private static final Context sContext = MyApplicationContext.getMyApplicationContext();
+    private static final Context sContext = MyApplication.getMyApplicationContext();
 
     public static void takePhoto(){
 
         //创建File对象，用于存储照片
         //存放在当前应用缓存数据的位置，可以跳过权限验证
         // TODO: 2018/1/4/004 字符串拼接对多张图片命名 
-        File photo=new File(MyApplicationContext.getMyApplicationContext().getExternalCacheDir() ,
+        File photo=new File(MyApplication.getMyApplicationContext().getExternalCacheDir() ,
                 "photo1.jpg");
         if(photo.exists()){
             photo.delete();
@@ -40,7 +39,7 @@ public class MultiMedia {
 
         //Android 7.0 之后不可以直接使用Uri
         if(Build.VERSION.SDK_INT >= 24){
-            photoUri = FileProvider.getUriForFile(MyApplicationContext.getMyApplicationContext(),
+            photoUri = FileProvider.getUriForFile(MyApplication.getMyApplicationContext(),
                     "com.yjc.photodance.fileprovider", photo);
         }else {
             photoUri= Uri.fromFile(photo);

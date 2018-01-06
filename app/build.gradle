@@ -46,4 +46,5 @@ dependencies {
     //一个开源gif控件
     implementation 'com.melnykov:floatingactionbutton:1.3.0'
     implementation 'com.android.support:cardview-v7:27.0.2'
+    implementation 'com.bm.photoview:library:1.4.1'
 }

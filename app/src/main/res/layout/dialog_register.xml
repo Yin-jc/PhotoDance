@@ -3,13 +3,14 @@
     android:id="@+id/register_dialog"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/landscape3">
 
     <ImageView
         android:id="@+id/dismiss"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_margin="15dp"
+        android:layout_margin="20dp"
         android:src="@drawable/dismiss"
         android:layout_alignParentEnd="true"/>
 
@@ -18,7 +19,7 @@
         android:id="@+id/register_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="35dp"
+        android:layout_below="@+id/dismiss"
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
 

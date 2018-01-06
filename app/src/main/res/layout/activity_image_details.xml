@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/details_image"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/details_image"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/love"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/love_imageview_shape"
+            android:src="@drawable/love"/>
+
+        <ImageView
+            android:id="@+id/collection"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="100dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/collection_details"/>
+
+    </RelativeLayout>
+    
+</RelativeLayout>
