@@ -20,6 +20,7 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.ui.ImageDetailsActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -31,7 +32,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     private List<Photo> mPhotos = new ArrayList<>();
     private static Context mContext;
     private int page = 0;
-    private static String photoUrl = null;
+    private String photoUrl;
+    private HashMap<Integer ,String> map = new HashMap<>();
+    private int count = 1;
 
     private static final int MAX_WIDTH = 149;
     private static final int MAX_HEIGHT = 149;
@@ -40,7 +43,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         CardView cardView;
         ImageView image;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView ,int num) {
             super(itemView);
             cardView = (CardView) itemView;
             image = itemView.findViewById(R.id.photo);
@@ -50,7 +53,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 //                    Toast.makeText(MyApplication.getMyApplicationContext(), "onClick",
 //                            Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(mContext, ImageDetailsActivity.class);
-                    intent.putExtra("imageUrl", photoUrl);
+
+                    intent.putExtra("imageUrl", map);
                     mContext.startActivity(intent);
                 }
             });
@@ -73,7 +77,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.photo_item, parent, false);
-        ViewHolder holder = new ViewHolder(view);
+        ViewHolder holder = new ViewHolder(view, count);
         return holder;
     }
 
@@ -87,6 +91,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 //        if (mPhotos.size() == page) {
         Photo photo = mPhotos.get(position);
         photoUrl = photo.getUrls().getSmall();
+        map.put(position, photo.getUrls().getRegular());
 
         //屏幕的宽度(px值）
         int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
