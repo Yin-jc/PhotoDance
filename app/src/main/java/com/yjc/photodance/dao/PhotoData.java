@@ -1,5 +1,7 @@
 package com.yjc.photodance.dao;
 
+import com.yjc.photodance.Bean.Photo;
+
 import java.util.List;
 
 /**

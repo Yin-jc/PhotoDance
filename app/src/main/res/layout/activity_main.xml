@@ -6,62 +6,100 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/color_white"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/Theme.AppCompat.Light">
-            <RelativeLayout
+            android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/color_white"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                    app:popupTheme="@style/Theme.AppCompat.Light"
+                    app:layout_scrollFlags="scroll|enterAlways|snap">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/personal_center"
+                            android:layout_width="30dp"
+                            android:layout_height="?attr/actionBarSize"
+                            android:layout_alignParentStart="true"
+                            android:src="@drawable/add_user"
+                            android:focusable="true"
+                            android:clickable="true"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="@string/app_name"
+                            android:textStyle="bold"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/text_size_large"/>
+
+                        <ImageView
+                            android:id="@+id/take_photo"
+                            android:layout_width="30dp"
+                            android:layout_height="?attr/actionBarSize"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="15dp"
+                            android:src="@drawable/take_photo"
+                            android:focusable="true"
+                            android:clickable="true"/>
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <com.scwang.smartrefresh.header.DropboxHeader
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/personal_center"
-                    android:layout_width="30dp"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_alignParentStart="true"
-                    android:src="@drawable/add_user"
-                    android:focusable="true"
-                    android:clickable="true"/>
+            </android.support.v7.widget.RecyclerView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="@string/app_name"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/text_size_large"/>
+            <com.scwang.smartrefresh.layout.footer.BallPulseFooter
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:srlAccentColor="@color/color_blue">
 
-                <ImageView
-                    android:id="@+id/take_photo"
-                    android:layout_width="30dp"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="15dp"
-                    android:src="@drawable/take_photo"
-                    android:focusable="true"
-                    android:clickable="true"/>
+            </com.scwang.smartrefresh.layout.footer.BallPulseFooter>
 
-            </RelativeLayout>
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-        </android.support.v7.widget.Toolbar>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="15dp"
+            app:backgroundTint="@color/color_blue"
+            android:src="@drawable/up"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar">
+    </android.support.design.widget.CoordinatorLayout>
 
-        </android.support.v7.widget.RecyclerView>
-
-    </RelativeLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

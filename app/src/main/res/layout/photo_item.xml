@@ -2,10 +2,14 @@
 
 <!--ImageView的父布局的宽高也需要设置为wrap_content，否则会出现大量留白-->
 
-<RelativeLayout
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="@dimen/radius"
+    app:cardElevation="@dimen/radius">
 
     <ImageView
         android:id="@+id/photo"
@@ -13,4 +17,6 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true" />
 
-</RelativeLayout>
+</android.support.v7.widget.CardView>
+
+

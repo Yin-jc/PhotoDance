@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,17 +18,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yjc.photodance.R;
 import com.yjc.photodance.api.ApiConfig;
 import com.yjc.photodance.api.PhotoApi;
 import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.dao.PhotoData;
-import com.yjc.photodance.network.NetworkWithOkHttp;
 import com.yjc.photodance.dao.Account;
 import com.yjc.photodance.dao.Navigation;
-import com.yjc.photodance.dao.Photo;
+import com.yjc.photodance.Bean.Photo;
 import com.yjc.photodance.dao.PhotoAdapter;
-import com.yjc.photodance.network.NetworkWithRetrofit;
 import com.yjc.photodance.network.RetrofitServiceManager;
 
 import org.litepal.crud.DataSupport;
@@ -35,11 +37,7 @@ import org.litepal.crud.DataSupport;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -58,6 +56,14 @@ public class MainActivity extends AppCompatActivity{
     private List<Photo> photos;
     private PhotoAdapter adapter;
     private RecyclerView recyclerView;
+    private boolean isFirstEnter = true;
+    private RefreshLayout refreshLayout;
+    //PhotoApi中的参数
+    private int size = 21;
+    private int page = 1;
+    //判断是下拉刷新还是上拉加载
+    private boolean flag = true;
+    private FloatingActionButton fab;
 
 //    private boolean isSetHeadImage = false;
 
@@ -90,6 +96,8 @@ public class MainActivity extends AppCompatActivity{
         takePhoto=findViewById(R.id.take_photo);
         drawer=findViewById(R.id.drawer_layout);
         navigation=findViewById(R.id.nav_view);
+        refreshLayout = findViewById(R.id.refresh_layout);
+        fab = findViewById(R.id.btn_up);
 
 //        Glide.with(this).load("http://7xi8d6.com1.z0.glb.clouddn.com/20171228085004_5yEHju_Screenshot.jpeg")
 //                .into(takePhoto);
@@ -144,6 +152,27 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        if (isFirstEnter) {
+            refreshLayout.autoRefresh();//第一次进入触发自动刷新
+        }
+
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                flag = true;
+                getPhotos(size, 1);
+                refreshLayout.finishRefresh(2000);
+            }
+        });
+        refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                flag = false;
+                refreshlayout.finishLoadmore(1000);
+                getPhotos(size, ++page);
+            }
+        });
+
         recyclerView = findViewById(R.id.recycler_view);
         StaggeredGridLayoutManager layoutManager = new
                 StaggeredGridLayoutManager(3,
@@ -153,12 +182,18 @@ public class MainActivity extends AppCompatActivity{
         recyclerView.setLayoutManager(layoutManager);
         adapter = new PhotoAdapter(this);
         recyclerView.setAdapter(adapter);
-        getPhotos();
+        
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: 2018/1/6/006 回到顶部
+            }
+        });
     }
 
-    private void getPhotos(){
+    private void getPhotos(int size, int page){
 
-        RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotoData(50, 2)
+        RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotoData(ApiConfig.getApplication_ID())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<PhotoData>() {
@@ -169,8 +204,12 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onNext(PhotoData data) {
-                adapter.setPhotos(data.results);
-                adapter.notifyDataSetChanged();
+                if(isFirstEnter || !flag) {
+                    isFirstEnter = false;
+                    //下拉刷新，防止添加重复数据
+                    adapter.setPhotos(data.results);
+                    adapter.notifyDataSetChanged();
+                }
                 Log.d("MainActivity", "onNext");
 //                Log.d("MainActivity", data.photos.get(0).id);
             }

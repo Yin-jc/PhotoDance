@@ -1,22 +1,9 @@
 package com.yjc.photodance.network;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
-
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.yjc.photodance.api.ApiConfig;
 import com.yjc.photodance.api.PhotoApi;
-import com.yjc.photodance.dao.Photo;
-import com.yjc.photodance.dao.PhotoAdapter;
-import com.yjc.photodance.dao.PhotoData;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 //import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
