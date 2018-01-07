@@ -33,7 +33,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     private static Context mContext;
     private int page = 0;
     private String photoUrl;
-    private HashMap<Integer ,String> map = new HashMap<>();
+    private static HashMap<Integer ,String> map = new HashMap<>();
     private int count = 1;
 
     private static final int MAX_WIDTH = 149;
@@ -43,18 +43,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         CardView cardView;
         ImageView image;
 
-        public ViewHolder(View itemView ,int num) {
+        public ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView;
-            image = itemView.findViewById(R.id.photo);
+            image = cardView.findViewById(R.id.photo);
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 //                    Toast.makeText(MyApplication.getMyApplicationContext(), "onClick",
 //                            Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(mContext, ImageDetailsActivity.class);
-
-                    intent.putExtra("imageUrl", map);
+                    int p = (int) view.getTag(R.id.image_tag);
+                    intent.putExtra("imageUrl", map.get(p));
                     mContext.startActivity(intent);
                 }
             });
@@ -77,7 +77,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.photo_item, parent, false);
-        ViewHolder holder = new ViewHolder(view, count);
+        ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
@@ -90,8 +90,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
 //        if (mPhotos.size() == page) {
         Photo photo = mPhotos.get(position);
-        photoUrl = photo.getUrls().getSmall();
+        photoUrl = photo.getUrls().getThumb();
         map.put(position, photo.getUrls().getRegular());
+        //对于glide下设置imageView的tag的正确处理
+        holder.image.setTag(R.id.image_tag, position);
 
         //屏幕的宽度(px值）
         int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;

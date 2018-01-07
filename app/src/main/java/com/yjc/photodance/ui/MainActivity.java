@@ -129,16 +129,16 @@ public class MainActivity extends AppCompatActivity{
                 switch (item.getItemId()){
                     //注销，返回登录界面
                     case R.id.nav_log_off:
-                        Intent intent =
+                        Intent intentToLogin =
                                 new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(intent);
+                        startActivity(intentToLogin);
                         break;
 
                     //关于
                     case R.id.nav_about:
-                        Intent intent1 =
+                        Intent intentToAbout =
                                 new Intent(MainActivity.this, InfoActivity.class);
-                        startActivity(intent1);
+                        startActivity(intentToAbout);
                         break;
 
                     //设置
@@ -147,6 +147,9 @@ public class MainActivity extends AppCompatActivity{
 
                     //收藏
                     case R.id.nav_collection:
+                        Intent intentToCollection =
+                                new Intent(MainActivity.this, CollectionsActivity.class);
+                        startActivity(intentToCollection);
                         break;
 
                     //分享

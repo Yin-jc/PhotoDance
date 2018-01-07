@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/landscape5">
+    android:background="@drawable/shape_gradient_2">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/userHeadImage_login"

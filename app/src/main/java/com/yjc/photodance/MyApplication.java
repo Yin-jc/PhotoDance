@@ -3,6 +3,7 @@ package com.yjc.photodance;
 import android.app.Application;
 import android.content.Context;
 
+import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.dao.Account;
 
 import org.litepal.LitePal;
@@ -17,7 +18,9 @@ import org.litepal.tablemanager.Connector;
 
 public class MyApplication extends Application {
 
+    // TODO: 2018/1/7/007 实现成单例
     private static Context mContext;
+    private static int collectionsCount = 1;
 
     @Override
     public void onCreate() {
@@ -34,9 +37,19 @@ public class MyApplication extends Application {
         account.setRegister(false);
         account.save();
 
+        SharedPreferenceDao.getInstance().saveString("collectionUrl0", "temp");
+
     }
 
     public static Context getMyApplicationContext(){
         return mContext;
+    }
+
+    public static int getCollectionsCount(){
+        return collectionsCount++;
+    }
+
+    public static int getCollectionsCountOnly(){
+        return collectionsCount;
     }
 }

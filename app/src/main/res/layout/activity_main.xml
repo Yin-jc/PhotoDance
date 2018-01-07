@@ -69,9 +69,15 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <com.scwang.smartrefresh.header.DropboxHeader
+            <!--<com.scwang.smartrefresh.header.DropboxHeader-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="100dp" />-->
+
+            <pl.droidsonroids.gif.GifImageView
                 android:layout_width="match_parent"
-                android:layout_height="100dp" />
+                android:layout_height="180dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/gif1"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
@@ -106,6 +112,7 @@
         android:layout_width="400dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@drawable/shape_gradient_4"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/navigation">
 
