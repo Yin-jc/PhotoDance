@@ -1,6 +1,6 @@
 package com.yjc.photodance.dao;
 
-import com.yjc.photodance.BeanForJson.Photo;
+import com.yjc.photodance.bean.Photo;
 
 import java.util.List;
 

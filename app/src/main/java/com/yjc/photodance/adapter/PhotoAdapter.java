@@ -9,14 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.yjc.photodance.BeanForJson.Photo;
-import com.yjc.photodance.MyApplication;
+import com.yjc.photodance.bean.Photo;
 import com.yjc.photodance.R;
 import com.yjc.photodance.dao.Details;
 import com.yjc.photodance.ui.ImageDetailsActivity;

@@ -1,4 +1,4 @@
-package com.yjc.photodance.BeanForJson;
+package com.yjc.photodance.bean;
 
 import com.google.gson.annotations.SerializedName;
 

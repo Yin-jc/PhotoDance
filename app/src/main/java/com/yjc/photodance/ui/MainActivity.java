@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bm.library.PhotoView;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -31,7 +29,7 @@ import com.yjc.photodance.api.PhotoApi;
 import com.yjc.photodance.common.MultiMedia;
 import com.yjc.photodance.common.SharedPreferenceDao;
 import com.yjc.photodance.dao.Account;
-import com.yjc.photodance.BeanForJson.Photo;
+import com.yjc.photodance.bean.Photo;
 import com.yjc.photodance.adapter.PhotoAdapter;
 import com.yjc.photodance.network.RetrofitServiceManager;
 

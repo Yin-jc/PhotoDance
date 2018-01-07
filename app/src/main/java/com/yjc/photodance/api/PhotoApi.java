@@ -1,6 +1,6 @@
 package com.yjc.photodance.api;
 
-import com.yjc.photodance.BeanForJson.Photo;
+import com.yjc.photodance.bean.Photo;
 
 import java.util.List;
 

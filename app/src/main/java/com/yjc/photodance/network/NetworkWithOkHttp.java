@@ -2,7 +2,7 @@ package com.yjc.photodance.network;
 
 import android.util.Log;
 
-import com.yjc.photodance.BeanForJson.Photo;
+import com.yjc.photodance.bean.Photo;
 
 import org.json.JSONArray;
 import org.json.JSONException;

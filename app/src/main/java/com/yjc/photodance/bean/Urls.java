@@ -1,4 +1,4 @@
-package com.yjc.photodance.BeanForJson;
+package com.yjc.photodance.bean;
 
 /**
  * Created by Administrator on 2018/1/6/006.
