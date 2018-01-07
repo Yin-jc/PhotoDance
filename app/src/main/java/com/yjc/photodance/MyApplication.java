@@ -4,11 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Typeface;
 
-import com.yjc.photodance.common.SharedPreferenceDao;
-import com.yjc.photodance.dao.Account;
+import com.yjc.photodance.util.SharedPreferenceDao;
+import com.yjc.photodance.model.Account;
 
 import org.litepal.LitePal;
-import org.litepal.LitePalApplication;
 import org.litepal.tablemanager.Connector;
 
 import java.lang.reflect.Field;

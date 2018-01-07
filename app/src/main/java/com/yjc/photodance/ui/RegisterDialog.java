@@ -16,8 +16,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.yjc.photodance.R;
-import com.yjc.photodance.common.SharedPreferenceDao;
-import com.yjc.photodance.dao.Account;
+import com.yjc.photodance.util.SharedPreferenceDao;
+import com.yjc.photodance.model.Account;
 
 /**
  * Created by Administrator on 2017/12/29/029.

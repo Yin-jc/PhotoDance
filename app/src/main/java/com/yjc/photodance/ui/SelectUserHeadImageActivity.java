@@ -19,8 +19,8 @@ import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.yjc.photodance.common.LitePalForBitmap;
-import com.yjc.photodance.dao.Account;
+import com.yjc.photodance.util.LitePalForBitmap;
+import com.yjc.photodance.model.Account;
 import com.yjc.photodance.R;
 import com.yjc.photodance.MyApplication;
 

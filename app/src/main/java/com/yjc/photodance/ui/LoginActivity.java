@@ -14,8 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yjc.photodance.R;
-import com.yjc.photodance.common.SharedPreferenceDao;
-import com.yjc.photodance.dao.Account;
+import com.yjc.photodance.util.SharedPreferenceDao;
+import com.yjc.photodance.model.Account;
 
 import org.litepal.crud.DataSupport;
 

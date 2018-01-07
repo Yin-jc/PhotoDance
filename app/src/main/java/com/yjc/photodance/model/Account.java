@@ -1,6 +1,4 @@
-package com.yjc.photodance.dao;
-
-import android.graphics.Bitmap;
+package com.yjc.photodance.model;
 
 import org.litepal.crud.DataSupport;
 

@@ -12,8 +12,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.yjc.photodance.MyApplication;
 import com.yjc.photodance.R;
-import com.yjc.photodance.common.SharedPreferenceDao;
-import com.yjc.photodance.ui.ImageDetailsActivity;
+import com.yjc.photodance.util.SharedPreferenceDao;
 import com.yjc.photodance.ui.ImageFullScreenActivity;
 
 import java.util.ArrayList;

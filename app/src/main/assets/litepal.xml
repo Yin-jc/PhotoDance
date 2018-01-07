@@ -32,8 +32,8 @@
     	</list>
     -->
     <list>
-        <mapping class="com.yjc.photodance.dao.Account"/>
-        <mapping class="com.yjc.photodance.dao.Details"/>
+        <mapping class="com.yjc.photodance.model.Account"/>
+        <mapping class="com.yjc.photodance.model.Details"/>
     </list>
 
     <!--

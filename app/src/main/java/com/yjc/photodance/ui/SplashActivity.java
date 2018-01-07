@@ -12,8 +12,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.yjc.photodance.common.SharedPreferenceDao;
-import com.yjc.photodance.dao.Account;
+import com.yjc.photodance.util.SharedPreferenceDao;
+import com.yjc.photodance.model.Account;
 import com.yjc.photodance.R;
 
 import org.litepal.crud.DataSupport;

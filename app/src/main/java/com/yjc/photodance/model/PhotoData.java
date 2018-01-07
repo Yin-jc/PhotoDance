@@ -1,4 +1,4 @@
-package com.yjc.photodance.dao;
+package com.yjc.photodance.model;
 
 import com.yjc.photodance.bean.Photo;
 

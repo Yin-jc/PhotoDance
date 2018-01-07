@@ -1,4 +1,4 @@
-package com.yjc.photodance.dao;
+package com.yjc.photodance.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

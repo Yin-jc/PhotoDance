@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.yjc.photodance.bean.Photo;
 import com.yjc.photodance.R;
-import com.yjc.photodance.dao.Details;
+import com.yjc.photodance.model.Details;
 import com.yjc.photodance.ui.ImageDetailsActivity;
 
 import org.litepal.crud.DataSupport;
