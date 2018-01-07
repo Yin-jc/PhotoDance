@@ -3,6 +3,7 @@ package com.yjc.photodance.ui;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -44,6 +45,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * Created by Administrator on 2017/12/29/001.
+ * todo 悬浮按钮的逻辑，返回顶部
+ * todo navigation中其他item的逻辑
+ */
 public class MainActivity extends AppCompatActivity{
 
     private Uri photoUri;
@@ -203,6 +209,8 @@ public class MainActivity extends AppCompatActivity{
                 // TODO: 2018/1/6/006 回到顶部
             }
         });
+
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/方正华隶.ttf");
     }
 
     /**

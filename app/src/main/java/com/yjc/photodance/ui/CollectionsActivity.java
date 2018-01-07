@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.yjc.photodance.MyApplication;
 import com.yjc.photodance.R;
 import com.yjc.photodance.adapter.PhotoAdapter;
 import com.yjc.photodance.adapter.PhotoAdapterForCollections;
@@ -28,6 +29,9 @@ public class CollectionsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
+
+        //打开了收藏，用于之后浏览大图
+        MyApplication.setIsFromCollections(true);
 
         Toolbar toolbar=findViewById(R.id.toolbar_full_screen);
         setSupportActionBar(toolbar);

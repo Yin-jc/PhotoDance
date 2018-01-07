@@ -39,6 +39,7 @@
                             android:clickable="true"/>
 
                         <TextView
+                            android:id="@+id/title_main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
@@ -77,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/gif1"/>
+                android:src="@drawable/gif2"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"

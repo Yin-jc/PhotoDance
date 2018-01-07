@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -14,6 +15,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.yjc.photodance.MyApplication;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.SharedPreferenceDao;
+import com.yjc.photodance.dao.Details;
+
+import org.w3c.dom.Text;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Administrator on 2018/1/6/006.
@@ -26,11 +32,16 @@ public class ImageDetailsActivity extends AppCompatActivity {
     private ImageView collection;
     private String url;
     private ImageView back;
+    private CircleImageView profileImage;
+    private TextView detailsText;
+    private Details details;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
+
+        MyApplication.setIsFromCollections(false);
 
         Toolbar toolbar=findViewById(R.id.toolbar_full_screen);
         setSupportActionBar(toolbar);
@@ -38,6 +49,8 @@ public class ImageDetailsActivity extends AppCompatActivity {
         image = findViewById(R.id.details_image);
 
         url = getIntent().getStringExtra("imageUrl");
+        details = getIntent().getParcelableExtra("details");
+
         RequestOptions options = new RequestOptions();
         options.centerCrop();
 
@@ -58,6 +71,13 @@ public class ImageDetailsActivity extends AppCompatActivity {
         });
 
         love = findViewById(R.id.love);
+        love.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                love.setImageResource(R.drawable.redheart);
+            }
+        });
+
         collection = findViewById(R.id.collection);
 
         collection.setOnClickListener(new View.OnClickListener() {
@@ -83,5 +103,9 @@ public class ImageDetailsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+//        profileImage = findViewById(R.id.profile_image);
+        detailsText = findViewById(R.id.details);
+        detailsText.setText(details.toString());
     }
 }

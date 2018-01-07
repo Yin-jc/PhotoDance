@@ -49,27 +49,27 @@
         android:layout_below="@+id/toolbar_details"/>
 
     <RelativeLayout
+        android:id="@+id/love_collections"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:layout_below="@+id/details_image"
         android:padding="10dp">
 
         <ImageView
             android:id="@+id/love"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
+            android:layout_margin="20dp"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/love_imageview_shape"
-            android:src="@drawable/collection"/>
+            android:src="@drawable/heart"/>
 
         <ImageView
             android:id="@+id/collection"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="100dp"
             android:clickable="true"
@@ -77,5 +77,17 @@
             android:src="@drawable/collection_details"/>
 
     </RelativeLayout>
-    
+
+
+    <TextView
+        android:id="@+id/details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/color_black"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_large"
+        android:layout_below="@+id/love_collections"/>
+
 </RelativeLayout>

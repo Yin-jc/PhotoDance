@@ -15,6 +15,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -38,7 +39,8 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
     private CircleImageView userHeadImage;
     private PopupWindow popupWindow;
     private Bitmap userHeadImageBitmap;
-    private TextView next;
+    private Button next;
+    private TextView please;
 
     private static final int CHOOSE_PHOTO = 1;
     private static final int TAKE_PHOTO = 2;
@@ -84,6 +86,8 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
                 gotoLoginActivity();
             }
         });
+
+        please = findViewById(R.id.please_set_image);
     }
 
     private void selectPhoto(){
@@ -134,6 +138,7 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
                     userHeadImage.setImageBitmap(userHeadImageBitmap);
                     popupWindow.dismiss();
                     next.setVisibility(View.VISIBLE);
+                    please.setVisibility(View.GONE);
 //                    gotoLoginActivity();
                 }
                 break;
@@ -147,6 +152,7 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
                             userHeadImage.setImageBitmap(userHeadImageBitmap);
                             popupWindow.dismiss();
                             next.setVisibility(View.VISIBLE);
+                            please.setVisibility(View.GONE);
 //                            gotoLoginActivity();
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();

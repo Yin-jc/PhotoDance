@@ -25,6 +25,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Administrator on 2017/12/28/028.
+ * todo 用户信息上传，状态保存
  */
 
 public class LoginActivity extends AppCompatActivity {

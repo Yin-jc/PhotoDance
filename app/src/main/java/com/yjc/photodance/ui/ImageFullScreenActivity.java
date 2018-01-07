@@ -51,10 +51,18 @@ public class ImageFullScreenActivity extends AppCompatActivity{
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ImageFullScreenActivity.this,
-                        ImageDetailsActivity.class);
-                startActivity(intent);
-                finish();
+                //从收藏中打开
+                if (MyApplication.getIsFromCollections()){
+                    Intent intent = new Intent(ImageFullScreenActivity.this,
+                            CollectionsActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else {
+                    Intent intent = new Intent(ImageFullScreenActivity.this,
+                            ImageDetailsActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
@@ -62,10 +70,18 @@ public class ImageFullScreenActivity extends AppCompatActivity{
         RequestOptions options = new RequestOptions();
         options.centerCrop();
 
-        Glide.with(this)
-                .load(getIntent().getStringExtra("imageUrl"))
-                .apply(options)
-                .into(imageView);
+        //从收藏中打开
+        if (MyApplication.getIsFromCollections()){
+            Glide.with(this)
+                    .load(getIntent().getStringExtra("imageUrlFromCollections"))
+                    .apply(options)
+                    .into(imageView);
+        }else {
+            Glide.with(this)
+                    .load(getIntent().getStringExtra("imageUrl"))
+                    .apply(options)
+                    .into(imageView);
+        }
 
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
