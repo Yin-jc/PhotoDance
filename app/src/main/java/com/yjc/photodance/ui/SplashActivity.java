@@ -27,8 +27,8 @@ public class SplashActivity extends AppCompatActivity {
     private boolean isLogin;
     private boolean isLogin_pref;
     private boolean isRegister;
-    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CALL_PHONE};
+//    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//            Manifest.permission.CALL_PHONE};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,16 +42,25 @@ public class SplashActivity extends AppCompatActivity {
         isRegister = account.isRegister();
 
         //Android 6.0及以上动态获取权限
-        if(Build.VERSION.SDK_INT >= 23) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (ContextCompat.checkSelfPermission(SplashActivity.this, permissions[i])
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(SplashActivity.this,
-                            permissions,1);
-                }else {
-                    //此分支为用户已授予权限后再次打开应用，直接启动
-                    gotoLoginOrMainActivity();
-                }
+//        if(Build.VERSION.SDK_INT >= 23) {
+//            for (int i = 0; i < permissions.length; i++) {
+//                if (ContextCompat.checkSelfPermission(SplashActivity.this, permissions[i])
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(SplashActivity.this,
+//                            permissions,1);
+//                }else {
+//                    //此分支为用户已授予权限后再次打开应用，直接启动
+//                    gotoLoginOrMainActivity();
+//                }
+//            }
+//        }
+        if(Build.VERSION.SDK_INT >= 23){
+            if(ContextCompat.checkSelfPermission(SplashActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(SplashActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }else {
+                gotoLoginOrMainActivity();
             }
         }
 
@@ -60,17 +69,25 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
+//            case 1:
+//                for (int i=0; i < permissions.length; i++){
+//                    if(grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    }else {
+//                        //只要拒绝其中一个权限就退出应用
+//                        finish();
+//                    }
+//                    gotoLoginOrMainActivity();
+//                }
+//
+//
+//                break;
             case 1:
-                for (int i=0; i < permissions.length; i++){
-                    if(grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-
-                    }else {
-                        //只要拒绝其中一个权限就退出应用
-                        finish();
-                    }
+                if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     gotoLoginOrMainActivity();
+                }else {
+                    finish();
                 }
-
                 break;
 
             default:

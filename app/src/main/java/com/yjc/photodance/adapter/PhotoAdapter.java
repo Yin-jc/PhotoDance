@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
 
+    private static final String TAG = "PhotoAdapter";
     private List<Photo> mPhotos = new ArrayList<>();
     private static Context mContext;
     private int page = 0;
@@ -108,6 +110,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Log.d(TAG, String.valueOf(position));
 //        if (mPhotos.size() == page) {
         Photo photo = mPhotos.get(position);
         photoUrl = photo.getUrls().getThumb();

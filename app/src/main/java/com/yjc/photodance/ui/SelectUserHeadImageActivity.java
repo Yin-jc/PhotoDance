@@ -19,7 +19,8 @@ import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.yjc.photodance.util.LitePalForBitmap;
+import com.yjc.photodance.util.HandleBitmap;
+//import com.yjc.photodance.util.HandleBitmap;
 import com.yjc.photodance.model.Account;
 import com.yjc.photodance.R;
 import com.yjc.photodance.MyApplication;
@@ -133,7 +134,7 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
                 if(resultCode == RESULT_OK){
                     imagePath = handleImage(data);
 //                    userHeadImageBitmap = BitmapFactory.decodeFile(imagePath);
-                    userHeadImageBitmap = LitePalForBitmap.compressWithinsampleSize(imagePath);
+                    userHeadImageBitmap = HandleBitmap.compressForFile(imagePath);
                     saveUserHeadImageToDB();
                     userHeadImage.setImageBitmap(userHeadImageBitmap);
                     popupWindow.dismiss();
@@ -146,8 +147,10 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
             case TAKE_PHOTO:
                     if(resultCode == RESULT_OK){
                         try {
-                            userHeadImageBitmap = BitmapFactory.decodeStream(getContentResolver().
-                                    openInputStream(photoUri));
+//                            userHeadImageBitmap = BitmapFactory.decodeStream(getContentResolver().
+//                                    openInputStream(photoUri), null, options);
+                            userHeadImageBitmap = HandleBitmap.compressForStream(
+                                    getContentResolver().openInputStream(photoUri));
                             saveUserHeadImageToDB();
                             userHeadImage.setImageBitmap(userHeadImageBitmap);
                             popupWindow.dismiss();
@@ -228,7 +231,7 @@ public class SelectUserHeadImageActivity extends AppCompatActivity {
         Account account = new Account();
         account.setUserName("only_userHeadImage");
         account.setPassword("only_userHeadImage");
-        account.setUserHeadImage(LitePalForBitmap.img(userHeadImageBitmap));
+        account.setUserHeadImage(HandleBitmap.img(userHeadImageBitmap));
         account.save();
 //        Log.d("Save Success", Boolean.toString(b));
     }
