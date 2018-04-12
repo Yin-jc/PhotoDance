@@ -1,7 +1,7 @@
 package com.yjc.photodance.network;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.yjc.photodance.api.ApiConfig;
+import com.yjc.photodance.common.http.api.ApiConfig;
 
 import java.util.concurrent.TimeUnit;
 

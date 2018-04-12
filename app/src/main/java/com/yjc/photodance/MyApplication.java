@@ -12,6 +12,10 @@ import org.litepal.tablemanager.Connector;
 
 import java.lang.reflect.Field;
 
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobSMS;
+import cn.bmob.v3.BmobUser;
+
 /**
  * Created by Administrator on 2017/12/29/029.
  * 获取全局Context
@@ -29,7 +33,12 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //初始化Bmob后端云
+        Bmob.initialize(this, "957299827f3a40ea662ad5891f81c247");
+
         mContext = getApplicationContext();
+
         LitePal.initialize(this);
         //创建数据库
         Connector.getDatabase();

@@ -1,12 +1,12 @@
-package com.yjc.mytaxi.common.http.biz;
+package com.yjc.photodance.common.http.biz;
 
 /**
  * Created by Administrator on 2017/11/6/006.
  * 返回业务数据的公共格式
  */
 
-
 public class BaseBizResponse {
+
     //成功
     public static final int STATE_OK=200;
     //用户已经存在

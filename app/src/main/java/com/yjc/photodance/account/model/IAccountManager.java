@@ -1,6 +1,4 @@
-package com.yjc.mytaxi.account.model;
-
-import android.os.Handler;
+package com.yjc.photodance.account.model;
 
 /**
  * Created by Administrator on 2017/11/7/007.
@@ -8,6 +6,7 @@ import android.os.Handler;
  */
 
 public interface IAccountManager {
+
     //服务器错误
     int SERVER_FAIL=-999;
     //验证码发送成功
@@ -26,10 +25,11 @@ public interface IAccountManager {
     int REGISTER_SUC=4;
     //登录成功
     int LOGIN_SUC=5;
-    //登录失败
+    //登录过期
     int TOKEN_INVALID=-6;
     //密码错误
     int PW_ERROR=-7;
+
     /**
      * 下发验证码
      * @param phone
@@ -41,7 +41,7 @@ public interface IAccountManager {
      * @param phone
      * @param smsCode
      */
-    void checkSMSCode(String phone,String smsCode);
+    void checkSMSCode(String phone, String smsCode);
 
     /**
      * 检验用户是否注册
@@ -54,14 +54,14 @@ public interface IAccountManager {
      * @param phone
      * @param password
      */
-    void register(String phone,String password);
+    void register(String phone, String password);
 
     /**
      * 登录
      * @param phone
      * @param password
      */
-    void login(String phone,String password);
+    void login(String phone, String password);
 
     /**
      * token登录
@@ -73,4 +73,6 @@ public interface IAccountManager {
      * @return
      */
     boolean isLogin();
+
+    void setHandler();
 }

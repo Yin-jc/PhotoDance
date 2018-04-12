@@ -1,4 +1,4 @@
-package com.yjc.photodance.common.api;
+package com.yjc.photodance.common.http.api;
 
 /**
  * Created by Administrator on 2018/1/5/005.

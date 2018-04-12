@@ -1,4 +1,4 @@
-package com.yjc.photodance.ui;
+package com.yjc.photodance.account.view;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yjc.photodance.R;
+import com.yjc.photodance.ui.MainActivity;
 import com.yjc.photodance.util.SharedPreferenceDao;
 import com.yjc.photodance.model.Account;
 
@@ -28,7 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * todo 用户信息上传，状态保存
  */
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements ILoginView {
 
     private CircleImageView userHeadImage;
     private TextInputLayout loginUsername;
@@ -135,4 +136,23 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showError(int code, String msg) {
+
+    }
+
+    @Override
+    public void showLoginSuc() {
+
+    }
+
+    @Override
+    public void showLoginFail(int code, String msg) {
+
+    }
 }

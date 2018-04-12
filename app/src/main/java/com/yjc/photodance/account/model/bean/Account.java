@@ -1,11 +1,12 @@
-package com.yjc.mytaxi.account.model.bean;
+package com.yjc.photodance.account.model.bean;
 
 /**
  * Created by Administrator on 2017/11/6/006.
- * 账户信息返回格式
+ * 账户信息格式
  */
 
 public class Account {
+
     private String token;
     private String uid;
     private String account;

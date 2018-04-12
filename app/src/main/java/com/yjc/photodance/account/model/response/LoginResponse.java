@@ -1,7 +1,7 @@
-package com.yjc.mytaxi.account.model.response;
+package com.yjc.photodance.account.model.response;
 
-import com.yjc.mytaxi.account.model.bean.Account;
-import com.yjc.mytaxi.common.http.biz.BaseBizResponse;
+import com.yjc.photodance.account.model.bean.Account;
+import com.yjc.photodance.common.http.biz.BaseBizResponse;
 
 /**
  * Created by Administrator on 2017/11/6/006.

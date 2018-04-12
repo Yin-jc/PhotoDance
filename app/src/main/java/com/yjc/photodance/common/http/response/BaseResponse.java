@@ -1,12 +1,11 @@
-package com.yjc.mytaxi.common.http.impl;
-
-import com.yjc.mytaxi.common.http.IResponse;
+package com.yjc.photodance.common.http.response;
 
 /**
  * Created by Administrator on 2017/10/31/031.
  */
 
-public class BaseResponse implements IResponse {
+public class BaseResponse {
+
     public static final int STATE_UNKNOWN_ERROR=100001;
     public static final int STATE_OK = 200;
     //状态码

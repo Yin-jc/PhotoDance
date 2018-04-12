@@ -12,8 +12,14 @@
     <string name="text_login">登录</string>
     <string name="text_register">注册</string>
     <string name="please_register">没有账户？请先注册</string>
-    <string name="register_user_name">请输入用户名</string>
-    <string name="register_password">请输入密码</string>
+    <string name="register_phone_number">请输入手机号码</string>
+    <string name="register_set_username">请输入用户名</string>
     <string name="text_select_user_head_image">请设置您的头像</string>
     <string name="text_next"><![CDATA[下一步]]></string>
+    <string name="get_sms_code">点击获取短信验证码</string>
+    <string name="after_time_resend">%d秒后重新发送</string>
+    <string name="sms_send_fail">服务器异常，验证码未发送成功</string>
+    <string name="token_invalid">登录过期</string>
+    <string name="sms_check_fail">验证码错误</string>
+    <string name="error_server"> 服务器繁忙 </string>
 </resources>

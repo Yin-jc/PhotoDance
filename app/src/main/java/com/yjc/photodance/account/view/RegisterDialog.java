@@ -1,9 +1,10 @@
-package com.yjc.photodance.ui;
+package com.yjc.photodance.account.view;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -14,30 +15,51 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.dalimao.corelibrary.VerificationCodeInput;
 import com.yjc.photodance.R;
-import com.yjc.photodance.util.SharedPreferenceDao;
-import com.yjc.photodance.model.Account;
+//import com.yjc.photodance.account.model.AccountManagerImpl;
+import com.yjc.photodance.account.model.IAccountManager;
+import com.yjc.photodance.account.presenter.IRegisterPresenter;
+import com.yjc.photodance.account.presenter.RegisterPresenterImpl;
+import com.yjc.photodance.common.util.FormaUtil;
+import com.yjc.photodance.common.util.ToastUtil;
 
 /**
  * Created by Administrator on 2017/12/29/029.
+ * todo 更换为DialogFragment
  */
 
-public class RegisterDialog extends Dialog {
+public class RegisterDialog extends Dialog implements IRegisterView {
 
-    private TextInputLayout registerUsername;
-    private TextInputLayout registerPassword;
-    private TextInputEditText registerUsernameEdit;
-    private TextInputEditText registerPasswordEdit;
-    private Button register;
-    private ImageView dismiss;
-    private byte[] userHeadImage;
-    private SelectPicPopupWindow popupWindow;
-    private View loginView;
+    private IRegisterPresenter mPresenter;
+    private IAccountManager mManager;
+
+    private LinearLayout mSetInfoLayout;
+
+    private TextInputLayout mRegisterPhoneNum;
+    private TextInputLayout mRegisterUsername;
+    private TextInputLayout mRegisterPassword;
+    private TextInputEditText mRegisterPhoneNumEdit;
+    private TextInputEditText mRegisterUsernameEdit;
+    private TextInputEditText mRegisterPasswordEdit;
+
+    private VerificationCodeInput mVerificationCodeInput;
+
+    private Button mRegister;
+    private Button mGetSmsCode;
+
+    private ImageView mDismiss;
+//    private byte[] userHeadImage;
+//    private SelectPicPopupWindow popupWindow;
+//    private View loginView;
     private Context mContext;
-    private String username;
-    private String password;
-    private int height;
+    private String mUsername;
+    private String mPassword;
+//    private int height;
+    private String mPhoneNumber;
+
 
     public RegisterDialog(@NonNull Context context) {
         super(context);
@@ -47,7 +69,9 @@ public class RegisterDialog extends Dialog {
     public RegisterDialog(@NonNull Context context, byte[] userHeadImage) {
         super(context);
         mContext = context;
-        this.userHeadImage = userHeadImage;
+//        mManager = new AccountManagerImpl();
+        mPresenter = new RegisterPresenterImpl(this, mManager);
+//        this.userHeadImage = userHeadImage;
     }
 
     public RegisterDialog(@NonNull Context context, int themeResId) {
@@ -60,97 +84,148 @@ public class RegisterDialog extends Dialog {
         mContext = context;
     }
 
+    private void initView(){
+
+        mSetInfoLayout = findViewById(R.id.username_password);
+
+        mRegisterPhoneNum = findViewById(R.id.register_phone_number);
+        mRegisterUsername = findViewById(R.id.register_user_name);
+        mRegisterPassword = findViewById(R.id.register_password);
+        mRegisterPhoneNumEdit = mRegisterPhoneNum.findViewById(R.id.register_phone_number_edit);
+        mRegisterUsernameEdit = mRegisterUsername.findViewById(R.id.register_user_name_edit);
+        mRegisterPasswordEdit = mRegisterPassword.findViewById(R.id.register_password_edit);
+
+        mGetSmsCode = findViewById(R.id.get_sms_code);
+        mGetSmsCode.setEnabled(false);
+        mRegister = findViewById(R.id.register_btn);
+        mRegister.setEnabled(false);
+        mDismiss = findViewById(R.id.dismiss);
+
+        mVerificationCodeInput = findViewById(R.id.verificationCodeInput);
+        mVerificationCodeInput.setEnabled(false);
+
+        //设置可以计数
+        mRegisterPhoneNum.setCounterEnabled(true);
+        mRegisterUsername.setCounterEnabled(true);
+        mRegisterPassword.setCounterEnabled(true);
+        //计数的最大值
+        mRegisterPhoneNum.setCounterMaxLength(11);
+        mRegisterUsername.setCounterMaxLength(10);
+        mRegisterPassword.setCounterMaxLength(10);
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_register);
+        initView();
 
-        registerUsername = findViewById(R.id.register_user_name);
-        registerPassword = findViewById(R.id.register_password);
-        registerUsernameEdit = registerUsername.findViewById(R.id.register_user_name_edit);
-        registerPasswordEdit = registerPassword.findViewById(R.id.register_password_edit);
-        register = findViewById(R.id.register_btn);
-        register.setEnabled(false);
-        dismiss = findViewById(R.id.dismiss);
+        mGetSmsCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestSendSmsCode();
+                mCountDownTimer.start();
+                mVerificationCodeInput.setEnabled(true);
+            }
+        });
 
-        //设置可以计数
-        registerUsername.setCounterEnabled(true);
-        //计数的最大值
-        registerUsername.setCounterMaxLength(10);
-        //设置可以计数
-        registerPassword.setCounterEnabled(true);
-        //计数的最大值
-        registerPassword.setCounterMaxLength(10);
+        //验证码输入完成监听器
+        mVerificationCodeInput.setOnCompleteListener(new VerificationCodeInput.Listener() {
+            @Override
+            public void onComplete(String code) {
+                commit(code);
+            }
+        });
 
-        registerUsernameEdit.addTextChangedListener(new TextWatcher() {
+        mRegisterPhoneNumEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                register.setEnabled(false);
+
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                registerUsername.setErrorEnabled(false);
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-//                register.setEnabled(true);
-                username = registerUsernameEdit.getText().toString();
-                if(TextUtils.isEmpty(username)){
-                    registerUsername.setError("用户名不能为空");
-                    register.setEnabled(false);
-                }
+                mPhoneNumber= mRegisterPhoneNumEdit.getText().toString();
+                //检查输入的手机号是否合法
+                check(mPhoneNumber);
+                //检查手机号是否已经存在
+                mPresenter.requestCheckUserExist(mPhoneNumber);
             }
         });
 
-        registerPasswordEdit.addTextChangedListener(new TextWatcher() {
+        mRegisterUsernameEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                register.setEnabled(false);
+
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                registerPassword.setErrorEnabled(false);
+                mRegisterUsername.setErrorEnabled(false);
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                register.setEnabled(true);
-                password = registerPasswordEdit.getText().toString();
-                if(TextUtils.isEmpty(password) || password.length()<6){
-                    registerPassword.setError("密码格式错误，不能少于6个字符");
-                    register.setEnabled(false);
+                mUsername = mRegisterUsernameEdit.getText().toString();
+                if(TextUtils.isEmpty(mUsername)){
+                    mRegisterUsername.setError("用户名不能为空");
+                    mRegister.setEnabled(false);
                 }
             }
         });
 
+        mRegisterPasswordEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        register.setOnClickListener(new View.OnClickListener() {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mRegisterPassword.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                mPassword = mRegisterPasswordEdit.getText().toString();
+                if(TextUtils.isEmpty(mPassword) || mPassword.length()<6){
+                    mRegisterPassword.setError("密码格式错误，不能少于6个字符");
+                    mRegister.setEnabled(false);
+                }
+                mRegister.setEnabled(true);
+            }
+        });
+
+
+        mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                SharedPreferenceDao.getInstance().saveBoolean("login", true);
-
-                Account account = new Account();
-                account.setUserName(username);
-                account.setPassword(password);
-                account.setUserHeadImage(userHeadImage);
-                account.setRegister(true);
-                account.setLogin(true);
-                account.save();
-
-                //删除数据库中临时的数据
-//                DataSupport.deleteAll(Account.class, "username = ?", "only_userHeadImage");
-
-                Intent intent = new Intent(mContext, MainActivity.class);
-                mContext.startActivity(intent);
-                cancel();
+//                SharedPreferenceDao.getInstance().saveBoolean("login", true);
+//
+//                Account account = new Account();
+//                account.setUserName(mUsername);
+//                account.setPassword(mPassword);
+//                account.setUserHeadImage(userHeadImage);
+//                account.setRegister(true);
+//                account.setLogin(true);
+//                account.save();
+//
+//                //删除数据库中临时的数据
+////                DataSupport.deleteAll(Account.class, "mUsername = ?", "only_userHeadImage");
+//
+//                Intent intent = new Intent(mContext, MainActivity.class);
+//                mContext.startActivity(intent);
+//                cancel();
             }
         });
 
-        dismiss.setOnClickListener(new View.OnClickListener() {
+        mDismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismiss();
@@ -160,7 +235,7 @@ public class RegisterDialog extends Dialog {
 //        userHeadImage.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-////                dismiss();
+////                mDismiss();
 //                //隐藏软键盘,再执行一次会弹出软键盘
 //                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
 //                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
@@ -171,4 +246,97 @@ public class RegisterDialog extends Dialog {
 
     }
 
+    /**
+     * 提交验证码
+     * @param code
+     */
+    private void commit(String code) {
+        mPresenter.requestCheckSmsCode(mPhoneNumber, code);
+    }
+
+    /**
+     * 验证码倒计时
+     * @param context
+     */
+    private CountDownTimer mCountDownTimer =new CountDownTimer(60*1000,
+            1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            mGetSmsCode.setEnabled(false);
+            mGetSmsCode.setText(String.format(getContext().getString(R.string.after_time_resend),
+                    millisUntilFinished/1000));
+        }
+
+        @Override
+        public void onFinish() {
+            mGetSmsCode.setEnabled(true);
+            mGetSmsCode.setText("重新发送");
+            cancel();
+        }
+    };
+
+    private void requestSendSmsCode() {
+        mPresenter.requestSendSmsCode(mPhoneNumber);
+    }
+
+    @Override
+    public void showLoading() {
+    }
+
+    @Override
+    public void showError(int code, String msg) {
+        switch (code){
+            case IAccountManager.SMS_SEND_FAIL:
+                ToastUtil.show(getContext(), getContext().getString(R.string.sms_send_fail));
+                break;
+            case IAccountManager.SMS_CHECK_FAIL:
+                ToastUtil.show(getContext(), getContext().getString(R.string.sms_check_fail));
+                mVerificationCodeInput.setEnabled(true);
+                break;
+            case IAccountManager.SERVER_FAIL:
+                ToastUtil.show(getContext(), getContext().getString(R.string.error_server));
+                break;
+        }
+    }
+
+    /**
+     * 检查手机号码是否合法
+     */
+    private void check(String phoneNumber) {
+        boolean legal= FormaUtil.checkMobile(phoneNumber);
+        if(!legal) {
+            ToastUtil.show(getContext(), "非法手机号码，请重新输入");
+        }else {
+            mGetSmsCode.setEnabled(true);
+        }
+    }
+
+
+    @Override
+    public void showSmsCodeCheckState(boolean suc) {
+        if(!suc){
+            //提示验证码错误
+//            mErrorView.setVisibility(View.VISIBLE);
+            mVerificationCodeInput.setEnabled(true);
+//            mLoading.setVisibility(View.GONE);
+        }else {
+            mVerificationCodeInput.setVisibility(View.GONE);
+            mGetSmsCode.setVisibility(View.GONE);
+            mRegisterPhoneNum.setVisibility(View.GONE);
+            mSetInfoLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void showUserExist(boolean exist) {
+//        mLoading.setVisibility(View.GONE);
+//        mErrorView.setVisibility(View.GONE);
+        if(!exist){
+            //用户不存在，开始注册
+            mGetSmsCode.setEnabled(true);
+        }else {
+            //  用户存在，进入登录
+            ToastUtil.show(getContext(), "手机号码已注册，请直接登录");
+        }
+    }
 }

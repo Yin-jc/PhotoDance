@@ -1,48 +1,61 @@
-package com.yjc.mytaxi.account.presenter;
+package com.yjc.photodance.account.presenter;
 
-import com.yjc.mytaxi.account.model.IAccountManager;
-import com.yjc.mytaxi.account.view.ISmsCodeDialogView;
-import com.yjc.mytaxi.common.dataBus.RegisterBus;
-import com.yjc.mytaxi.common.http.biz.BaseBizResponse;
+import android.os.Handler;
+import android.os.Message;
+
+import com.yjc.photodance.account.model.IAccountManager;
+import com.yjc.photodance.account.view.IRegisterView;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Administrator on 2017/11/7/007.
  */
 
-public class SmsCodeDialogPresenterImpl implements ISMSCodeDialogPresenter{
+public class RegisterPresenterImpl implements IRegisterPresenter{
 
-    private ISmsCodeDialogView view;
+    private IRegisterView view;
     private IAccountManager accountManager;
 
+    private static class MyHandler extends Handler {
+        WeakReference<RegisterPresenterImpl> refContext;
 
-    @RegisterBus
-    public void onSmsCodeResponse(BaseBizResponse response){
-        switch (response.getCode()){
-            case IAccountManager.SMS_SEND_SUC:
-                view.showCountDownTimer();
-                break;
-            case IAccountManager.SMS_SEND_FAIL:
-                view.showError(IAccountManager.SMS_SEND_FAIL,"");
-                break;
-            case IAccountManager.SMS_CHECK_SUC:
-                view.showSmsCodeCheckState(true);
-                break;
-            case IAccountManager.SMS_CHECK_FAIL:
-                view.showError(IAccountManager.SMS_CHECK_FAIL,"");
-                break;
-            case IAccountManager.USER_EXIST:
-                view.showUserExist(true);
-                break;
-            case IAccountManager.USER_NOT_EXIST:
-                view.showUserExist(false);
-                break;
+        public MyHandler(RegisterPresenterImpl context) {
+            refContext=new WeakReference<>(context);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            RegisterPresenterImpl presenter=refContext.get();
+            switch (msg.what){
+                // TODO: 2018/4/12/012 验证码发送成功
+//                case IAccountManager.SMS_SEND_SUC:
+//                    presenter.view.showCountDownTimer();
+//                    break;
+                case IAccountManager.SMS_SEND_FAIL:
+                    presenter.view.showError(IAccountManager.SMS_SEND_FAIL,"");
+                    break;
+                case IAccountManager.SMS_CHECK_SUC:
+                    presenter.view.showSmsCodeCheckState(true);
+                    break;
+                case IAccountManager.SMS_CHECK_FAIL:
+                    presenter.view.showError(IAccountManager.SMS_CHECK_FAIL,"");
+                    break;
+                case IAccountManager.USER_EXIST:
+                    presenter.view.showUserExist(true);
+                    break;
+                case IAccountManager.USER_NOT_EXIST:
+                    presenter.view.showUserExist(false);
+                    break;
+            }
         }
     }
 
-    public SmsCodeDialogPresenterImpl(ISmsCodeDialogView view,
-                                      IAccountManager accountManager) {
+    public RegisterPresenterImpl(IRegisterView view,
+                                 IAccountManager accountManager) {
         this.view = view;
         this.accountManager = accountManager;
+//        accountManager.setHandler(MyHandler(this));
     }
 
     /**

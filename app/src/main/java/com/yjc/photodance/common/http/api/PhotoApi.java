@@ -1,4 +1,4 @@
-package com.yjc.photodance.common.api;
+package com.yjc.photodance.common.http.api;
 
 import com.yjc.photodance.bean.Photo;
 

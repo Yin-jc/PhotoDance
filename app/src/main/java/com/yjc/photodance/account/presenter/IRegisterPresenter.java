@@ -1,10 +1,11 @@
-package com.yjc.mytaxi.account.presenter;
+package com.yjc.photodance.account.presenter;
 
 /**
  * Created by Administrator on 2017/11/7/007.
  */
 
-public interface ISMSCodeDialogPresenter {
+public interface IRegisterPresenter {
+
     /**
      * 请求下发验证码
      * @param phone
@@ -16,7 +17,7 @@ public interface ISMSCodeDialogPresenter {
      * @param phone
      * @param smsCode
      */
-    void requestCheckSmsCode(String phone,String smsCode);
+    void requestCheckSmsCode(String phone, String smsCode);
 
     /**
      * 请求校验用户是否存在
