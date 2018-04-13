@@ -28,7 +28,7 @@ import com.yjc.photodance.account.view.LoginActivity;
 import com.yjc.photodance.common.http.api.ApiConfig;
 import com.yjc.photodance.common.http.api.PhotoApi;
 import com.yjc.photodance.util.MultiMedia;
-import com.yjc.photodance.util.SharedPreferenceDao;
+import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.model.Account;
 import com.yjc.photodance.bean.Photo;
 import com.yjc.photodance.adapter.PhotoAdapter;

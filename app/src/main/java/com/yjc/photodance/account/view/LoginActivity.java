@@ -1,158 +1,116 @@
 package com.yjc.photodance.account.view;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yjc.photodance.R;
+import com.yjc.photodance.account.model.AccountManagerImpl;
+import com.yjc.photodance.account.model.IAccountManager;
+import com.yjc.photodance.account.presenter.ILoginPresenter;
+import com.yjc.photodance.account.presenter.LoginPresenterImpl;
+import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.ui.MainActivity;
-import com.yjc.photodance.util.SharedPreferenceDao;
-import com.yjc.photodance.model.Account;
-
-import org.litepal.crud.DataSupport;
-
-import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Administrator on 2017/12/28/028.
- * todo 用户信息上传，状态保存
  */
 
 public class LoginActivity extends AppCompatActivity implements ILoginView {
 
-    private CircleImageView userHeadImage;
+//    private CircleImageView userHeadImage;
     private TextInputLayout loginUsername;
     private TextInputLayout loginPassword;
     private TextInputEditText loginUsernameEdit;
     private TextInputEditText loginPasswordEdit;
     private Button login;
     private TextView register;
-    private byte[] userHeadImageBitmap;
-    private List<Account> accounts;
+
+    private ILoginPresenter mPresenter;
+    private IAccountManager mManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        userHeadImage = findViewById(R.id.userHeadImage_login);
-        loginUsername = findViewById(R.id.login_user_name);
-        loginPassword = findViewById(R.id.login_password);
-        loginUsernameEdit = loginUsername.findViewById(R.id.login_user_name_edit);
-        loginPasswordEdit = loginPassword.findViewById(R.id.login_password_edit);
-        login = findViewById(R.id.login_btn);
-//        login.setEnabled(false);
-        register = findViewById(R.id.register);
+        initView();
 
-//        accounts = DataSupport.select("userHeadImage")
-//                .where("username = ?", "only_userHeadImage")
-//                .find(Account.class);
-//        accounts = DataSupport.findAll(Account.class);
-        Account account = DataSupport.findLast(Account.class);
-        userHeadImageBitmap = account.getUserHeadImage();
-//        userHeadImageBitmap = getIntent().getExtras().getParcelable("userHeadImageBitmap");
-        if(userHeadImageBitmap != null) {
-            userHeadImage.setImageBitmap(BitmapFactory.decodeByteArray(userHeadImageBitmap,
-                    0, userHeadImageBitmap.length));
-        }
+        mManager = new AccountManagerImpl(this);
+        mPresenter = new LoginPresenterImpl(this, mManager);
 
-        //隐藏软键盘
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        // TODO: 2018/4/13/013  密码显示开关
 
-
+        /**
+         * 注册点击事件
+         */
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RegisterDialog dialog = new RegisterDialog(LoginActivity.this,
-                        userHeadImageBitmap);
-//                dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
-//                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                RegisterDialog dialog = new RegisterDialog(LoginActivity.this);
                 dialog.show();
             }
         });
 
+        /**
+         * 登录点击事件
+         */
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String username = loginUsernameEdit.getText().toString();
                 String password = loginPasswordEdit.getText().toString();
 
-                Account account = DataSupport.findLast(Account.class);
-
-                String usernameRegistered = account.getUserName();
-                String passwordRegistered = account.getPassword();
-
-//                String usernameRegistered = SharedPreferenceDao.getInstance().
-//                        getString("username");
-//                String passwordRegistered = SharedPreferenceDao.getInstance().
-//                        getString("password");
-
-                if(username.equals(usernameRegistered) && password.equals(passwordRegistered)){
-
-                    SharedPreferenceDao.getInstance().saveBoolean("login", true);
-
-                    Account account1 = new Account();
-                    account1.setLogin(true);
-                    account1.updateAll();
-                    Intent intent = new Intent(LoginActivity.this,
-                            MainActivity.class);
-//                    intent.putExtras(getIntent().getExtras());
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(LoginActivity.this, "用户名或密码错误",
-                            Toast.LENGTH_SHORT).show();
-                }
-
-//                finish();
+                // TODO: 2018/4/13/013 上传输入的用户名和密码与数据库对比
+                mPresenter.requestLogin(username, password);
             }
         });
     }
 
+    private void initView(){
+//        userHeadImage = findViewById(R.id.userHeadImage_login);
+        loginUsername = findViewById(R.id.login_user_name);
+        loginPassword = findViewById(R.id.login_password);
+        loginUsernameEdit = loginUsername.findViewById(R.id.login_user_name_edit);
+        loginPasswordEdit = loginPassword.findViewById(R.id.login_password_edit);
+        login = findViewById(R.id.login_btn);
+        register = findViewById(R.id.register);
+    }
+
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void showUsernameOrPasswordError() {
+        ToastUtil.show(this, "用户名或密码错误，请重新输入");
+    }
+
+    @Override
+    public void showServerError() {
+        ToastUtil.show(this, "服务器繁忙，请稍后重试");
+    }
+
+    /**
+     * 登录成功跳转
+     */
+    @Override
+    public void showLoginSuc() {
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
     }
 
-    //改变background的透明度
-    public void backgroundAlpha(float bgAlpha)
-    {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = bgAlpha; //0.0-1.0
-        getWindow().setAttributes(lp);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-    }
-
-
     @Override
-    public void showLoading() {
-
+    public void showTokenValid() {
+        ToastUtil.show(this, "自动登录中...");
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
     }
 
     @Override
-    public void showError(int code, String msg) {
-
-    }
-
-    @Override
-    public void showLoginSuc() {
-
-    }
-
-    @Override
-    public void showLoginFail(int code, String msg) {
-
+    public void showTokenInvalid() {
+        ToastUtil.show(this, "登录失效，请重新登录");
     }
 }

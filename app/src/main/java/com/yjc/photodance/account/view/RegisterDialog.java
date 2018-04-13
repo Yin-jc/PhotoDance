@@ -3,6 +3,7 @@ package com.yjc.photodance.account.view;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -20,11 +21,13 @@ import android.widget.LinearLayout;
 import com.dalimao.corelibrary.VerificationCodeInput;
 import com.yjc.photodance.R;
 //import com.yjc.photodance.account.model.AccountManagerImpl;
+import com.yjc.photodance.account.model.AccountManagerImpl;
 import com.yjc.photodance.account.model.IAccountManager;
 import com.yjc.photodance.account.presenter.IRegisterPresenter;
 import com.yjc.photodance.account.presenter.RegisterPresenterImpl;
 import com.yjc.photodance.common.util.FormaUtil;
 import com.yjc.photodance.common.util.ToastUtil;
+import com.yjc.photodance.ui.MainActivity;
 
 /**
  * Created by Administrator on 2017/12/29/029.
@@ -35,43 +38,27 @@ public class RegisterDialog extends Dialog implements IRegisterView {
 
     private IRegisterPresenter mPresenter;
     private IAccountManager mManager;
-
     private LinearLayout mSetInfoLayout;
-
     private TextInputLayout mRegisterPhoneNum;
     private TextInputLayout mRegisterUsername;
     private TextInputLayout mRegisterPassword;
     private TextInputEditText mRegisterPhoneNumEdit;
     private TextInputEditText mRegisterUsernameEdit;
     private TextInputEditText mRegisterPasswordEdit;
-
     private VerificationCodeInput mVerificationCodeInput;
-
     private Button mRegister;
     private Button mGetSmsCode;
-
     private ImageView mDismiss;
-//    private byte[] userHeadImage;
-//    private SelectPicPopupWindow popupWindow;
-//    private View loginView;
     private Context mContext;
     private String mUsername;
     private String mPassword;
-//    private int height;
     private String mPhoneNumber;
-
 
     public RegisterDialog(@NonNull Context context) {
         super(context);
         mContext = context;
-    }
-
-    public RegisterDialog(@NonNull Context context, byte[] userHeadImage) {
-        super(context);
-        mContext = context;
-//        mManager = new AccountManagerImpl();
+        mManager = new AccountManagerImpl(mContext);
         mPresenter = new RegisterPresenterImpl(this, mManager);
-//        this.userHeadImage = userHeadImage;
     }
 
     public RegisterDialog(@NonNull Context context, int themeResId) {
@@ -87,20 +74,17 @@ public class RegisterDialog extends Dialog implements IRegisterView {
     private void initView(){
 
         mSetInfoLayout = findViewById(R.id.username_password);
-
         mRegisterPhoneNum = findViewById(R.id.register_phone_number);
-        mRegisterUsername = findViewById(R.id.register_user_name);
-        mRegisterPassword = findViewById(R.id.register_password);
+        mRegisterUsername = findViewById(R.id.register_set_username);
+        mRegisterPassword = findViewById(R.id.register_set_password);
         mRegisterPhoneNumEdit = mRegisterPhoneNum.findViewById(R.id.register_phone_number_edit);
-        mRegisterUsernameEdit = mRegisterUsername.findViewById(R.id.register_user_name_edit);
-        mRegisterPasswordEdit = mRegisterPassword.findViewById(R.id.register_password_edit);
-
+        mRegisterUsernameEdit = mRegisterUsername.findViewById(R.id.register_set_username_edit);
+        mRegisterPasswordEdit = mRegisterPassword.findViewById(R.id.register_set_password_edit);
         mGetSmsCode = findViewById(R.id.get_sms_code);
         mGetSmsCode.setEnabled(false);
         mRegister = findViewById(R.id.register_btn);
         mRegister.setEnabled(false);
         mDismiss = findViewById(R.id.dismiss);
-
         mVerificationCodeInput = findViewById(R.id.verificationCodeInput);
         mVerificationCodeInput.setEnabled(false);
 
@@ -124,7 +108,6 @@ public class RegisterDialog extends Dialog implements IRegisterView {
             @Override
             public void onClick(View view) {
                 requestSendSmsCode();
-                mCountDownTimer.start();
                 mVerificationCodeInput.setEnabled(true);
             }
         });
@@ -201,27 +184,12 @@ public class RegisterDialog extends Dialog implements IRegisterView {
             }
         });
 
-
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                SharedPreferenceDao.getInstance().saveBoolean("login", true);
-//
-//                Account account = new Account();
-//                account.setUserName(mUsername);
-//                account.setPassword(mPassword);
-//                account.setUserHeadImage(userHeadImage);
-//                account.setRegister(true);
-//                account.setLogin(true);
-//                account.save();
-//
-//                //删除数据库中临时的数据
-////                DataSupport.deleteAll(Account.class, "mUsername = ?", "only_userHeadImage");
-//
-//                Intent intent = new Intent(mContext, MainActivity.class);
-//                mContext.startActivity(intent);
-//                cancel();
+                // TODO: 2018/4/13/013 记录用户名密码
+                // TODO: 2018/4/13/013 注册成功后直接跳转主界面
+                mPresenter.requestRegister(mPhoneNumber, mUsername, mPassword);
             }
         });
 
@@ -231,19 +199,7 @@ public class RegisterDialog extends Dialog implements IRegisterView {
                 dismiss();
             }
         });
-
-//        userHeadImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                mDismiss();
-//                //隐藏软键盘,再执行一次会弹出软键盘
-//                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-////                popupWindow.showAtLocation(findViewById(R.id.register_dialog),
-////                        Gravity.BOTTOM, 0, 0);
-//            }
-//        });
-
+        
     }
 
     /**
@@ -279,26 +235,6 @@ public class RegisterDialog extends Dialog implements IRegisterView {
         mPresenter.requestSendSmsCode(mPhoneNumber);
     }
 
-    @Override
-    public void showLoading() {
-    }
-
-    @Override
-    public void showError(int code, String msg) {
-        switch (code){
-            case IAccountManager.SMS_SEND_FAIL:
-                ToastUtil.show(getContext(), getContext().getString(R.string.sms_send_fail));
-                break;
-            case IAccountManager.SMS_CHECK_FAIL:
-                ToastUtil.show(getContext(), getContext().getString(R.string.sms_check_fail));
-                mVerificationCodeInput.setEnabled(true);
-                break;
-            case IAccountManager.SERVER_FAIL:
-                ToastUtil.show(getContext(), getContext().getString(R.string.error_server));
-                break;
-        }
-    }
-
     /**
      * 检查手机号码是否合法
      */
@@ -311,6 +247,10 @@ public class RegisterDialog extends Dialog implements IRegisterView {
         }
     }
 
+    @Override
+    public void showCountDownTimer() {
+        mCountDownTimer.start();
+    }
 
     @Override
     public void showSmsCodeCheckState(boolean suc) {
@@ -320,23 +260,34 @@ public class RegisterDialog extends Dialog implements IRegisterView {
             mVerificationCodeInput.setEnabled(true);
 //            mLoading.setVisibility(View.GONE);
         }else {
+            //显示设置用户名密码UI
             mVerificationCodeInput.setVisibility(View.GONE);
             mGetSmsCode.setVisibility(View.GONE);
             mRegisterPhoneNum.setVisibility(View.GONE);
             mSetInfoLayout.setVisibility(View.VISIBLE);
+            mRegister.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void showUserExist(boolean exist) {
-//        mLoading.setVisibility(View.GONE);
-//        mErrorView.setVisibility(View.GONE);
+
         if(!exist){
             //用户不存在，开始注册
             mGetSmsCode.setEnabled(true);
         }else {
-            //  用户存在，进入登录
+            //  用户存在，进入登录，需要用户自行关闭dialog
             ToastUtil.show(getContext(), "手机号码已注册，请直接登录");
         }
+    }
+
+    @Override
+    public void showRegisterSuc() {
+        mContext.startActivity(new Intent(mContext, MainActivity.class));
+    }
+
+    @Override
+    public void showServerError() {
+        ToastUtil.show(mContext, "服务器繁忙，请稍后重试");
     }
 }

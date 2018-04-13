@@ -28,10 +28,9 @@ public class RegisterPresenterImpl implements IRegisterPresenter{
         public void handleMessage(Message msg) {
             RegisterPresenterImpl presenter=refContext.get();
             switch (msg.what){
-                // TODO: 2018/4/12/012 验证码发送成功
-//                case IAccountManager.SMS_SEND_SUC:
-//                    presenter.view.showCountDownTimer();
-//                    break;
+                case IAccountManager.SMS_SEND_SUC:
+                    presenter.view.showCountDownTimer();
+                    break;
                 case IAccountManager.SMS_SEND_FAIL:
                     presenter.view.showError(IAccountManager.SMS_SEND_FAIL,"");
                     break;
@@ -47,6 +46,10 @@ public class RegisterPresenterImpl implements IRegisterPresenter{
                 case IAccountManager.USER_NOT_EXIST:
                     presenter.view.showUserExist(false);
                     break;
+                case IAccountManager.REGISTER_SUC:
+                    presenter.view.showRegisterSuc();
+                default:
+                    break;
             }
         }
     }
@@ -55,7 +58,7 @@ public class RegisterPresenterImpl implements IRegisterPresenter{
                                  IAccountManager accountManager) {
         this.view = view;
         this.accountManager = accountManager;
-//        accountManager.setHandler(MyHandler(this));
+        accountManager.setHandler(new MyHandler(this));
     }
 
     /**
@@ -84,5 +87,10 @@ public class RegisterPresenterImpl implements IRegisterPresenter{
     @Override
     public void requestCheckUserExist(String phone) {
         accountManager.checkUserExist(phone);
+    }
+
+    @Override
+    public void requestRegister(String phoneNumber, String username, String password) {
+        accountManager.register(phoneNumber, username, password);
     }
 }

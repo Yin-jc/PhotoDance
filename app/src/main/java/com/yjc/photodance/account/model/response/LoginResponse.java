@@ -1,6 +1,5 @@
 package com.yjc.photodance.account.model.response;
 
-import com.yjc.photodance.account.model.bean.Account;
 import com.yjc.photodance.common.http.biz.BaseBizResponse;
 
 /**

@@ -1,5 +1,7 @@
 package com.yjc.photodance.account.model;
 
+import android.os.Handler;
+
 /**
  * Created by Administrator on 2017/11/7/007.
  * 账号相关业务逻辑的抽象
@@ -8,7 +10,7 @@ package com.yjc.photodance.account.model;
 public interface IAccountManager {
 
     //服务器错误
-    int SERVER_FAIL=-999;
+    int SERVER_FAIL = -999;
     //验证码发送成功
     int SMS_SEND_SUC = 1;
     //验证码发送失败
@@ -22,13 +24,15 @@ public interface IAccountManager {
     //用户不存在
     int USER_NOT_EXIST = -3;
     //注册成功
-    int REGISTER_SUC=4;
+    int REGISTER_SUC = 4;
     //登录成功
-    int LOGIN_SUC=5;
+    int LOGIN_SUC = 5;
+    //登录有效
+    int TOKEN_VALID = 6;
     //登录过期
-    int TOKEN_INVALID=-6;
-    //密码错误
-    int PW_ERROR=-7;
+    int TOKEN_INVALID = -6;
+    //用户名或密码错误
+    int UN_OR_PW_ERROR = -7;
 
     /**
      * 下发验证码
@@ -51,17 +55,17 @@ public interface IAccountManager {
 
     /**
      * 注册
-     * @param phone
+     * @param username
      * @param password
      */
-    void register(String phone, String password);
+    void register(String phoneNumber, String username, String password);
 
     /**
      * 登录
-     * @param phone
+     * @param username
      * @param password
      */
-    void login(String phone, String password);
+    void login(String username, String password);
 
     /**
      * token登录
@@ -72,7 +76,7 @@ public interface IAccountManager {
      * 是否登录
      * @return
      */
-    boolean isLogin();
+    void isLogin();
 
-    void setHandler();
+    void setHandler(Handler mHandler);
 }

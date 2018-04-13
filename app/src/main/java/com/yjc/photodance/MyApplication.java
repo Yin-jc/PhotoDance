@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Typeface;
 
-import com.yjc.photodance.util.SharedPreferenceDao;
+import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.model.Account;
 
 import org.litepal.LitePal;
@@ -13,8 +13,6 @@ import org.litepal.tablemanager.Connector;
 import java.lang.reflect.Field;
 
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobSMS;
-import cn.bmob.v3.BmobUser;
 
 /**
  * Created by Administrator on 2017/12/29/029.

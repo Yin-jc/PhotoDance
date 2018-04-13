@@ -1,4 +1,4 @@
-package com.yjc.photodance.util;
+package com.yjc.photodance.common.storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;

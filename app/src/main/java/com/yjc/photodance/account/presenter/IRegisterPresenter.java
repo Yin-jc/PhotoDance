@@ -24,4 +24,11 @@ public interface IRegisterPresenter {
      * @param phone
      */
     void requestCheckUserExist(String phone);
+
+    /**
+     * 请求登录
+     * @param username
+     * @param password
+     */
+    void requestRegister(String phoneNumber, String username, String password);
 }
