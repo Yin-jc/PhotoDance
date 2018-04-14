@@ -19,8 +19,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.yjc.photodance.account.view.LoginActivity;
-import com.yjc.photodance.util.HandleBitmap;
-//import com.yjc.photodance.util.HandleBitmap;
+import com.yjc.photodance.common.util.HandleBitmap;
+//import com.yjc.photodance.common.util.HandleBitmap;
 import com.yjc.photodance.model.Account;
 import com.yjc.photodance.R;
 import com.yjc.photodance.MyApplication;

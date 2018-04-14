@@ -1,29 +1,23 @@
 package com.yjc.photodance.splash;
 
 import android.Manifest;
-import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.yjc.photodance.account.view.LoginActivity;
-import com.yjc.photodance.common.storage.SharedPreferenceDao;
-import com.yjc.photodance.model.Account;
 import com.yjc.photodance.R;
-import com.yjc.photodance.ui.MainActivity;
-import com.yjc.photodance.ui.SelectUserHeadImageActivity;
-
-import org.litepal.crud.DataSupport;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/12/28/028.
@@ -31,75 +25,104 @@ import java.util.List;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private boolean isLogin;
-    private boolean isLogin_pref;
-    private boolean isRegister;
+    private static final int MY_PERMISSION_REQUEST_CODE = 10000;
 
-    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE};
+    private String[] permissions = new String[]{Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        //Android 6.0及以上动态获取权限
-//        if(Build.VERSION.SDK_INT >= 23) {
-//            for (int i = 0; i < permissions.length; i++) {
-//                if (ContextCompat.checkSelfPermission(SplashActivity.this, permissions[i])
-//                        != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(SplashActivity.this,
-//                            permissions,1);
-//                }else {
-//                    //此分支为用户已授予权限后再次打开应用，直接启动
-//                    gotoLoginOrMainActivity();
-//                }
-//            }
-//        }
+        if (Build.VERSION.SDK_INT >= 23) {
 
-//        if(Build.VERSION.SDK_INT >= 23){
-//            if(ContextCompat.checkSelfPermission(SplashActivity.this,
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-//                ActivityCompat.requestPermissions(SplashActivity.this,
-//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-//            }else {
-//                gotoLoginOrMainActivity();
-//            }
-//        }
+            /**
+             * 第 1 步: 检查是否有相应的权限
+             */
+            boolean isAllGranted = checkPermissionAllGranted(permissions);
 
+            // 如果权限全都拥有, 则直接进入LoginActivity
+            if (isAllGranted) {
+                gotoLoginActivity();
+                return;
+            }
+
+            /**
+             * 第 2 步: 请求权限
+             */
+            // 一次请求多个权限, 如果其他有权限是已经授予的将会自动忽略掉
+            ActivityCompat.requestPermissions(this, permissions, MY_PERMISSION_REQUEST_CODE);
+        }
     }
 
+    /**
+     * 检查是否拥有指定的所有权限
+     */
+    private boolean checkPermissionAllGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) !=
+                    PackageManager.PERMISSION_GRANTED) {
+                // 只要有一个权限没有被授予, 则直接返回 false
+                return false;
+            }
+        }
+        return true;
+    }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        switch (requestCode){
-////            case 1:
-////                for (int i=0; i < permissions.length; i++){
-////                    if(grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-////
-////                    }else {
-////                        //只要拒绝其中一个权限就退出应用
-////                        finish();
-////                    }
-////                    gotoLoginOrMainActivity();
-////                }
-////
-////
-////                break;
-//            case 1:
-//                if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                    gotoLoginOrMainActivity();
-//                }else {
-//                    finish();
-//                }
-//                break;
-//
-//            default:
-//                break;
-//        }
-//    }
+    /**
+     * 第 3 步: 申请权限结果返回处理
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-    private void gotoLoginOrMainActivity(){
+        if (requestCode == MY_PERMISSION_REQUEST_CODE) {
+            boolean isAllGranted = true;
+
+            // 判断是否所有的权限都已经授予了
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    isAllGranted = false;
+                    break;//跳出for循环
+                }
+            }
+
+            if (isAllGranted) {
+                // 如果所有的权限都授予了, 则执行备份代码
+                gotoLoginActivity();
+            } else {
+                // 弹出对话框告诉用户需要权限的原因, 并引导用户去应用权限管理中手动打开权限按钮
+                openAppDetails();
+            }
+        }
+    }
+
+    /**
+     * 打开 APP 的详情设置
+     */
+    private void openAppDetails() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("APP需要访问外部存储器等权限，请到 “应用信息 -> 权限” 中授予！");
+        builder.setPositiveButton("去手动授权", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
+
+    private void gotoLoginActivity(){
         /**
          * 延时3s加载跳转主界面
          */

@@ -32,13 +32,13 @@ public class RegisterPresenterImpl implements IRegisterPresenter{
                     presenter.view.showCountDownTimer();
                     break;
                 case IAccountManager.SMS_SEND_FAIL:
-                    presenter.view.showError(IAccountManager.SMS_SEND_FAIL,"");
+                    presenter.view.showServerError();
                     break;
                 case IAccountManager.SMS_CHECK_SUC:
                     presenter.view.showSmsCodeCheckState(true);
                     break;
                 case IAccountManager.SMS_CHECK_FAIL:
-                    presenter.view.showError(IAccountManager.SMS_CHECK_FAIL,"");
+                    presenter.view.showServerError();
                     break;
                 case IAccountManager.USER_EXIST:
                     presenter.view.showUserExist(true);

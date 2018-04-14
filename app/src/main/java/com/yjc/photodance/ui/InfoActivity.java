@@ -1,7 +1,6 @@
 package com.yjc.photodance.ui;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.yjc.photodance.R;
+import com.yjc.photodance.main.view.MainActivity;
 
 /**
  * Created by Administrator on 2018/1/6/006.

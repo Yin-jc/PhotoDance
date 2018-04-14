@@ -1,4 +1,4 @@
-package com.yjc.photodance.util;
+package com.yjc.photodance.common.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

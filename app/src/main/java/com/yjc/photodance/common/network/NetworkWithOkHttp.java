@@ -1,4 +1,4 @@
-package com.yjc.photodance.network;
+package com.yjc.photodance.common.network;
 
 import android.util.Log;
 

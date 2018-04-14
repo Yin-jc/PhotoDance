@@ -1,4 +1,4 @@
-package com.yjc.photodance.ui;
+package com.yjc.photodance.main.view;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,12 +27,13 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.account.view.LoginActivity;
 import com.yjc.photodance.common.http.api.ApiConfig;
 import com.yjc.photodance.common.http.api.PhotoApi;
-import com.yjc.photodance.util.MultiMedia;
-import com.yjc.photodance.common.storage.SharedPreferenceDao;
+import com.yjc.photodance.ui.CollectionsActivity;
+import com.yjc.photodance.ui.InfoActivity;
+import com.yjc.photodance.common.util.MultiMedia;
 import com.yjc.photodance.model.Account;
 import com.yjc.photodance.bean.Photo;
 import com.yjc.photodance.adapter.PhotoAdapter;
-import com.yjc.photodance.network.RetrofitServiceManager;
+import com.yjc.photodance.common.network.RetrofitServiceManager;
 
 import org.litepal.crud.DataSupport;
 
@@ -76,17 +77,17 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
 //        2s后将设置为未登录状态
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                    SharedPreferenceDao.getInstance().saveBoolean("Login", false);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(2000);
+//                    SharedPreferenceDao.getInstance().saveBoolean("Login", false);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -209,7 +210,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/方正华隶.ttf");
     }
 
     /**
@@ -238,7 +238,6 @@ public class MainActivity extends AppCompatActivity{
                     adapter.notifyDataSetChanged();
                 }
                 Log.d("MainActivity", "onNext");
-//                Log.d("MainActivity", data.photos.get(0).id);
             }
 
             @Override

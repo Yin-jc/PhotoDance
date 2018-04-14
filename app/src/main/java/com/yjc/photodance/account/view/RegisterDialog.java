@@ -1,7 +1,6 @@
 package com.yjc.photodance.account.view;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +26,7 @@ import com.yjc.photodance.account.presenter.IRegisterPresenter;
 import com.yjc.photodance.account.presenter.RegisterPresenterImpl;
 import com.yjc.photodance.common.util.FormaUtil;
 import com.yjc.photodance.common.util.ToastUtil;
-import com.yjc.photodance.ui.MainActivity;
+import com.yjc.photodance.main.view.MainActivity;
 
 /**
  * Created by Administrator on 2017/12/29/029.
@@ -107,8 +106,8 @@ public class RegisterDialog extends Dialog implements IRegisterView {
         mGetSmsCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestSendSmsCode();
-                mVerificationCodeInput.setEnabled(true);
+                    requestSendSmsCode();
+                    mVerificationCodeInput.setEnabled(true);
             }
         });
 
@@ -134,10 +133,12 @@ public class RegisterDialog extends Dialog implements IRegisterView {
             @Override
             public void afterTextChanged(Editable editable) {
                 mPhoneNumber= mRegisterPhoneNumEdit.getText().toString();
-                //检查输入的手机号是否合法
-                check(mPhoneNumber);
-                //检查手机号是否已经存在
-                mPresenter.requestCheckUserExist(mPhoneNumber);
+                if(mPhoneNumber.length() == 11){
+                    boolean isLegal = check(mPhoneNumber);
+                    if(isLegal){
+                        mPresenter.requestCheckUserExist(mPhoneNumber);
+                    }
+                }
             }
         });
 
@@ -238,13 +239,13 @@ public class RegisterDialog extends Dialog implements IRegisterView {
     /**
      * 检查手机号码是否合法
      */
-    private void check(String phoneNumber) {
+    private boolean check(String phoneNumber) {
         boolean legal= FormaUtil.checkMobile(phoneNumber);
         if(!legal) {
             ToastUtil.show(getContext(), "非法手机号码，请重新输入");
-        }else {
-            mGetSmsCode.setEnabled(true);
+            return false;
         }
+        return true;
     }
 
     @Override
@@ -256,9 +257,8 @@ public class RegisterDialog extends Dialog implements IRegisterView {
     public void showSmsCodeCheckState(boolean suc) {
         if(!suc){
             //提示验证码错误
-//            mErrorView.setVisibility(View.VISIBLE);
             mVerificationCodeInput.setEnabled(true);
-//            mLoading.setVisibility(View.GONE);
+            ToastUtil.show(mContext, "验证码错误，请重新输入");
         }else {
             //显示设置用户名密码UI
             mVerificationCodeInput.setVisibility(View.GONE);

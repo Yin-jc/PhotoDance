@@ -33,6 +33,8 @@ public interface IAccountManager {
     int TOKEN_INVALID = -6;
     //用户名或密码错误
     int UN_OR_PW_ERROR = -7;
+    //未登录
+    int NO_LOGIN = -8;
 
     /**
      * 下发验证码

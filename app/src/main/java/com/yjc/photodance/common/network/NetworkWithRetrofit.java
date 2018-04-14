@@ -1,4 +1,4 @@
-package com.yjc.photodance.network;
+package com.yjc.photodance.common.network;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.yjc.photodance.common.http.api.ApiConfig;

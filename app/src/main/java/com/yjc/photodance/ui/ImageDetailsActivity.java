@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.yjc.photodance.MyApplication;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.storage.SharedPreferenceDao;
+import com.yjc.photodance.main.view.MainActivity;
 import com.yjc.photodance.model.Details;
 
 import de.hdodenhof.circleimageview.CircleImageView;

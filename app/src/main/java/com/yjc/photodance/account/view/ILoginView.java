@@ -31,4 +31,9 @@ public interface ILoginView {
      */
     void showTokenInvalid();
 
+    /**
+     * 显示未登录
+     */
+    void showNoLogin();
+
 }

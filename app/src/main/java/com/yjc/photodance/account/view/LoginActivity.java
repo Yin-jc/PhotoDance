@@ -16,7 +16,7 @@ import com.yjc.photodance.account.model.IAccountManager;
 import com.yjc.photodance.account.presenter.ILoginPresenter;
 import com.yjc.photodance.account.presenter.LoginPresenterImpl;
 import com.yjc.photodance.common.util.ToastUtil;
-import com.yjc.photodance.ui.MainActivity;
+import com.yjc.photodance.main.view.MainActivity;
 
 /**
  * Created by Administrator on 2017/12/28/028.
@@ -46,6 +46,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         mPresenter = new LoginPresenterImpl(this, mManager);
 
         // TODO: 2018/4/13/013  密码显示开关
+
+        mPresenter.isLogin();
 
         /**
          * 注册点击事件
@@ -112,5 +114,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     @Override
     public void showTokenInvalid() {
         ToastUtil.show(this, "登录失效，请重新登录");
+    }
+
+    @Override
+    public void showNoLogin() {
+        //检测到未登录则不做任何操作
+        return;
     }
 }

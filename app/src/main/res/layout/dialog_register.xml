@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_below="@+id/phone_number_sms_code"
-        ver:box="4"
+        ver:box="6"
         ver:child_h_padding="5dp"
         android:layout_centerInParent="true"
         android:layout_marginBottom="16dp" />
@@ -101,7 +101,7 @@
                 android:id="@+id/register_set_password_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/register_set_username"
+                android:hint="@string/register_set_password"
                 android:textColorHint="@color/color_red"
                 android:textColor="@color/color_black"
                 android:inputType="textPassword"/>

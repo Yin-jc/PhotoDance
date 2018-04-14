@@ -12,8 +12,8 @@ import android.widget.ImageView;
 
 import com.yjc.photodance.MyApplication;
 import com.yjc.photodance.R;
-import com.yjc.photodance.adapter.PhotoAdapter;
 import com.yjc.photodance.adapter.PhotoAdapterForCollections;
+import com.yjc.photodance.main.view.MainActivity;
 
 /**
  * Created by Administrator on 2018/1/7/007.

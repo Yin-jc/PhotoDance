@@ -9,14 +9,18 @@ import com.yjc.photodance.common.storage.SharedPreferenceDao;
 
 import java.util.List;
 
-import cn.bmob.newsmssdk.exception.BmobException;
-import cn.bmob.newsmssdk.listener.RequestSMSCodeListener;
+//import cn.bmob.newsmssdk.exception.BmobException;
+//import cn.bmob.newsmssdk.listener.RequestSMSCodeListener;
 //import cn.bmob.v3.BmobSMS;
-import cn.bmob.newsmssdk.BmobSMS;
-import cn.bmob.newsmssdk.listener.VerifySMSCodeListener;
+//import cn.bmob.newsmssdk.BmobSMS;
+//import cn.bmob.newsmssdk.listener.VerifySMSCodeListener;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobSMS;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 //import com.yjc.mytaxi.MyTaxiApplication;
 //import com.yjc.mytaxi.account.model.bean.Account;
 //import com.yjc.mytaxi.account.model.response.LoginResponse;
@@ -58,8 +62,8 @@ public class AccountManagerImpl implements IAccountManager {
     @Override
     public void fetchSMSCode(final String phoneNumber) {
 
-        BmobSMS.requestSMSCode(mContext, phoneNumber, "Yjc",
-                new RequestSMSCodeListener() {
+        BmobSMS.requestSMSCode(phoneNumber, "Yjc",
+                new QueryListener<Integer>() {
                     @Override
                     public void done(Integer smsId, BmobException e) {
                         if(e == null){//验证码发送成功
@@ -81,7 +85,7 @@ public class AccountManagerImpl implements IAccountManager {
     @Override
     public void checkSMSCode(final String phoneNumber, final String smsCode) {
 
-        BmobSMS.verifySmsCode(mContext, phoneNumber, smsCode, new VerifySMSCodeListener() {
+        BmobSMS.verifySmsCode(phoneNumber, smsCode, new UpdateListener() {
             @Override
             public void done(BmobException e) {
                 if(e==null){//短信验证码已验证成功
@@ -109,11 +113,11 @@ public class AccountManagerImpl implements IAccountManager {
         bmobQuery.findObjects(new FindListener<User>() {
             @Override
             public void done(List<User> users, cn.bmob.v3.exception.BmobException e) {
-                if(e == null){//查询成功，即用户存在
+                if(!users.isEmpty()){//查询成功，即用户存在
                     Log.i("bmob", "用户已存在");
                     mHandler.sendEmptyMessage(IAccountManager.USER_EXIST);
                 }else {//查询失败，即用户不存在
-                    Log.i("bmob", "用户不存在" + e.getMessage());
+                    Log.i("bmob", "用户不存在");
                     mHandler.sendEmptyMessage(IAccountManager.USER_NOT_EXIST);
                 }
             }
@@ -198,7 +202,9 @@ public class AccountManagerImpl implements IAccountManager {
             }
         }else {
             //未登录
+            mHandler.sendEmptyMessage(NO_LOGIN);
         }
+
     }
 
     @Override

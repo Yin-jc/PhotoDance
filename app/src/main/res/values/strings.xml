@@ -14,6 +14,7 @@
     <string name="please_register">没有账户？请先注册</string>
     <string name="register_phone_number">请输入手机号码</string>
     <string name="register_set_username">请输入用户名</string>
+    <string name="register_set_password">请输入密码</string>
     <string name="text_select_user_head_image">请设置您的头像</string>
     <string name="text_next"><![CDATA[下一步]]></string>
     <string name="get_sms_code">点击获取短信验证码</string>

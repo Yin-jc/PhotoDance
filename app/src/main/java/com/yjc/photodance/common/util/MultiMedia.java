@@ -1,4 +1,4 @@
-package com.yjc.photodance.util;
+package com.yjc.photodance.common.util;
 
 import android.content.Context;
 import android.content.Intent;

@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 
 /**
  * Created by Administrator on 2018/4/13/013.
+ * todo eventBus
  */
 
 public class LoginPresenterImpl implements ILoginPresenter {
@@ -20,6 +21,16 @@ public class LoginPresenterImpl implements ILoginPresenter {
     @Override
     public void requestLogin(String username, String password) {
         accountManager.login(username, password);
+    }
+
+    @Override
+    public void requestLoginByToken() {
+        accountManager.loginByToken();
+    }
+
+    @Override
+    public void isLogin() {
+        accountManager.isLogin();
     }
 
     private static class MyHandler extends Handler {
@@ -48,6 +59,8 @@ public class LoginPresenterImpl implements ILoginPresenter {
                 case IAccountManager.TOKEN_INVALID:
                     presenter.view.showTokenInvalid();
                     break;
+                case IAccountManager.NO_LOGIN:
+                    presenter.view.showNoLogin();
                 default:
                     break;
             }
