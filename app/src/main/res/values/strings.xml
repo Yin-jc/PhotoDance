@@ -23,4 +23,8 @@
     <string name="token_invalid">登录过期</string>
     <string name="sms_check_fail">验证码错误</string>
     <string name="error_server"> 服务器繁忙 </string>
+    <string name="nav_photo">图片</string>
+    <string name="nav_live">直播</string>
+    <string name="nav_message">消息</string>
+    <string name="nav_short_video">短视频</string>
 </resources>

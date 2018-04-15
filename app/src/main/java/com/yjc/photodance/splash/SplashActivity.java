@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.yjc.photodance.account.view.LoginActivity;
 import com.yjc.photodance.R;
+import com.yjc.photodance.main.view.MainActivity;
 
 /**
  * Created by Administrator on 2017/12/28/028.
@@ -129,7 +130,8 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+//                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
                 //结束此Activity
                 finish();
             }

@@ -50,6 +50,7 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4'
     //没有使用特殊Header，可以不加这行
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4'
+
     //一个开源gif控件
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
     implementation 'com.melnykov:floatingactionbutton:1.3.0'
@@ -59,4 +60,7 @@ dependencies {
     implementation 'com.github.liuguangli:VerificationCodeInput:1.5'
 
     implementation 'cn.bmob.android:bmob-sdk:3.6.0'
+
+    //底部导航栏
+    implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
 }

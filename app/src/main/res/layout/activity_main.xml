@@ -1,122 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appBarLayout"
+        <!--<com.scwang.smartrefresh.header.DropboxHeader-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="100dp" />-->
+
+        <pl.droidsonroids.gif.GifImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="180dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/gif2"/>
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@color/color_white"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                    app:popupTheme="@style/Theme.AppCompat.Light"
-                    app:layout_scrollFlags="scroll|enterAlways|snap">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/personal_center"
-                            android:layout_width="30dp"
-                            android:layout_height="?attr/actionBarSize"
-                            android:layout_alignParentStart="true"
-                            android:src="@drawable/add_user"
-                            android:focusable="true"
-                            android:clickable="true"/>
-
-                        <TextView
-                            android:id="@+id/title_main"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:text="@string/app_name"
-                            android:textStyle="bold"
-                            android:textColor="@color/color_black"
-                            android:textSize="@dimen/text_size_large"/>
-
-                        <ImageView
-                            android:id="@+id/take_photo"
-                            android:layout_width="30dp"
-                            android:layout_height="?attr/actionBarSize"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="15dp"
-                            android:src="@drawable/take_photo"
-                            android:focusable="true"
-                            android:clickable="true"/>
-
-                    </RelativeLayout>
-
-                </android.support.v7.widget.Toolbar>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/refresh_layout"
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_height="match_parent">
+        </FrameLayout>
 
-            <!--<com.scwang.smartrefresh.header.DropboxHeader-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="100dp" />-->
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/recycler_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
 
-            <pl.droidsonroids.gif.GifImageView
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/gif2"/>
+        <!--</android.support.v7.widget.RecyclerView>-->
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <com.scwang.smartrefresh.layout.footer.BallPulseFooter
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:srlAccentColor="@color/color_blue">
 
-            </android.support.v7.widget.RecyclerView>
+        </com.scwang.smartrefresh.layout.footer.BallPulseFooter>
 
-            <com.scwang.smartrefresh.layout.footer.BallPulseFooter
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                app:srlAccentColor="@color/color_blue">
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-            </com.scwang.smartrefresh.layout.footer.BallPulseFooter>
-
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="15dp"
-            app:backgroundTint="@color/color_blue"
-            android:src="@drawable/up"/>
-
-    </android.support.design.widget.CoordinatorLayout>
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
 
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="400dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@drawable/shape_gradient_4"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/navigation">
+    </com.aurelhubert.ahbottomnavigation.AHBottomNavigation>
+</android.support.design.widget.CoordinatorLayout>
 
-    </android.support.design.widget.NavigationView>
-
-</android.support.v4.widget.DrawerLayout>
