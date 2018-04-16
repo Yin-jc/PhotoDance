@@ -11,4 +11,10 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <TextView
+        android:layout_below="@+id/short_video_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="shortVideo"/>
+
 </RelativeLayout>

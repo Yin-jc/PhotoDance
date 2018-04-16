@@ -22,9 +22,20 @@ public class PhotoFragment extends BaseFragment {
     private RecyclerView photoRecycler;
     private PhotoAdapter adapter;
 
+    public PhotoFragment(PhotoAdapter adapter){
+        this.adapter = adapter;
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_photo;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -37,10 +48,7 @@ public class PhotoFragment extends BaseFragment {
         StaggeredGridLayoutManager layoutManager = new
                 StaggeredGridLayoutManager(3,
                 StaggeredGridLayoutManager.VERTICAL);
-        //StaggeredGridLayoutManager设置空隙处理方式为 不处理
-//        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         photoRecycler.setLayoutManager(layoutManager);
-        adapter = new PhotoAdapter(getContext());
         photoRecycler.setAdapter(adapter);
     }
 }

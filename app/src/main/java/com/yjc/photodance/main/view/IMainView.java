@@ -6,4 +6,5 @@ package com.yjc.photodance.main.view;
 
 public interface IMainView {
 
+
 }

@@ -40,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity{
     private ImageView takePhoto;
     private DrawerLayout drawer;
     private NavigationView navigation;
-    private FloatingActionButton fab;
+//    private FloatingActionButton fab;
     private CircleImageView userHeadImage;
     private Bitmap userHeadImageBitmap;
     private ViewGroup contentView;
@@ -129,13 +129,13 @@ public abstract class BaseActivity extends AppCompatActivity{
             }
         });
 
-        //悬浮按钮的点击事件处理
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: 2018/1/6/006 回到顶部
-            }
-        });
+//        //悬浮按钮的点击事件处理
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // TODO: 2018/1/6/006 回到顶部
+//            }
+//        });
     }
 
     /**
@@ -148,7 +148,7 @@ public abstract class BaseActivity extends AppCompatActivity{
 //        takePhoto=findViewById(R.id.take_photo);
         drawer=findViewById(R.id.drawer_layout);
         navigation=findViewById(R.id.nav_view);
-        fab = findViewById(R.id.btn_up);
+//        fab = findViewById(R.id.btn_up);
     }
 
     /**
