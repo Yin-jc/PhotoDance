@@ -16,6 +16,13 @@ public interface IMainModel {
      */
     void getPhoto(PhotoAdapter adapter ,int page, int size);
 
+    /**
+     * 通过搜索请求照片
+     * @param search
+     * @param adapter
+     */
+    void getPhotoBySearch(PhotoAdapter adapter, String search);
+
     void getShortVideo();
 
     void getLive();

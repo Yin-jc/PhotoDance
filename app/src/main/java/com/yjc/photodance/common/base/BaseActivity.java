@@ -12,8 +12,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -28,6 +30,8 @@ import com.yjc.photodance.ui.InfoActivity;
 
 import org.litepal.crud.DataSupport;
 
+import java.lang.reflect.Field;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -36,58 +40,22 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public abstract class BaseActivity extends AppCompatActivity{
 
-    private CircleImageView personalCenter;
-    private ImageView takePhoto;
-    private DrawerLayout drawer;
-    private NavigationView navigation;
-//    private FloatingActionButton fab;
-    private CircleImageView userHeadImage;
-    private Bitmap userHeadImageBitmap;
+
+    protected DrawerLayout drawer;
+    protected NavigationView navigation;
     private ViewGroup contentView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-
-        initToolbar();
-    }
-
-    /**
-     * 初始化Toolbar
-     */
-    public void initToolbar() {
-        Toolbar toolbar=findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
     }
 
     /**
      * 初始化监听器
      */
     public void initListener(){
-//        takePhoto.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //拍照
-//                MultiMedia.takePhoto();
-//            }
-//        });
-
-//        personalCenter.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //打开侧滑菜单
-//                drawer.openDrawer(GravityCompat.START);
-//            }
-//        });
-
-        //必须要现获取header
-        View headerView = navigation.getHeaderView(0);
-        //头部图片
-        userHeadImage = headerView.findViewById(R.id.userHeadImage);
-        userHeadImage.setImageBitmap(userHeadImageBitmap);
-
-        //navigation item点击事件
+        //drawer_navigation item点击事件
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -128,14 +96,6 @@ public abstract class BaseActivity extends AppCompatActivity{
                 return true;
             }
         });
-
-//        //悬浮按钮的点击事件处理
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // TODO: 2018/1/6/006 回到顶部
-//            }
-//        });
     }
 
     /**
@@ -144,11 +104,8 @@ public abstract class BaseActivity extends AppCompatActivity{
     public void initView(){
         contentView = findViewById(R.id.content_view);
         contentView.addView(View.inflate(this, getContentView(), null));
-        personalCenter=findViewById(R.id.personal_center);
-//        takePhoto=findViewById(R.id.take_photo);
         drawer=findViewById(R.id.drawer_layout);
         navigation=findViewById(R.id.nav_view);
-//        fab = findViewById(R.id.btn_up);
     }
 
     /**
@@ -161,12 +118,21 @@ public abstract class BaseActivity extends AppCompatActivity{
      * 初始化数据
      */
     public void initData(){
-        // TODO: 2018/4/15/015 头像处理
-        //获取头像
-//        account = DataSupport.findLast(Account.class);
-//        Bitmap userHeadImageBitmap = BitmapFactory.decodeByteArray(account.getUserHeadImage(),
-//                0, account.getUserHeadImage().length);
-        personalCenter.setImageBitmap(userHeadImageBitmap);
+
     }
+
+//    private void makeActionOverflowMenuShown() {
+//        //devices with hardware menu button (e.g. Samsung Note) don't show action overflow menu
+//        try {
+//            ViewConfiguration config = ViewConfiguration.get(this);
+//            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+//            if (menuKeyField != null) {
+//                menuKeyField.setAccessible(true);
+//                menuKeyField.setBoolean(config, false);
+//            }
+//        } catch (Exception e) {
+//
+//        }
+//    }
 
 }

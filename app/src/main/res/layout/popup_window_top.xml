@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/top_take_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_button_shape"
+        android:text="@string/take_photo"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/text_size_large"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <Button
+        android:id="@+id/top_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_button_shape"
+        android:text="@string/select_from_photo_album"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/text_size_large"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <Button
+        android:id="@+id/top_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_button_shape"
+        android:text="@string/cancel"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/text_size_large"/>
+
+
+
+</LinearLayout>

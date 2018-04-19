@@ -28,9 +28,14 @@ public interface PhotoApi {
     //https://api.unsplash.com/photos/?client_id=0535d74bb5e01f81938fc7e4156e801f9d06cebb3117b9e207ee5ff5d3f66abd
 
     @GET("photos")
-    Observable<List<Photo>> getPhotoData(@Query("client_id") String client_id,
+    Observable<List<Photo>> getPhotos(@Query("client_id") String client_id,
                                        @Query("page") String page,
                                        @Query("per_page") String per_page);
+
+    @GET("search/photos")
+    Observable<List<Photo>> getPhotosBySearch(@Query("client_id") String client_id,
+                                              @Query("query") String query);
+
 
 //    @GET("/photos")
 //    Observable<List<Photo>> getPhotoData(@Query("client_id") String client_id);

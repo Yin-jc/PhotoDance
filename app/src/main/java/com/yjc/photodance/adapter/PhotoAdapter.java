@@ -145,16 +145,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        int count = 0;
-//        if (mPhotos != null) {
-//            if (mPhotos.get(page++) == null) {
-//                Log.d("Adapter", "0");
-//                return 0;
-//            }
-//            return mPhotos.get(page++).size();
-//        }
-//        return 0;
-//
         return mPhotos.size();
     }
 

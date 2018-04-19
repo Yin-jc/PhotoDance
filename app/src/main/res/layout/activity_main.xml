@@ -6,15 +6,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/color_white"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/Theme.AppCompat.Light"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/personal_center"
+                    android:layout_width="30dp"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/personal_center"
+                    android:focusable="true"
+                    android:clickable="true"/>
+
+                <TextView
+                    android:id="@+id/title_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/app_name"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/text_size_large"/>
+
+                <ImageView
+                    android:id="@+id/search"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/search"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_centerInParent="true"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!--<com.scwang.smartrefresh.header.DropboxHeader-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="100dp" />-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp" />-->
 
         <pl.droidsonroids.gif.GifImageView
             android:layout_width="match_parent"
@@ -28,13 +81,6 @@
             android:layout_height="wrap_content">
         </FrameLayout>
 
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/recycler_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent">-->
-
-        <!--</android.support.v7.widget.RecyclerView>-->
-
         <com.scwang.smartrefresh.layout.footer.BallPulseFooter
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -44,6 +90,18 @@
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/btn_up"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_marginRight="30dp"-->
+    <!--app:backgroundTint="@color/color_blue"-->
+    <!--android:src="@drawable/up"/>-->
+
+
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -51,5 +109,6 @@
         android:layout_gravity="bottom">
 
     </com.aurelhubert.ahbottomnavigation.AHBottomNavigation>
+
 </android.support.design.widget.CoordinatorLayout>
 

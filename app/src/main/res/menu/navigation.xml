@@ -1,36 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
-        <group
-            android:id="@+id/nav_group_normal">
-                <item
-                    android:id="@+id/nav_setting"
-                    android:icon="@drawable/setting"
-                    android:title="设置"/>
-                <item
-                    android:id="@+id/nav_collection"
-                    android:icon="@drawable/collection"
-                    android:title="收藏"/>
-        </group>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <group
-            android:id="@+id/nav_communicate">
-                <item
-                    android:id="@+id/nav_share"
-                    android:icon="@drawable/share"
-                    android:title="分享"/>
-                <item
-                    android:id="@+id/nav_about"
-                    android:icon="@drawable/about"
-                    android:title="关于"/>
-        </group>
+    <item
+        android:id="@+id/nav_take_photo"
+        android:icon="@drawable/nav_photo"
+        android:title="@string/nav_take_photo"
+        app:showAsAction="never"/>
 
-        <group
-            android:id="@+id/nav_log_off_group">
-                <item
-                    android:id="@+id/nav_log_off"
-                    android:icon="@drawable/log_off"
-                    android:title="注销"/>
-        </group>
+    <item
+        android:id="@+id/nav_upload"
+        android:icon="@drawable/nav_short_video"
+        android:title="@string/nav_upload"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/nav_live"
+        android:title="@string/nav_search"
+        app:showAsAction="never"/>
 
 </menu>

@@ -10,6 +10,7 @@ import com.yjc.photodance.common.network.RetrofitServiceManager;
 
 import java.util.List;
 
+import cn.bmob.v3.http.bean.Api;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -20,9 +21,10 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class MainModelImpl implements IMainModel {
+
     @Override
     public void getPhoto(final PhotoAdapter adapter, int page, int size) {
-        RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotoData(ApiConfig.getApplication_ID(),
+        RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotos(ApiConfig.getApplication_ID(),
                 String.valueOf(page), String.valueOf(size))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -51,6 +53,36 @@ public class MainModelImpl implements IMainModel {
                     @Override
                     public void onComplete() {
                         Log.d("MainActivity", "onComplete");
+                    }
+                });
+    }
+
+    @Override
+    public void getPhotoBySearch(final PhotoAdapter adapter, String search) {
+        RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotosBySearch(
+                ApiConfig.getApplication_ID(), search)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Photo>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Photo> photos) {
+                        adapter.setPhotos(photos);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("search", "onComplete");
                     }
                 });
     }

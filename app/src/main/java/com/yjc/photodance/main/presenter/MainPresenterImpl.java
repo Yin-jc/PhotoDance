@@ -24,6 +24,11 @@ public class MainPresenterImpl implements IMainPresenter{
     }
 
     @Override
+    public void requestPhotoBySearch(PhotoAdapter adapter, String query) {
+        mModel.getPhotoBySearch(adapter, query);
+    }
+
+    @Override
     public void requestShortVideo() {
 
     }
