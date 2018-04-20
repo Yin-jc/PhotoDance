@@ -69,9 +69,8 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/12/29/001.
- * todo 悬浮按钮的逻辑，返回顶部
- * todo navigation中其他item的逻辑
  */
+
 public class MainActivity extends BaseActivity{
 
     private Uri photoUri;
@@ -101,6 +100,7 @@ public class MainActivity extends BaseActivity{
     private Bitmap userHeadImageBitmap;
     private ImageView search;
     private FloatingActionButton fab;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,14 +114,6 @@ public class MainActivity extends BaseActivity{
         initListener();
         initToolbar();
 
-    }
-
-    /**
-     * 初始化Toolbar
-     */
-    public void initToolbar() {
-        Toolbar toolbar=findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -174,13 +166,13 @@ public class MainActivity extends BaseActivity{
 //            }
 //        });
 
-        personalCenter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //打开侧滑菜单
-                MainActivity.super.drawer.openDrawer(GravityCompat.START);
-            }
-        });
+//        personalCenter.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //打开侧滑菜单
+//                MainActivity.super.drawer.openDrawer(GravityCompat.START);
+//            }
+//        });
         
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,10 +185,10 @@ public class MainActivity extends BaseActivity{
         });
 
         //必须要现获取header
-        View headerView = super.navigation.getHeaderView(0);
+//        View headerView = super.navigation.getHeaderView(0);
         //头部图片
-        userHeadImage = headerView.findViewById(R.id.userHeadImage);
-        userHeadImage.setImageBitmap(userHeadImageBitmap);
+//        userHeadImage = headerView.findViewById(R.id.userHeadImage);
+//        userHeadImage.setImageBitmap(userHeadImageBitmap);
 
         //默认选中第一个tab不会触发此监听器
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
@@ -229,7 +221,7 @@ public class MainActivity extends BaseActivity{
         // TODO: 2018/1/6/006 以后打开应用也自动刷新
         if (isFirstEnter) {
             //第一次进入自动刷新
-            refreshLayout.autoRefresh();
+//            refreshLayout.autoRefresh();
             replaceFragment(new PhotoFragment(photoAdapter));
         }
 
@@ -239,7 +231,7 @@ public class MainActivity extends BaseActivity{
                 flag = true;
                 switch (selectedTab){
                     case 0:
-                        mPresenter.requestPhoto(photoAdapter, 1, size);
+//                        mPresenter.requestPhoto(photoAdapter, 1, size);
                         break;
                     case 1:
                         break;
@@ -289,15 +281,6 @@ public class MainActivity extends BaseActivity{
         return R.layout.activity_main;
     }
 
-    /**
-     * 替换Fragment
-     * @param fragment
-     */
-    private void replaceFragment(Fragment fragment){
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.commit();
-    }
+
 
 }

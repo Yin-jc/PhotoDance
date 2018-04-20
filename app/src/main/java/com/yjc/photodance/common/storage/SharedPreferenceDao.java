@@ -6,6 +6,11 @@ import android.preference.PreferenceManager;
 
 import com.yjc.photodance.MyApplication;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by Administrator on 2017/12/29/029.
  * 静态内部类的方式实现单例模式
@@ -15,9 +20,11 @@ public class SharedPreferenceDao {
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private HashSet<String> defaultSet= new HashSet<>();
 
     private SharedPreferenceDao(Context context){
         pref = PreferenceManager.getDefaultSharedPreferences(context);
+        defaultSet.add("");
     }
 
     public static SharedPreferenceDao getInstance(){
@@ -53,6 +60,12 @@ public class SharedPreferenceDao {
         editor.apply();
     }
 
+    public void saveSet(String key, Set set){
+        editor = pref.edit();
+        editor.putStringSet(key, set);
+        editor.apply();
+    }
+
     //取布尔值
     public boolean getBoolean(String key){
         return pref.getBoolean(key, false);
@@ -61,6 +74,11 @@ public class SharedPreferenceDao {
     //取字符串
     public String getString(String key){
         return pref.getString(key, "");
+    }
+
+    //取HashSet
+    public HashSet<String> getSet(String key){
+        return (HashSet<String>) pref.getStringSet(key, defaultSet);
     }
 
 }

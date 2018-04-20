@@ -22,6 +22,9 @@ public class PhotoFragment extends BaseFragment {
     private RecyclerView photoRecycler;
     private PhotoAdapter adapter;
 
+    public PhotoFragment(){
+    }
+
     public PhotoFragment(PhotoAdapter adapter){
         this.adapter = adapter;
     }

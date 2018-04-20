@@ -18,7 +18,6 @@ import com.yjc.photodance.common.base.BasePopupWindow;
 public class SelectPicPopupWindow extends BasePopupWindow {
 
     private Button takePhoto, selectPhoto, cancel;
-    private View popupWindow;
 
     public SelectPicPopupWindow(Context context, View.OnClickListener itemsOnClick) {
         super(context);

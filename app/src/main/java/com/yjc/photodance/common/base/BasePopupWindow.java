@@ -17,7 +17,7 @@ import com.yjc.photodance.R;
 
 public abstract class BasePopupWindow extends PopupWindow {
 
-    private View popupWindow;
+    public View popupWindow;
 
     public BasePopupWindow(Context context) {
         super(context);
