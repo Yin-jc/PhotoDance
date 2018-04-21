@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,26 +16,36 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.yjc.photodance.MyApplication;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.base.BaseFragment;
 import com.yjc.photodance.common.storage.SharedPreferenceDao;
+import com.yjc.photodance.common.storage.bean.Info;
 import com.yjc.photodance.common.util.HandleBitmap;
+import com.yjc.photodance.common.util.ToastUtil;
+import com.yjc.photodance.main.view.MainActivity;
 import com.yjc.photodance.model.Account;
 import com.yjc.photodance.ui.SelectPicPopupWindow;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -45,28 +56,42 @@ import static android.app.Activity.RESULT_OK;
  * todo 数据库实现数据存储
  */
 
-public class InfoFragment extends BaseFragment implements View.OnClickListener {
+public class InfoFragment extends BaseFragment {
 
+    private static final String TAG = "InfoFragment";
+    // TODO: 2018/4/21/021 换背景图片
     private ImageView mBackground;
     private CircleImageView mUserHeadImage;
-    private EditText mUsername;
+    private TextView mUsername;
     private EditText mBase;
     private EditText mEmail;
     private EditText mHome;
     private EditText mCompany;
     private EditText mProfession;
     private EditText mSignature;
+    private RadioGroup mSex;
+    private RadioButton mMale;
+    private RadioButton mFemale;
+    private Button mSaveBtn;
     private HashSet<String> info = new HashSet<>();
 
     private PopupWindow popupWindow;
     private Bitmap userHeadImageBitmap;
-    private static final int CHOOSE_PHOTO = 1;
+    private Bitmap backgroundBitmap;
+    private static final int CHOOSE_PHOTO_FOR_BACKGROUND = 1;
+    private static final int CHOOSE_PHOTO_FOR_USERHEADIMAGE = -1;
     private static final int TAKE_PHOTO = 2;
 
-    private String imagePath;
+    private String imagePathForBackground;
+    private String imagePathForUserHeadImage;
     private Uri photoUri;
 
+    private String mSexStr;
+    private String mUsernameStr;
+    private String mPhoneNumStr;
 
+    private boolean isFirstEnter = SharedPreferenceDao.getInstance()
+            .getBoolean("isFirstEnterInfoFragment");
 
     @Override
     protected int getLayoutId() {
@@ -77,22 +102,43 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
+        //短生命周期对象引用长生命周期对象，不会造成内存泄漏
+        MainActivity activity = (MainActivity) getActivity();
+        mPhoneNumStr = activity.getPhoneNum();
+        Log.d(TAG, "onActivityCreated: " + mPhoneNumStr);
+        mUsernameStr = activity.getUsername();
+
+        Log.d(TAG, "onActivityCreated: " + isFirstEnter);
         initData();
         initListener();
     }
 
     // TODO: 2018/4/20/020 初始化username 注册时使用sharedPreferenceDao存储，在此取出
     private void initData(){
-        HashSet<String> info_dao = SharedPreferenceDao.getInstance().getSet("info");
+//        HashSet<String> info_dao = SharedPreferenceDao.getInstance().getSet("info");
         //HashSet转ArrayList
-        ArrayList<String> info_array = new ArrayList<>(info_dao);
-        mUsername.setText(info_array.get(0));
-        mBase.setText(info_array.get(1));
-        mEmail.setText(info_array.get(2));
-        mHome.setText(info_array.get(3));
-        mCompany.setText(info_array.get(4));
-        mProfession.setText(info_array.get(5));
-        mSignature.setText(info_array.get(6));
+//        ArrayList<String> info_array = new ArrayList<>(info_dao);
+
+        //username 不可修改
+        mUsername.setText(mUsernameStr);
+
+        if(! isFirstEnter){
+            List<Info> infos = DataSupport
+                    .where("mPhoneNum = ?", mPhoneNumStr)
+                    .find(Info.class);
+            Info info = infos.get(0);
+            mBackground.setImageBitmap(BitmapFactory.decodeByteArray(info.getBackgroundImage(),
+                    0, info.getBackgroundImage().length));
+            mUserHeadImage.setImageBitmap(BitmapFactory.decodeByteArray(info.getUserHeadImage(),
+                    0, info.getUserHeadImage().length));
+            mBase.setText(info.getBase());
+            // TODO: 2018/4/21/021 获取性别设置
+            mEmail.setText(info.getEmail());
+            mHome.setText(info.getHome());
+            mCompany.setText(info.getCompany());
+            mProfession.setText(info.getProfession());
+            mSignature.setText(info.getSignature());
+        }
     }
 
     private void initView(){
@@ -105,26 +151,32 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
         mCompany = getActivity().findViewById(R.id.company_info);
         mProfession = getActivity().findViewById(R.id.profession_info);
         mSignature = getActivity().findViewById(R.id.signature_info);
+        mSex = getActivity().findViewById(R.id.rg_sex);
+        mMale = getActivity().findViewById(R.id.rb_male);
+        mFemale = getActivity().findViewById(R.id.rb_female);
+        mSaveBtn = getActivity().findViewById(R.id.save_info);
     }
 
-    private void saveData(){
-        // TODO: 2018/4/20/020 重复问题
-        info.add(mUsername.getText().toString());
-        info.add(mBase.getText().toString());
-        info.add(mEmail.getText().toString());
-        info.add(mHome.getText().toString());
-        info.add(mCompany.getText().toString());
-        info.add(mProfession.getText().toString());
-        info.add(mSignature.getText().toString());
+    private void saveOrUpdateData(boolean isFirstEnter){
+        Info info = new Info(mPhoneNumStr, mUsernameStr);
+        if(backgroundBitmap != null && userHeadImageBitmap != null){
+            info.setBackgroundImage(HandleBitmap.img(backgroundBitmap));
+            info.setUserHeadImage(HandleBitmap.img(userHeadImageBitmap));
+        }
+        info.setBase(mBase.getText().toString());
+        info.setSex(mSexStr);
+        info.setEmail(mEmail.getText().toString());
+        info.setHome(mHome.getText().toString());
+        info.setCompany(mCompany.getText().toString());
+        info.setProfession(mProfession.getText().toString());
+        info.setSignature(mSignature.getText().toString());
+        if(isFirstEnter){
+            boolean result = info.save();
+            Log.d(TAG, "save success?" + String.valueOf(result));
+        }else {
+            info.updateAll("mPhoneNum = ?", mPhoneNumStr);
+        }
 
-        SharedPreferenceDao.getInstance().saveSet("info", info);
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        saveData();
     }
 
     private void initListener(){
@@ -138,30 +190,59 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
                                 takePhoto();
                                 break;
                             case R.id.select_photo:
-                                selectPhoto();
+                                selectPhoto(CHOOSE_PHOTO_FOR_USERHEADIMAGE);
                                 break;
                             default:
                                 break;
                         }
                     }
                 });
-    }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.background_info:
-                // TODO: 2018/4/20/020 打开系统图册
-                selectPhoto();
-                break;
-            case R.id.userHeadImage_info:
-                // TODO: 2018/4/20/020 弹出popupwindow
+        mSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                switch (checkedId){
+                    case R.id.rb_male:
+                        mSexStr = mMale.getText().toString();
+                        break;
+                    case R.id.rb_female:
+                        mSexStr = mFemale.getText().toString();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        mUserHeadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //弹出popupwindow
                 popupWindow.showAtLocation(getActivity().getWindow().getDecorView(),
                         Gravity.BOTTOM, 0, 0);
-                break;
-            default:
-                break;
-        }
+            }
+        });
+
+        mSaveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: " + isFirstEnter);
+                saveOrUpdateData(isFirstEnter);
+                SharedPreferenceDao.getInstance().saveBoolean("isFirstEnterInfoFragment",
+                        false);
+                ToastUtil.show(getActivity(), "保存成功");
+                Log.d(TAG, "onClick: " + isFirstEnter);
+                // TODO: 2018/4/21/021 退出此Fragment
+            }
+        });
+
+        mBackground.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                selectPhoto(CHOOSE_PHOTO_FOR_BACKGROUND);
+                return true;
+            }
+        });
     }
 
     private void takePhoto(){
@@ -192,10 +273,20 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
         startActivityForResult(intent, TAKE_PHOTO);
     }
 
-    private void selectPhoto(){
+    private void selectPhoto(int requestCode){
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
-        startActivityForResult(intent, CHOOSE_PHOTO);
+        switch (requestCode){
+            case CHOOSE_PHOTO_FOR_BACKGROUND:
+                startActivityForResult(intent, CHOOSE_PHOTO_FOR_BACKGROUND);
+                break;
+            case CHOOSE_PHOTO_FOR_USERHEADIMAGE:
+                startActivityForResult(intent, CHOOSE_PHOTO_FOR_USERHEADIMAGE);
+                break;
+            default:
+                break;
+        }
+
     }
 
     /**
@@ -248,13 +339,20 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
             // TODO: 2018/4/20/020 同步头像
-            case CHOOSE_PHOTO:
+            case CHOOSE_PHOTO_FOR_USERHEADIMAGE:
                 if(resultCode == RESULT_OK){
-                    imagePath = handleImage(data);
-                    userHeadImageBitmap = HandleBitmap.compressForFile(imagePath);
-//                    saveUserHeadImageToDB();
+                    imagePathForUserHeadImage = handleImage(data);
+                    userHeadImageBitmap = HandleBitmap.compressForFile(imagePathForUserHeadImage);
                     mUserHeadImage.setImageBitmap(userHeadImageBitmap);
                     popupWindow.dismiss();
+                }
+                break;
+
+            case CHOOSE_PHOTO_FOR_BACKGROUND:
+                if(resultCode == RESULT_OK){
+                    imagePathForBackground = handleImage(data);
+                    backgroundBitmap = HandleBitmap.compressForFile(imagePathForBackground);
+                    mUserHeadImage.setImageBitmap(backgroundBitmap);
                 }
                 break;
 
@@ -263,7 +361,6 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
                     try {
                         userHeadImageBitmap = HandleBitmap.compressForStream(
                                 getActivity().getContentResolver().openInputStream(photoUri));
-//                        saveUserHeadImageToDB();
                         mUserHeadImage.setImageBitmap(userHeadImageBitmap);
                         popupWindow.dismiss();
                     } catch (FileNotFoundException e) {
@@ -278,11 +375,6 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
 
     }
 
-    private void saveUserHeadImageToDB(){
-        Account account = new Account();
-        account.setUserName("only_userHeadImage");
-        account.setPassword("only_userHeadImage");
-        account.setUserHeadImage(HandleBitmap.img(userHeadImageBitmap));
-        account.save();
-    }
+
+
 }

@@ -8,6 +8,7 @@ import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.model.Account;
 
 import org.litepal.LitePal;
+import org.litepal.LitePalApplication;
 import org.litepal.tablemanager.Connector;
 
 import java.lang.reflect.Field;
@@ -20,7 +21,7 @@ import cn.bmob.v3.Bmob;
  * 务必记得此Application要在AndroidManifest中处理
  */
 
-public class MyApplication extends Application {
+public class MyApplication extends LitePalApplication {
 
     // TODO: 2018/1/7/007 实现成单例
     private static Context mContext;
@@ -36,6 +37,10 @@ public class MyApplication extends Application {
         Bmob.initialize(this, "957299827f3a40ea662ad5891f81c247");
 
         mContext = getApplicationContext();
+
+        LitePal.initialize(this);
+        //创建数据库
+        Connector.getDatabase();
 
     }
 

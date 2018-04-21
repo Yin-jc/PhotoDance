@@ -102,6 +102,9 @@ public class MainActivity extends BaseActivity{
     private FloatingActionButton fab;
     private Toolbar toolbar;
 
+    private String mUsername;
+    private String mPhonrNum;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +122,9 @@ public class MainActivity extends BaseActivity{
     @Override
     public void initData() {
         super.initData();
+
+        mUsername = getIntent().getStringExtra("username");
+        mPhonrNum = getIntent().getStringExtra("phoneNum");
 
         // TODO: 2018/4/16/016 修改AhBottomNavigation的源码，解决colorful icon的问题
 
@@ -279,6 +285,14 @@ public class MainActivity extends BaseActivity{
     @Override
     protected int getContentView() {
         return R.layout.activity_main;
+    }
+
+    public String getUsername(){
+        return mUsername;
+    }
+
+    public String getPhoneNum(){
+        return mPhonrNum;
     }
 
 

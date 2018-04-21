@@ -68,7 +68,7 @@ public class SharedPreferenceDao {
 
     //取布尔值
     public boolean getBoolean(String key){
-        return pref.getBoolean(key, false);
+        return pref.getBoolean(key, true);
     }
 
     //取字符串

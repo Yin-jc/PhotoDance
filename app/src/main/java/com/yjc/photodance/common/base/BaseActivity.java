@@ -192,6 +192,8 @@ public abstract class BaseActivity extends AppCompatActivity{
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
+        //返回栈
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 

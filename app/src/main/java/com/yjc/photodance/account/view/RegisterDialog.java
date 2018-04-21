@@ -283,7 +283,10 @@ public class RegisterDialog extends Dialog implements IRegisterView {
 
     @Override
     public void showRegisterSuc() {
-        mContext.startActivity(new Intent(mContext, MainActivity.class));
+        Intent intent = new Intent(mContext, MainActivity.class);
+        intent.putExtra("username", mUsername);
+        intent.putExtra("phoneNum", mPhoneNumber);
+        mContext.startActivity(intent);
     }
 
     @Override

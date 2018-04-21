@@ -19,7 +19,7 @@
 			For example:
     	<version value="1" />
     -->
-    <version value="6" />
+    <version value="1" />
 
     <!--
     	Define your models in the list with mapping tag, LitePal will
@@ -32,8 +32,7 @@
     	</list>
     -->
     <list>
-        <mapping class="com.yjc.photodance.model.Account"/>
-        <mapping class="com.yjc.photodance.model.Details"/>
+        <mapping class="com.yjc.photodance.common.storage.bean.Info"/>
     </list>
 
     <!--
