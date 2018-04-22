@@ -1,4 +1,4 @@
-package com.dueeeke.dkplayer.util;
+package com.yjc.photodance.util;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
-import com.dueeeke.dkplayer.R;
+import com.yjc.photodance.R;
 
 
 public class BatteryReceiver extends BroadcastReceiver {

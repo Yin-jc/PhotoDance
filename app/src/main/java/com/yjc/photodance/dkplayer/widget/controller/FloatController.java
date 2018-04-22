@@ -1,4 +1,4 @@
-package com.dueeeke.dkplayer.widget.controller;
+package com.yjc.photodance.dkplayer.widget.controller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +11,10 @@ import android.view.ViewConfiguration;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.dueeeke.dkplayer.R;
-import com.dueeeke.dkplayer.util.PIPManager;
 import com.dueeeke.videoplayer.controller.GestureVideoController;
 import com.dueeeke.videoplayer.player.IjkVideoView;
+import com.yjc.photodance.R;
+import com.yjc.photodance.dkplayer.util.PIPManager;
 
 /**
  * 悬浮播放控制器

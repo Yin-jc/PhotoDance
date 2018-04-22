@@ -1,4 +1,4 @@
-package com.dueeeke.dkplayer.widget.controller;
+package com.yjc.photodance.dkplayer.widget.controller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,13 +21,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dueeeke.dkplayer.R;
-import com.dueeeke.dkplayer.util.BatteryReceiver;
 import com.dueeeke.videoplayer.controller.GestureVideoController;
 import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.dueeeke.videoplayer.util.L;
 import com.dueeeke.videoplayer.util.WindowUtil;
 import com.dueeeke.videoplayer.widget.MarqueeTextView;
+import com.yjc.photodance.R;
+import com.yjc.photodance.dkplayer.util.BatteryReceiver;
 
 /**
  * 直播/点播控制器

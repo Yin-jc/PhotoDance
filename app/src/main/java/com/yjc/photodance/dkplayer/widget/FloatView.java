@@ -1,4 +1,4 @@
-package com.dueeeke.dkplayer.widget;
+package com.yjc.photodance.dkplayer.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,8 +10,8 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.dueeeke.dkplayer.R;
 import com.dueeeke.videoplayer.util.WindowUtil;
+import com.yjc.photodance.R;
 
 /**
  * 悬浮窗控件（解决滑动冲突）
@@ -19,7 +19,7 @@ import com.dueeeke.videoplayer.util.WindowUtil;
  */
 
 @SuppressLint("ViewConstructor")
-public class FloatView extends FrameLayout{
+public class FloatView extends FrameLayout {
 
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mParams;

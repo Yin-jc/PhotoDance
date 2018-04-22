@@ -53,10 +53,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
             super(itemView);
             cardView = (CardView) itemView;
             image = cardView.findViewById(R.id.photo);
+
             CardView.LayoutParams params = (CardView.LayoutParams) image.getLayoutParams();
             params.width = width;
             params.height = height;
             image.setLayoutParams(params);
+
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -79,6 +81,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
     public PhotoAdapter(Context context){
         mContext = context;
+
         //屏幕的宽度(px值）
         int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
         //Item的宽度，或图片的宽度

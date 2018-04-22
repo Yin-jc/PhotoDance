@@ -1,4 +1,4 @@
-package com.dueeeke.dkplayer.widget;
+package com.yjc.photodance.dkplayer.widget;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

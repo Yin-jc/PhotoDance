@@ -1,13 +1,13 @@
-package com.dueeeke.dkplayer.util;
+package com.yjc.photodance.dkplayer.util;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import com.dueeeke.dkplayer.app.MyApplication;
-import com.dueeeke.dkplayer.widget.FloatView;
-import com.dueeeke.dkplayer.widget.controller.FloatController;
 import com.dueeeke.videoplayer.player.IjkVideoView;
+import com.yjc.photodance.MyApplication;
+import com.yjc.photodance.dkplayer.widget.FloatView;
+import com.yjc.photodance.dkplayer.widget.controller.FloatController;
 
 /**
  * 悬浮播放
@@ -34,13 +34,13 @@ public class PIPManager {
 
 
     private PIPManager() {
-        ijkVideoView = new IjkVideoView(MyApplication.getInstance());
+        ijkVideoView = new IjkVideoView(MyApplication.getMyApplicationContext());
 //        ijkVideoView.setVideoListener(mMyVideoListener);
 //        mKeyReceiver = new KeyReceiver();
-        mFloatController = new FloatController(MyApplication.getInstance());
+        mFloatController = new FloatController(MyApplication.getMyApplicationContext());
 //        IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
 //        MyApplication.getInstance().registerReceiver(mKeyReceiver, homeFilter);
-        floatView = new FloatView(MyApplication.getInstance(), 0, 0);
+        floatView = new FloatView(MyApplication.getMyApplicationContext(), 0, 0);
     }
 
     public static PIPManager getInstance() {
