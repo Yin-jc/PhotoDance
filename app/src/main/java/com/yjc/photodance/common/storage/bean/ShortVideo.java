@@ -9,6 +9,7 @@ public class ShortVideo {
     private String title;
     private String url;
     private String thumb;
+    private int type;
 
     public String getTitle() {
         return title;
@@ -32,5 +33,13 @@ public class ShortVideo {
 
     public void setThumb(String thumb) {
         this.thumb = thumb;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

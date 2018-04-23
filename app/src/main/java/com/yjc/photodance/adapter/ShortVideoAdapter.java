@@ -1,6 +1,9 @@
 package com.yjc.photodance.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.dueeeke.videoplayer.player.PlayerConfig;
 import com.yjc.photodance.R;
@@ -17,6 +21,7 @@ import com.yjc.photodance.common.storage.bean.ShortVideo;
 import com.yjc.photodance.dkplayer.widget.controller.StandardVideoController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,9 +40,11 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         ShortVideo shortVideo1 = new ShortVideo();
         shortVideo1.setTitle("1");
         shortVideo1.setUrl("http://bmob-cdn-18353.b0.upaiyun.com/2018/04/22/dec91e04406b4d9a80719022fa7beb1b.mp4");
+        shortVideo1.setType(TYPE_LIST);
         ShortVideo shortVideo2 = new ShortVideo();
         shortVideo2.setTitle("2");
         shortVideo2.setUrl("http://bmob-cdn-18353.b0.upaiyun.com/2018/04/22/32741f8d40a4f5918013975a886eb86f.mp4");
+        shortVideo2.setType(TYPE_STAGGERED);
         mVideos.add(shortVideo1);
         mVideos.add(shortVideo2);
     }
@@ -72,41 +79,85 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.short_video_item, parent, false);
-        if(viewType == TYPE_LIST){
-            StaggeredGridLayoutManager.LayoutParams params =
-                    (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-            params.setFullSpan(true);
-            view.setLayoutParams(params);
-            return new ViewHolder(view);
-        }else if(viewType == TYPE_STAGGERED){
-            StaggeredGridLayoutManager.LayoutParams params =
-                    (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
-            params.setFullSpan(false);
-            view.setLayoutParams(params);
-            return new ViewHolder(view);
+        StaggeredGridLayoutManager.LayoutParams params =
+                (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+        switch (viewType){
+            case TYPE_LIST:
+                params.setFullSpan(true);
+                view.setLayoutParams(params);
+                return new ViewHolder(view);
+            case TYPE_STAGGERED:
+                params.setFullSpan(false);
+                view.setLayoutParams(params);
+                return new ViewHolder(view);
+            default:
+                break;
         }
-
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ShortVideo video = mVideos.get(position);
-
         //显示视频第一帧
-//        Glide.with(mContext)
-//                .load(video.getThumb())
-//                .into(holder.controller.getThumb());
-
-        holder.videoView.setTitle("");
-        holder.videoView.setUrl(video.getUrl());
-        holder.videoView.setVideoController(holder.controller);
-        holder.videoView.setPlayerConfig(holder.config);
+        Glide.with(mContext)
+                .load(getFirstFrame(video))
+                .into(holder.controller.getThumb());
+        switch (holder.getItemViewType()){
+            case TYPE_LIST:
+                holder.videoView.setTitle("");
+                holder.videoView.setUrl(video.getUrl());
+                holder.videoView.setVideoController(holder.controller);
+                holder.videoView.setPlayerConfig(holder.config);
+                break;
+            case TYPE_STAGGERED:
+                holder.videoView.setTitle("");
+                holder.videoView.setUrl(video.getUrl());
+                holder.videoView.setVideoController(holder.controller);
+                holder.videoView.setPlayerConfig(holder.config);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
     public int getItemCount() {
         Log.d("ShortVideoAdapter", "getItemCount: " + mVideos.size());
         return mVideos.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mVideos.get(position).getType();
+    }
+
+    /**
+     * 获取视频第一帧
+     * @param video
+     * @return
+     */
+    private void getFirstFrame(final ShortVideo video){
+        // TODO: 2018/4/23/023 线程池 OR RxJava
+    }
+
+    static class MyAsyncTask extends AsyncTask<ShortVideo, Void, Bitmap>{
+        private MediaMetadataRetriever retriever;
+        @Override
+        protected void onPreExecute() {
+            retriever = new MediaMetadataRetriever();
+        }
+
+        @Override
+        protected Bitmap doInBackground(ShortVideo... shortVideos) {
+            retriever.setDataSource(shortVideos[0].getUrl(), new HashMap<String, String>());
+            return retriever.getFrameAtTime();
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            
+            retriever.release();
+        }
     }
 }
