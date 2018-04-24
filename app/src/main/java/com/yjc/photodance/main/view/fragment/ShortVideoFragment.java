@@ -17,6 +17,11 @@ import com.yjc.photodance.common.base.BaseFragment;
 public class ShortVideoFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
+    private ShortVideoAdapter adapter;
+
+    public ShortVideoFragment(ShortVideoAdapter adapter) {
+        this.adapter = adapter;
+    }
 
     @Override
     protected int getLayoutId() {
@@ -30,6 +35,6 @@ public class ShortVideoFragment extends BaseFragment {
         recyclerView = getActivity().findViewById(R.id.short_video_recycler_view);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3,
                 StaggeredGridLayoutManager.VERTICAL));
-        recyclerView.setAdapter(new ShortVideoAdapter(getActivity()));
+        recyclerView.setAdapter(adapter);
     }
 }

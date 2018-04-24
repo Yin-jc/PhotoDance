@@ -1,6 +1,7 @@
 package com.yjc.photodance.main.presenter;
 
 import com.yjc.photodance.adapter.PhotoAdapter;
+import com.yjc.photodance.adapter.ShortVideoAdapter;
 import com.yjc.photodance.main.model.IMainModel;
 import com.yjc.photodance.main.view.IMainView;
 import com.yjc.photodance.main.view.MainActivity;
@@ -29,7 +30,8 @@ public class MainPresenterImpl implements IMainPresenter{
     }
 
     @Override
-    public void requestShortVideo() {
+    public void requestVideo(ShortVideoAdapter adapter) {
+        mModel.getVideo(adapter);
 
     }
 

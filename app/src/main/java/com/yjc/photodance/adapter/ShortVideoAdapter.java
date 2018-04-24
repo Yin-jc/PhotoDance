@@ -17,12 +17,17 @@ import com.bumptech.glide.Glide;
 import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.dueeeke.videoplayer.player.PlayerConfig;
 import com.yjc.photodance.R;
-import com.yjc.photodance.common.storage.bean.ShortVideo;
+import com.yjc.photodance.common.storage.bean.Video;
 import com.yjc.photodance.dkplayer.widget.controller.StandardVideoController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by Administrator on 2018/4/22/022.
@@ -32,21 +37,13 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
 
     private static final int TYPE_LIST = 1;
     private static final int TYPE_STAGGERED = 2;
+    private static final String TAG = "ShortVideoAdapter";
     private Context mContext;
-    private List<ShortVideo> mVideos = new ArrayList<>();
+    private List<Video> mVideos = new ArrayList<>();
+    private static Bitmap firstFrameBitmap;
 
     public ShortVideoAdapter(Context context){
         mContext = context;
-        ShortVideo shortVideo1 = new ShortVideo();
-        shortVideo1.setTitle("1");
-        shortVideo1.setUrl("http://bmob-cdn-18353.b0.upaiyun.com/2018/04/22/dec91e04406b4d9a80719022fa7beb1b.mp4");
-        shortVideo1.setType(TYPE_LIST);
-        ShortVideo shortVideo2 = new ShortVideo();
-        shortVideo2.setTitle("2");
-        shortVideo2.setUrl("http://bmob-cdn-18353.b0.upaiyun.com/2018/04/22/32741f8d40a4f5918013975a886eb86f.mp4");
-        shortVideo2.setType(TYPE_STAGGERED);
-        mVideos.add(shortVideo1);
-        mVideos.add(shortVideo2);
     }
 
      class ViewHolder extends RecyclerView.ViewHolder{
@@ -98,26 +95,30 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ShortVideo video = mVideos.get(position);
-        //显示视频第一帧
-        Glide.with(mContext)
-                .load(getFirstFrame(video))
-                .into(holder.controller.getThumb());
-        switch (holder.getItemViewType()){
-            case TYPE_LIST:
-                holder.videoView.setTitle("");
-                holder.videoView.setUrl(video.getUrl());
-                holder.videoView.setVideoController(holder.controller);
-                holder.videoView.setPlayerConfig(holder.config);
-                break;
-            case TYPE_STAGGERED:
-                holder.videoView.setTitle("");
-                holder.videoView.setUrl(video.getUrl());
-                holder.videoView.setVideoController(holder.controller);
-                holder.videoView.setPlayerConfig(holder.config);
-                break;
-            default:
-                break;
+        if(mVideos != null) {
+            Video video = mVideos.get(position);
+//        new MyAsyncTask().execute(video);
+            // TODO: 2018/4/24/024 第一帧在子线程中获取还没有回传数据
+            //显示视频第一帧
+            Glide.with(mContext)
+                    .load(firstFrameBitmap)
+                    .into(holder.controller.getThumb());
+            switch (holder.getItemViewType()) {
+                case TYPE_LIST:
+                    holder.videoView.setTitle(video.getFilename());
+                    holder.videoView.setUrl(video.getFileUrl());
+                    holder.videoView.setVideoController(holder.controller);
+                    holder.videoView.setPlayerConfig(holder.config);
+                    break;
+                case TYPE_STAGGERED:
+                    holder.videoView.setTitle(video.getFilename());
+                    holder.videoView.setUrl(video.getFileUrl());
+                    holder.videoView.setVideoController(holder.controller);
+                    holder.videoView.setPlayerConfig(holder.config);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -129,35 +130,51 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
 
     @Override
     public int getItemViewType(int position) {
-        return mVideos.get(position).getType();
+        switch (mVideos.get(position).getType()){
+            case "TYPE_STAGGERED":
+                return TYPE_STAGGERED;
+            case "TYPE_LIST":
+                return TYPE_LIST;
+            default:
+                break;
+        }
+        return 0;
     }
 
     /**
      * 获取视频第一帧
-     * @param video
+     * @param bitmap
      * @return
      */
-    private void getFirstFrame(final ShortVideo video){
-        // TODO: 2018/4/23/023 线程池 OR RxJava
+    private static void setFirstFrameBitmap(Bitmap bitmap){
+        firstFrameBitmap = bitmap;
     }
 
-    static class MyAsyncTask extends AsyncTask<ShortVideo, Void, Bitmap>{
-        private MediaMetadataRetriever retriever;
+    static class MyAsyncTask extends AsyncTask<Video, Void, Bitmap>{
+        private MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         @Override
         protected void onPreExecute() {
-            retriever = new MediaMetadataRetriever();
         }
 
         @Override
-        protected Bitmap doInBackground(ShortVideo... shortVideos) {
-            retriever.setDataSource(shortVideos[0].getUrl(), new HashMap<String, String>());
-            return retriever.getFrameAtTime();
+        protected Bitmap doInBackground(Video... videos) {
+            if(retriever != null){
+                retriever.setDataSource(videos[0].getUrl(), new HashMap<String, String>());
+                return retriever.getFrameAtTime(0);
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            
+            Log.d(TAG, "onPostExecute: " + (bitmap == null));
+            setFirstFrameBitmap(bitmap);
             retriever.release();
         }
     }
+
+    public void setVideos(List<Video> videos){
+        mVideos = videos;
+    }
+
 }

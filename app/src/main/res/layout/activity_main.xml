@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -30,6 +31,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_alignParentStart="true"
                     android:src="@drawable/personal_center"
+                    android:layout_marginStart="15dp"
                     android:focusable="true"
                     android:clickable="true"/>
 
@@ -44,11 +46,12 @@
                     android:textSize="@dimen/text_size_large"/>
 
                 <ImageView
-                    android:id="@+id/search"
+                    android:id="@+id/camera"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/search"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/camera"
                     android:focusable="true"
                     android:clickable="true"
                     android:layout_centerInParent="true"/>
@@ -65,15 +68,9 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!--<com.scwang.smartrefresh.header.DropboxHeader-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="100dp" />-->
-
-        <pl.droidsonroids.gif.GifImageView
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/gif2"/>
+        <com.scwang.smartrefresh.header.PhoenixHeader
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
 
         <FrameLayout
             android:id="@+id/fragment_container"
@@ -90,25 +87,91 @@
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/btn_up"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentEnd="true"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_marginRight="30dp"-->
-    <!--app:backgroundTint="@color/color_blue"-->
-    <!--android:src="@drawable/up"/>-->
-
-
-    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-        android:id="@+id/bottom_navigation"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_gravity="bottom">
 
-    </com.aurelhubert.ahbottomnavigation.AHBottomNavigation>
+        <!--<com.github.clans.fab.FloatingActionMenu-->
+            <!--android:id="@+id/fam"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="30dp"-->
+            <!--android:layout_above="@+id/bottom_navigation"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--fab:menu_fab_size="normal"-->
+            <!--fab:menu_showShadow="true"-->
+            <!--fab:menu_shadowColor="#66000000"-->
+            <!--fab:menu_shadowRadius="4dp"-->
+            <!--fab:menu_shadowXOffset="1dp"-->
+            <!--fab:menu_shadowYOffset="3dp"-->
+            <!--fab:menu_colorNormal="#DA4336"-->
+            <!--fab:menu_colorPressed="#E75043"-->
+            <!--fab:menu_colorRipple="#99FFFFFF"-->
+            <!--fab:menu_animationDelayPerItem="50"-->
+            <!--fab:menu_icon="@drawable/fab_add"-->
+            <!--fab:menu_buttonSpacing="0dp"-->
+            <!--fab:menu_labels_margin="0dp"-->
+            <!--fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"-->
+            <!--fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"-->
+            <!--fab:menu_labels_paddingTop="4dp"-->
+            <!--fab:menu_labels_paddingRight="8dp"-->
+            <!--fab:menu_labels_paddingBottom="4dp"-->
+            <!--fab:menu_labels_paddingLeft="8dp"-->
+            <!--fab:menu_labels_padding="8dp"-->
+            <!--fab:menu_labels_textColor="#FFFFFF"-->
+            <!--fab:menu_labels_textSize="14sp"-->
+            <!--fab:menu_labels_cornerRadius="3dp"-->
+            <!--fab:menu_labels_colorNormal="#333333"-->
+            <!--fab:menu_labels_colorPressed="#444444"-->
+            <!--fab:menu_labels_colorRipple="#66FFFFFF"-->
+            <!--fab:menu_labels_showShadow="true"-->
+            <!--fab:menu_labels_singleLine="false"-->
+            <!--fab:menu_labels_ellipsize="none"-->
+            <!--fab:menu_labels_maxLines="-1"-->
+            <!--fab:menu_labels_position="left"-->
+            <!--fab:menu_openDirection="up"-->
+            <!--fab:menu_backgroundColor="@android:color/transparent"-->
+            <!--android:layout_marginBottom="90dp">-->
+
+            <!--<com.github.clans.fab.FloatingActionButton-->
+                <!--android:id="@+id/fab_search_photo"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--fab:fab_size="mini"-->
+                <!--fab:fab_label="搜索图片" />-->
+
+            <!--<com.github.clans.fab.FloatingActionButton-->
+                <!--android:id="@+id/fab_scan"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--fab:fab_size="mini"-->
+                <!--fab:fab_label="上传图片" />-->
+
+        <!--</com.github.clans.fab.FloatingActionMenu>-->
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:layout_gravity="end"
+            android:padding="5dp"
+            android:src="@drawable/android_search"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="@color/color_blue" />
+
+        <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom">
+
+        </com.aurelhubert.ahbottomnavigation.AHBottomNavigation>
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
 

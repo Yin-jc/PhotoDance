@@ -55,13 +55,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Administrator on 2018/4/15/015.
+ * 初始化DrawerLayout
  */
 
 public abstract class BaseActivity extends AppCompatActivity{
 
     private ViewGroup mContentView;
-
-    private Drawer mDrawer;
+    protected Drawer mDrawer;
     private Toolbar mToolbar;
     private String mUsername = "Yjc";
 
@@ -192,7 +192,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
-        //返回栈
+        //返回栈，按返回键直接返回上一个Fragment
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -204,31 +204,5 @@ public abstract class BaseActivity extends AppCompatActivity{
         mToolbar=findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
     }
-
-//    private void makeActionOverflowMenuShown() {
-//        //devices with hardware menu button (e.g. Samsung Note) don't show action overflow menu
-//        try {
-//            ViewConfiguration config = ViewConfiguration.get(this);
-//            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-//            if (menuKeyField != null) {
-//                menuKeyField.setAccessible(true);
-//                menuKeyField.setBoolean(config, false);
-//            }
-//        } catch (Exception e) {
-//
-//        }
-//    }
-
-//    private void fun(){
-//        try {
-//            Class mainClass = Class.forName("com.yjc.photodance.main.view.MainActivity");
-//            toolbar = (Toolbar) mainClass.getDeclaredField("toolbar").getGenericType();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchFieldException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
 
 }

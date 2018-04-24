@@ -1,6 +1,7 @@
 package com.yjc.photodance.main.model;
 
 import com.yjc.photodance.adapter.PhotoAdapter;
+import com.yjc.photodance.adapter.ShortVideoAdapter;
 
 /**
  * Created by Administrator on 2018/4/16/016.
@@ -23,7 +24,7 @@ public interface IMainModel {
      */
     void getPhotoBySearch(PhotoAdapter adapter, String search);
 
-    void getShortVideo();
+    void getVideo(ShortVideoAdapter adapter);
 
     void getLive();
 
