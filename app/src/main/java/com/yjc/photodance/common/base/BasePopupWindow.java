@@ -39,7 +39,7 @@ public abstract class BasePopupWindow extends PopupWindow {
         setFocusable(true);
 
         //设置SelectPicPopupWindow弹出窗体动画效果
-        setAnimationStyle(R.style.popupWindow_translate);
+        setAnimationStyle(R.style.PopupWindowAnimation);
 
         //实例化一个ColorDrawable颜色为透明
         ColorDrawable dw = new ColorDrawable(0x00000000);

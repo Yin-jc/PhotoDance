@@ -10,14 +10,14 @@
     </style>
 
     <!--PopupWindow弹出和收回动画-->
-    <style name="popupWindow_translate">
-        <item name="android:windowEnterAnimation">@anim/popup_window_out_translate</item>
-        <item name="android:windowExitAnimation">@anim/popup_window_back_translate</item>
-    </style>
-
-    <style name="FloatWindowAnimation">
+    <style name="PopupWindowAnimation">
         <item name="android:windowEnterAnimation">@anim/anim_float_window_enter</item>
         <item name="android:windowExitAnimation">@anim/anim_float_window_exit</item>
+    </style>
+
+    <style name="UploadAnimation">
+        <item name="android:windowEnterAnimation">@anim/anim_upload_image_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_upload_image_exit</item>
     </style>
 
 </resources>

@@ -2,11 +2,15 @@ package com.yjc.photodance.main.view;
 
 import android.graphics.Color;
 import android.media.Image;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -28,6 +32,8 @@ import com.yjc.photodance.main.view.fragment.MessageFragment;
 import com.yjc.photodance.main.view.fragment.PhotoFragment;
 import com.yjc.photodance.main.view.fragment.ShortVideoFragment;
 import com.yjc.photodance.adapter.PhotoAdapter;
+import com.yjc.photodance.main.view.fragment.UploadFragment;
+import com.yjc.photodance.main.view.popupwindow.UploadPopupWindow;
 
 /**
  * Created by Administrator on 2017/12/29/001.
@@ -58,6 +64,8 @@ public class MainActivity extends BaseActivity{
     private String mPhoneNum;
     private ImageView personalCenter;
     private ImageView camera;
+
+    private UploadPopupWindow mUploadPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,20 +110,15 @@ public class MainActivity extends BaseActivity{
 
         // TODO: 2018/4/24/024 改配色
         AHBottomNavigationItem photoItem =
-                new AHBottomNavigationItem(R.string.nav_photo, R.drawable.ic_photo_library_white_24dp,
-                        R.color.color_red);
+                new AHBottomNavigationItem("图片", R.drawable.ic_photo_library_white_24dp);
         AHBottomNavigationItem shortVideoItem =
-                new AHBottomNavigationItem(R.string.nav_short_video, R.drawable.ic_videocam_white_24dp,
-                        R.color.color_blue);
+                new AHBottomNavigationItem("视频", R.drawable.ic_videocam_white_24dp);
         AHBottomNavigationItem uploadItem =
-                new AHBottomNavigationItem(R.string.nav_upload, R.drawable.ic_add_box_white_24dp,
-                        R.color.color_gray);
+                new AHBottomNavigationItem("上传", R.drawable.ic_add_box_white_24dp);
         AHBottomNavigationItem liveItem =
-                new AHBottomNavigationItem(R.string.nav_live, R.drawable.ic_live_tv_white_24dp,
-                        R.color.color_red);
+                new AHBottomNavigationItem("直播", R.drawable.ic_live_tv_white_24dp);
         AHBottomNavigationItem messageItem =
-                new AHBottomNavigationItem(R.string.nav_message, R.drawable.ic_message_white_24dp,
-                        R.color.color_gray);
+                new AHBottomNavigationItem("消息", R.drawable.ic_message_white_24dp);
 
         bottomNavigation.addItem(photoItem);
         bottomNavigation.addItem(shortVideoItem);
@@ -176,10 +179,30 @@ public class MainActivity extends BaseActivity{
                         selectedTab = 1;
                         break;
                     case 2:
+                        // TODO: 2018/4/25/025 弹出popupwindow
+                        //产生背景变暗效果
+//                        WindowManager.LayoutParams lp = getWindow().getAttributes();
+//                        lp.alpha = 0.4f;
+//                        getWindow().setAttributes(lp);
+                        UploadFragment uploadFragment = new UploadFragment();
+                        replaceFragment(uploadFragment);
+                        mUploadPopupWindow = new UploadPopupWindow(MainActivity.this,
+                                uploadFragment);
+                        mUploadPopupWindow.showAtLocation(MainActivity.this.getWindow().getDecorView(),
+                                Gravity.BOTTOM, 0, 0);
+                        // TODO: 2018/4/25/025 动画
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mUploadPopupWindow.showImageView();
+//                            }
+//                        }, 200);
+                        break;
+                    case 3:
                         replaceFragment(new LiveFragment());
                         selectedTab = 2;
                         break;
-                    case 3:
+                    case 4:
                         replaceFragment(new MessageFragment());
                         selectedTab = 3;
                         break;

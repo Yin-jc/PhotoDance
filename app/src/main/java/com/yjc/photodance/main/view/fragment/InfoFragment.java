@@ -1,7 +1,6 @@
 package com.yjc.photodance.main.view.fragment;
 
 import android.content.ContentUris;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,10 +11,7 @@ import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -33,23 +29,23 @@ import com.yjc.photodance.common.base.BaseFragment;
 import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.common.storage.bean.Info;
 import com.yjc.photodance.common.util.HandleBitmap;
+import com.yjc.photodance.common.util.MultiMedia;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.MainActivity;
-import com.yjc.photodance.model.Account;
-import com.yjc.photodance.ui.SelectPicPopupWindow;
+import com.yjc.photodance.main.view.popupwindow.SelectPicPopupWindow;
 
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.yjc.photodance.common.util.MultiMedia.handleImage;
 
 /**
  * Created by Administrator on 2018/4/20/020.
@@ -287,52 +283,6 @@ public class InfoFragment extends BaseFragment {
                 break;
         }
 
-    }
-
-    /**
-     * Android4.4之后选取图片之后不再返回真实Uri，需要对返回的封装后的Uri进行解析
-     * @param data
-     * @return
-     */
-    private String handleImage(Intent data) {
-        String imagePath = null;
-        Uri uri = data.getData();
-        if(DocumentsContract.isDocumentUri(getActivity(), uri)) {
-            //如果是document类型的Uri，则通过document id处理
-            String docuId = DocumentsContract.getDocumentId(uri);
-            if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                //解析出数字格式的id
-                String id = docuId.split(":")[1];
-                String selection = MediaStore.Images.Media._ID + "=" + id;
-                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        selection);
-            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://" +
-                        "downloads/public_downloads"), Long.valueOf(docuId));
-                imagePath = getImagePath(contentUri, null);
-            }
-        }else if ("file".equalsIgnoreCase(uri.getScheme())){
-            //如果是file类型的Uri，直接获取图片路径即可
-            imagePath = uri.getPath();
-        }else if("content".equalsIgnoreCase(uri.getScheme())){
-            //如果是content类型的Uri，则使用普通方式处理
-            imagePath = getImagePath(uri, null);
-        }
-        return imagePath;
-    }
-
-    private String getImagePath(Uri uri, String selection){
-        String path = null;
-        //通过Uri和selection来获取真实的图片路径
-        Cursor cursor = getActivity().getContentResolver().query(uri, null, selection,
-                null, null);
-        if(cursor != null){
-            if(cursor.moveToFirst()){
-                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-            }
-            cursor.close();
-        }
-        return path;
     }
 
     @Override

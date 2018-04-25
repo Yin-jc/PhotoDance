@@ -1,4 +1,4 @@
-package com.yjc.photodance.ui;
+package com.yjc.photodance.main.view.popupwindow;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;

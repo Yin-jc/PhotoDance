@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/popup_window"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="300dp">
+
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_above="@+id/separation"
+        android:layout_marginStart="150dp"
+        android:layout_marginBottom="30dp">
+
+        <ImageView
+            android:id="@+id/upload_photo"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/shape_upload_photo"
+            android:src="@drawable/ic_photo_library_white_36dp"
+            android:scaleType="centerInside"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="上传图片"
+            android:textColor="@color/color_black"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_above="@+id/separation"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="30dp">
+
+        <ImageView
+            android:id="@+id/upload_video"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/shape_upload_video"
+            android:src="@drawable/ic_video_library_white_36dp"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="上传视频"
+            android:textColor="@color/color_black"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separation"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/dismiss"
+        android:background="@color/light_gray" />
+
+    <ImageView
+        android:id="@+id/dismiss"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/clear"
+        android:focusable="true"
+        android:clickable="true"/>
+</RelativeLayout>

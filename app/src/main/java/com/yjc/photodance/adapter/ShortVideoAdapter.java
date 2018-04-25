@@ -159,7 +159,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         @Override
         protected Bitmap doInBackground(Video... videos) {
             if(retriever != null){
-                retriever.setDataSource(videos[0].getUrl(), new HashMap<String, String>());
+                retriever.setDataSource(videos[0].getFileUrl(), new HashMap<String, String>());
                 return retriever.getFrameAtTime(0);
             }
             return null;

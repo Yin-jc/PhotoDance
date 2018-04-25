@@ -46,7 +46,7 @@ public class FloatView extends FrameLayout {
         // 设置图片格式，效果为背景透明
         mParams.format = PixelFormat.TRANSLUCENT;
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        mParams.windowAnimations = R.style.FloatWindowAnimation;
+        mParams.windowAnimations = R.style.PopupWindowAnimation;
         mParams.gravity = Gravity.START | Gravity.TOP; // 调整悬浮窗口至右下角
         // 设置悬浮窗口长宽数据
         int width = WindowUtil.dp2px(getContext(), 250);

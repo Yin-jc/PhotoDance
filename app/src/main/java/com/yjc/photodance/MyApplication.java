@@ -27,7 +27,7 @@ public class MyApplication extends LitePalApplication {
     private static Context mContext;
     private static int collectionsCount = 1;
     private static boolean isFromCollections = false;
-    private Typeface typeFace;
+
 
     @Override
     public void onCreate() {
