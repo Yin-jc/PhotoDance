@@ -1,14 +1,11 @@
 package com.yjc.photodance.main.view.fragment;
 
-import android.content.ContentUris;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
@@ -29,7 +26,6 @@ import com.yjc.photodance.common.base.BaseFragment;
 import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.common.storage.bean.Info;
 import com.yjc.photodance.common.util.HandleBitmap;
-import com.yjc.photodance.common.util.MultiMedia;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.MainActivity;
 import com.yjc.photodance.main.view.popupwindow.SelectPicPopupWindow;
@@ -45,7 +41,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.yjc.photodance.common.util.MultiMedia.handleImage;
+import static com.yjc.photodance.common.util.MultiMedia.handleFile;
 
 /**
  * Created by Administrator on 2018/4/20/020.
@@ -74,9 +70,10 @@ public class InfoFragment extends BaseFragment {
     private PopupWindow popupWindow;
     private Bitmap userHeadImageBitmap;
     private Bitmap backgroundBitmap;
-    private static final int CHOOSE_PHOTO_FOR_BACKGROUND = 1;
-    private static final int CHOOSE_PHOTO_FOR_USERHEADIMAGE = -1;
-    private static final int TAKE_PHOTO = 2;
+    private static final int CHOOSE_PHOTO_FOR_BACKGROUND = 2;
+    private static final int CHOOSE_PHOTO_FOR_USERHEADIMAGE = -2;
+    private static final int TYPE = 1;
+    private static final int TAKE_PHOTO = 3;
 
     private String imagePathForBackground;
     private String imagePathForUserHeadImage;
@@ -291,7 +288,7 @@ public class InfoFragment extends BaseFragment {
             // TODO: 2018/4/20/020 同步头像
             case CHOOSE_PHOTO_FOR_USERHEADIMAGE:
                 if(resultCode == RESULT_OK){
-                    imagePathForUserHeadImage = handleImage(data);
+                    imagePathForUserHeadImage = handleFile(data, TYPE);
                     userHeadImageBitmap = HandleBitmap.compressForFile(imagePathForUserHeadImage);
                     mUserHeadImage.setImageBitmap(userHeadImageBitmap);
                     popupWindow.dismiss();
@@ -300,7 +297,7 @@ public class InfoFragment extends BaseFragment {
 
             case CHOOSE_PHOTO_FOR_BACKGROUND:
                 if(resultCode == RESULT_OK){
-                    imagePathForBackground = handleImage(data);
+                    imagePathForBackground = handleFile(data ,TYPE);
                     backgroundBitmap = HandleBitmap.compressForFile(imagePathForBackground);
                     mUserHeadImage.setImageBitmap(backgroundBitmap);
                 }

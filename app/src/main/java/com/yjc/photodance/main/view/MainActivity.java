@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity{
     private boolean flag = true;
 
     private RefreshLayout refreshLayout;
-    private AHBottomNavigation bottomNavigation;
+    public AHBottomNavigation bottomNavigation;
     private PhotoAdapter photoAdapter;
     private ShortVideoAdapter videoAdapter;
 
@@ -78,9 +78,6 @@ public class MainActivity extends BaseActivity{
         initData();
         initListener();
         initToolbar();
-
-
-
     }
 
     @Override
@@ -93,20 +90,20 @@ public class MainActivity extends BaseActivity{
         // TODO: 2018/4/16/016 修改AhBottomNavigation的源码，解决colorful icon的问题
 
         //BottomNavigation的初始化
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
+        bottomNavigation.setDefaultBackgroundColor(getResources().getColor(R.color.light_gray));
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
         // Enable the translation of the FloatingActionButton
         bottomNavigation.manageFloatingActionButtonBehavior(fab);
         // Disable the translation inside the CoordinatorLayout
         bottomNavigation.setBehaviorTranslationEnabled(false);
         // Force to tint the drawable (useful for font with icon for example)
-        bottomNavigation.setForceTint(true);
+//        bottomNavigation.setForceTint(true);
         // Display color under navigation bar (API 21+)
-        bottomNavigation.setTranslucentNavigationEnabled(true);
+//        bottomNavigation.setTranslucentNavigationEnabled(true);
         // Use colored navigation with circle reveal effect
-        bottomNavigation.setColored(true);
+//        bottomNavigation.setColored(true);
         // Change colors
-        bottomNavigation.setAccentColor(Color.parseColor("#F63D2B"));
-        bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
+//        bottomNavigation.setAccentColor(R.color.light_gray);
 
         // TODO: 2018/4/24/024 改配色
         AHBottomNavigationItem photoItem =

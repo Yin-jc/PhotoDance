@@ -41,18 +41,12 @@ public abstract class BasePopupWindow extends PopupWindow {
         //设置SelectPicPopupWindow弹出窗体动画效果
         setAnimationStyle(R.style.PopupWindowAnimation);
 
-        //实例化一个ColorDrawable颜色为透明
-        ColorDrawable dw = new ColorDrawable(0x00000000);
-
-        //设置SelectPicPopupWindow弹出窗体的背景
-        setBackgroundDrawable(dw);
-
         //popupWindow添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框
         popupWindow.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
 
-                int height = popupWindow.findViewById(R.id.popup_window).getTop();
+                int height = popupWindow.getTop();
                 int y=(int) event.getY();
                 if(event.getAction()==MotionEvent.ACTION_UP){
                     if(y<height){

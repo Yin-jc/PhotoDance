@@ -21,6 +21,8 @@
     <color name="dark_green">#00CD00</color>
     <color name="dark_blue">#00B2EE</color>
     <color name="light_gray">#CCCCCC</color>
+    <color name="light_purple">#FF6EB4</color>
+    <color name="dark_yellow">#FFC125</color>
 
     <array name="tab_colors">
         <item name="tab_1">#455C65</item>

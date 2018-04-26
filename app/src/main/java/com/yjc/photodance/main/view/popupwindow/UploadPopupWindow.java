@@ -1,26 +1,34 @@
 package com.yjc.photodance.main.view.popupwindow;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 
+import com.mabeijianxi.smallvideorecord2.MediaRecorderActivity;
+import com.mabeijianxi.smallvideorecord2.model.MediaRecorderConfig;
+import com.yjc.photodance.MyApplication;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.base.BasePopupWindow;
-import com.yjc.photodance.common.util.MultiMedia;
 import com.yjc.photodance.main.view.MainActivity;
 import com.yjc.photodance.main.view.fragment.UploadFragment;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by Administrator on 2018/4/25/025.
@@ -28,44 +36,87 @@ import com.yjc.photodance.main.view.fragment.UploadFragment;
 
 public class UploadPopupWindow extends BasePopupWindow {
 
-    private ImageView mUploadPhoto;
-    private ImageView mUploadVideo;
+    private static final String TAG = "UploadPopupWindow";
+    private ImageView mUploadPhotoFromSD;
+    private ImageView mUploadVideoFromSD;
+    private ImageView mUploadPhotoByCamera;
+    private ImageView mUploadVideoByCamera;
     private ImageView mDismiss;
-    private UploadFragment fragment;
+    private UploadFragment mFragment;
+    private Context mContext;
 
     private static final int SELECT_PHOTO = 1;
     private static final int SELECT_VIDEO = 2;
 
+
     public UploadPopupWindow(Context context, UploadFragment fragment) {
         super(context);
-        this.fragment = fragment;
+        mContext = context;
+        mFragment = fragment;
         init();
     }
 
     private void init(){
 
-        mUploadPhoto = popupWindow.findViewById(R.id.upload_photo);
-        mUploadVideo = popupWindow.findViewById(R.id.upload_video);
+        mUploadPhotoFromSD = popupWindow.findViewById(R.id.upload_photo_from_SD);
+        mUploadVideoFromSD = popupWindow.findViewById(R.id.upload_video_from_SD);
+        mUploadPhotoByCamera = popupWindow.findViewById(R.id.upload_photo_by_camera);
+        mUploadVideoByCamera = popupWindow.findViewById(R.id.upload_video_by_camera);
         mDismiss = popupWindow.findViewById(R.id.dismiss);
 
 
-        mUploadVideo.setOnClickListener(new View.OnClickListener() {
+        mUploadVideoFromSD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // TODO: 2018/4/25/025 上传video界面
+                dismiss();
                 Intent intent = new Intent("android.intent.action.GET_CONTENT");
                 intent.setType("video/*");
-                fragment.startActivityForResult(intent, SELECT_VIDEO);
+                mFragment.startActivityForResult(intent, SELECT_VIDEO);
             }
         });
 
-        mUploadPhoto.setOnClickListener(new View.OnClickListener() {
+        mUploadPhotoFromSD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismiss();
                 // TODO: 2018/4/25/025 上传photo界面
                 Intent intent = new Intent("android.intent.action.GET_CONTENT");
                 intent.setType("image/*");
-                fragment.startActivityForResult(intent, SELECT_PHOTO);
+                mFragment.startActivityForResult(intent, SELECT_PHOTO);
+            }
+        });
+
+        mUploadPhotoByCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+                //拍照之后照片要回传到哪个界面，就在哪个界面调用相机
+                mFragment.takePhoto();
+            }
+        });
+
+        mUploadVideoByCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+                // TODO: 2018/4/26/026
+                // 录制
+                mFragment.recordVideo();
+//                MediaRecorderConfig config = new MediaRecorderConfig.Buidler()
+//
+//                        .fullScreen(false)
+//                        .smallVideoWidth(360)
+//                        .smallVideoHeight(480)
+//                        .recordTimeMax(6000)
+//                        .recordTimeMin(1500)
+//                        .maxFrameRate(20)
+//                        .videoBitrate(600000)
+//                        .captureThumbnailsTime(1)
+//                        .build();
+//                MediaRecorderActivity
+//                        .goSmallVideoRecorder((Activity) mContext,
+//                                MainActivity.class.getName(), config);
             }
         });
 
@@ -123,8 +174,4 @@ public class UploadPopupWindow extends BasePopupWindow {
 
     }
 
-    public void showImageView(){
-        setEnterAnimation(mUploadVideo);
-        setEnterAnimation(mUploadPhoto);
-    }
 }

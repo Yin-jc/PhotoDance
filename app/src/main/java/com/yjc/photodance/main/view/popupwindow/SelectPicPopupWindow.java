@@ -22,6 +22,12 @@ public class SelectPicPopupWindow extends BasePopupWindow {
     public SelectPicPopupWindow(Context context, View.OnClickListener itemsOnClick) {
         super(context);
 
+        //实例化一个ColorDrawable颜色为透明
+        ColorDrawable dw = new ColorDrawable(0x00000000);
+
+        //设置SelectPicPopupWindow弹出窗体的背景
+        setBackgroundDrawable(dw);
+
         takePhoto = popupWindow.findViewById(R.id.take_photo);
         selectPhoto = popupWindow.findViewById(R.id.select_photo);
         cancel = popupWindow.findViewById(R.id.cancel);

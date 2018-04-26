@@ -29,7 +29,8 @@ public class SplashActivity extends AppCompatActivity {
     private static final int MY_PERMISSION_REQUEST_CODE = 10000;
 
     private String[] permissions = new String[]{Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

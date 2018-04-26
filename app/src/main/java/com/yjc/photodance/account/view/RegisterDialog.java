@@ -24,7 +24,7 @@ import com.yjc.photodance.account.model.AccountManagerImpl;
 import com.yjc.photodance.account.model.IAccountManager;
 import com.yjc.photodance.account.presenter.IRegisterPresenter;
 import com.yjc.photodance.account.presenter.RegisterPresenterImpl;
-import com.yjc.photodance.common.util.FormaUtil;
+import com.yjc.photodance.common.util.FormUtil;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.MainActivity;
 
@@ -240,7 +240,7 @@ public class RegisterDialog extends Dialog implements IRegisterView {
      * 检查手机号码是否合法
      */
     private boolean check(String phoneNumber) {
-        boolean legal= FormaUtil.checkMobile(phoneNumber);
+        boolean legal= FormUtil.checkMobile(phoneNumber);
         if(!legal) {
             ToastUtil.show(getContext(), "非法手机号码，请重新输入");
             return false;

@@ -24,6 +24,9 @@ public class MultiMedia {
     private static Uri photoUri;
     private static final Context sContext = MyApplication.getMyApplicationContext();
 
+    private static final int IMAGE_TYPE = 1;
+    private static final int VIDEO_TYPE = 2;
+
     public static void takePhoto(){
 
         //创建File对象，用于存储照片
@@ -60,41 +63,62 @@ public class MultiMedia {
      * @param data
      * @return
      */
-    public static String handleImage(Intent data) {
-        String imagePath = null;
-        Uri uri = data.getData();
-        if(DocumentsContract.isDocumentUri(MyApplication.getMyApplicationContext(), uri)) {
-            //如果是document类型的Uri，则通过document id处理
-            String docuId = DocumentsContract.getDocumentId(uri);
-            if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                //解析出数字格式的id
-                String id = docuId.split(":")[1];
-                String selection = MediaStore.Images.Media._ID + "=" + id;
-                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        selection);
-            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://" +
-                        "downloads/public_downloads"), Long.valueOf(docuId));
-                imagePath = getImagePath(contentUri, null);
+    public static String handleFile(Intent data, int fileType) {
+        String path = null;
+        if (data != null) {
+            Uri uri = data.getData();
+            if (DocumentsContract.isDocumentUri(MyApplication.getMyApplicationContext(), uri)) {
+                //如果是document类型的Uri，则通过document id处理
+                String docuId = DocumentsContract.getDocumentId(uri);
+                if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                    //解析出数字格式的id
+                    String id = docuId.split(":")[1];
+                    String selection = MediaStore.Images.Media._ID + "=" + id;
+                    switch (fileType) {
+                        case IMAGE_TYPE:
+                            path = getFilePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                    selection, fileType);
+                            break;
+                        case VIDEO_TYPE:
+                            path = getFilePath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                    selection, fileType);
+                            break;
+                        default:
+                            break;
+                    }
+                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://" +
+                            "downloads/public_downloads"), Long.valueOf(docuId));
+                    path = getFilePath(contentUri, null, fileType);
+                }
+            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                //如果是file类型的Uri，直接获取图片路径即可
+                path = uri.getPath();
+            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                //如果是content类型的Uri，则使用普通方式处理
+                path = getFilePath(uri, null, fileType);
             }
-        }else if ("file".equalsIgnoreCase(uri.getScheme())){
-            //如果是file类型的Uri，直接获取图片路径即可
-            imagePath = uri.getPath();
-        }else if("content".equalsIgnoreCase(uri.getScheme())){
-            //如果是content类型的Uri，则使用普通方式处理
-            imagePath = getImagePath(uri, null);
         }
-        return imagePath;
+        return path;
     }
 
-    private static String getImagePath(Uri uri, String selection){
+    private static String getFilePath(Uri uri, String selection, int fileType){
         String path = null;
         //通过Uri和selection来获取真实的图片路径
         Cursor cursor = MyApplication.getMyApplicationContext().getContentResolver()
                 .query(uri, null, selection, null, null);
         if(cursor != null){
             if(cursor.moveToFirst()){
-                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                switch (fileType){
+                    case IMAGE_TYPE:
+                        path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                        break;
+                    case VIDEO_TYPE:
+                        path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+                        break;
+                    default:
+                        break;
+                }
             }
             cursor.close();
         }
