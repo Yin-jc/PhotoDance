@@ -3,13 +3,14 @@
     android:id="@+id/popup_window"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="300dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/upload_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_above="@+id/separation">
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -126,18 +127,20 @@
     <View
         android:id="@+id/separation"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_above="@+id/dismiss"
+        android:layout_height="1dp"
+        android:layout_below="@+id/upload_layout"
         android:background="@color/light_gray" />
 
     <ImageView
         android:id="@+id/dismiss"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/clear"
+        android:layout_below="@+id/separation"
+        android:layout_margin="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/add"
         android:focusable="true"
         android:clickable="true"/>
+
 </RelativeLayout>

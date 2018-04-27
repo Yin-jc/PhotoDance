@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
 
 import com.yjc.photodance.MyApplication;
@@ -22,6 +23,7 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.common.base.BaseFragment;
 import com.yjc.photodance.common.util.HandleBitmap;
 import com.yjc.photodance.common.util.MultiMedia;
+import com.yjc.photodance.main.view.MainActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,11 +58,14 @@ public class UploadFragment extends BaseFragment {
     private ImageView mPlaceHolder;
     private Button mConfirm;
     private Button mCancel;
+    private ProgressBar mProgressBar;
 
     private FrameLayout mVideoLayout;
 
     private Uri photoUri;
     private Uri videoUri;
+
+    private int optionCode;
 
     @Override
     protected int getLayoutId() {
@@ -94,6 +99,7 @@ public class UploadFragment extends BaseFragment {
                     mPhotoPath = MultiMedia.handleFile(data, PHOTO);
                     mSelectPhoto = HandleBitmap.compressForFile(mPhotoPath);
                     mPhotoContainer.setImageBitmap(mSelectPhoto);
+                    optionCode = SELECT_PHOTO;
                 }else {
                     mConfirm.setEnabled(false);
                     mCancel.setEnabled(false);
@@ -114,6 +120,7 @@ public class UploadFragment extends BaseFragment {
                     MediaController controller = new MediaController(getActivity());
                     mVideoContainer.setMediaController(controller);
                     mVideoContainer.start();
+                    optionCode = SELECT_VIDEO;
 
                     /**
                      * SurfaceView + MediaPlayer 播放视频
@@ -190,11 +197,16 @@ public class UploadFragment extends BaseFragment {
                     mPhotoContainer.setVisibility(View.VISIBLE);
                     try {
                         mTakePhoto = HandleBitmap.compressForStream(
-                                getActivity().getContentResolver().openInputStream(photoUri));
+                                    getActivity().getContentResolver().openInputStream(photoUri));
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+                    mPhotoPath = String.valueOf(photoUri);
+                    Log.d(TAG, "onActivityResult: " + mPhotoPath);
+//                    mTakePhoto = HandleBitmap.compressForFile(mPhotoPath);
+                    Log.d(TAG, "onActivityResult: " + mTakePhoto);
                     mPhotoContainer.setImageBitmap(mTakePhoto);
+                    optionCode = TAKE_PHOTO;
                 }else {
                     mConfirm.setEnabled(false);
                     mCancel.setEnabled(false);
@@ -209,10 +221,12 @@ public class UploadFragment extends BaseFragment {
                     mPlaceHolder.setVisibility(View.GONE);
                     mVideoContainer.setVisibility(View.VISIBLE);
                     mPhotoContainer.setVisibility(View.GONE);
-                    mVideoContainer.setVideoPath(String.valueOf(videoUri));
+                    mVideoPath = String.valueOf(videoUri);
+                    mVideoContainer.setVideoPath(mVideoPath);
                     MediaController controller = new MediaController(getActivity());
                     mVideoContainer.setMediaController(controller);
                     mVideoContainer.start();
+                    optionCode = RECORD_VIDEO;
                 }else {
                     mConfirm.setEnabled(false);
                     mCancel.setEnabled(false);
@@ -246,7 +260,7 @@ public class UploadFragment extends BaseFragment {
         //存放在当前应用缓存数据的位置，可以跳过权限验证
         // TODO: 2018/1/4/004 字符串拼接对多张图片命名
         File photo=new File(MyApplication.getMyApplicationContext().getExternalCacheDir() ,
-                "photo1.jpg");
+                "photo.jpg");
         if(photo.exists()){
             photo.delete();
         }
@@ -342,7 +356,38 @@ public class UploadFragment extends BaseFragment {
         mConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity activity = (MainActivity) getActivity();
                 // TODO: 2018/4/26/026 上传逻辑
+//                if(mPhotoContainer.getVisibility() == View.VISIBLE){
+//                    //上传照片
+//                    mPhotoPath = String.valueOf(photoUri);
+//                    Log.d(TAG, "onClick: " + mPhotoPath);
+//                    activity.mPresenter.requestUploadPhoto(mPhotoPath);
+//                }else if(mVideoContainer.getVisibility() == View.VISIBLE){
+//                    //上传视频
+//                    Log.d(TAG, "onClick: " + mVideoPath);
+//                    activity.mPresenter.requestUploadVideo(mVideoPath);
+//                }
+                switch (optionCode){
+                    case SELECT_PHOTO:
+                        mConfirm.setEnabled(false);
+                        activity.mPresenter.requestUploadPhoto(mPhotoPath);
+                        break;
+                    case TAKE_PHOTO:
+                        mConfirm.setEnabled(false);
+                        activity.mPresenter.requestUploadPhoto(String.valueOf(photoUri));
+                        break;
+                    case SELECT_VIDEO:
+                        mConfirm.setEnabled(false);
+                        activity.mPresenter.requestUploadVideo(mVideoPath);
+                        break;
+                    case RECORD_VIDEO:
+                        mConfirm.setEnabled(false);
+                        activity.mPresenter.requestUploadVideo(String.valueOf(videoUri));
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
@@ -368,6 +413,15 @@ public class UploadFragment extends BaseFragment {
         mConfirm = getActivity().findViewById(R.id.confirm_btn);
         mCancel = getActivity().findViewById(R.id.cancel_btn);
         mVideoLayout = getActivity().findViewById(R.id.video_layout);
+        mProgressBar = getActivity().findViewById(R.id.progressbar);
+    }
+
+    public ProgressBar getProgressBar(){
+        return mProgressBar;
+    }
+
+    private void getVideoInfo(String path){
+        File file = new File(path);
     }
 
 }

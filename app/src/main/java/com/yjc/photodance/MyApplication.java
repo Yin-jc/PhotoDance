@@ -42,12 +42,15 @@ public class MyApplication extends LitePalApplication {
 
         mContext = getApplicationContext();
 
+        SharedPreferenceDao.getInstance().saveString("tokenValid",
+                String.valueOf(System.currentTimeMillis()));
+
         LitePal.initialize(this);
         //创建数据库
         Connector.getDatabase();
 
         //初始化小视频录制
-//        initSmallVideo();
+        initSmallVideo();
 
     }
 

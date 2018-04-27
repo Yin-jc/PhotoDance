@@ -6,5 +6,5 @@ package com.yjc.photodance.main.view;
 
 public interface IMainView {
 
-
+    void updateProgress(int value);
 }

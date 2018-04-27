@@ -52,6 +52,11 @@ public class SelectPicPopupWindow extends BasePopupWindow {
     }
 
     @Override
+    protected int getPopupWindowHeight() {
+        return ViewGroup.LayoutParams.WRAP_CONTENT;
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.popup_window_bottom;
     }

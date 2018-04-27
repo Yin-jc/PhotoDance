@@ -1,5 +1,6 @@
 package com.yjc.photodance.main.view;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Handler;
@@ -12,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -39,8 +41,9 @@ import com.yjc.photodance.main.view.popupwindow.UploadPopupWindow;
  * Created by Administrator on 2017/12/29/001.
  */
 
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity implements IMainView{
 
+    private static final String TAG = "MainActivity";
     private boolean isFirstEnter = true;
 
     private int selectedTab = 0;
@@ -53,7 +56,7 @@ public class MainActivity extends BaseActivity{
     private PhotoAdapter photoAdapter;
     private ShortVideoAdapter videoAdapter;
 
-    private IMainPresenter mPresenter;
+    public IMainPresenter mPresenter;
     private IMainModel mModel;
 
     private ImageView search;
@@ -72,7 +75,7 @@ public class MainActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
 
         mModel = new MainModelImpl();
-        mPresenter = new MainPresenterImpl(mModel);
+        mPresenter = new MainPresenterImpl(this, mModel);
         
         initView();
         initData();
@@ -112,23 +115,23 @@ public class MainActivity extends BaseActivity{
                 new AHBottomNavigationItem("视频", R.drawable.ic_videocam_white_24dp);
         AHBottomNavigationItem uploadItem =
                 new AHBottomNavigationItem("上传", R.drawable.ic_add_box_white_24dp);
-        AHBottomNavigationItem liveItem =
-                new AHBottomNavigationItem("直播", R.drawable.ic_live_tv_white_24dp);
-        AHBottomNavigationItem messageItem =
-                new AHBottomNavigationItem("消息", R.drawable.ic_message_white_24dp);
+//        AHBottomNavigationItem liveItem =
+//                new AHBottomNavigationItem("直播", R.drawable.ic_live_tv_white_24dp);
+//        AHBottomNavigationItem messageItem =
+//                new AHBottomNavigationItem("消息", R.drawable.ic_message_white_24dp);
 
         bottomNavigation.addItem(photoItem);
-        bottomNavigation.addItem(shortVideoItem);
         bottomNavigation.addItem(uploadItem);
-        bottomNavigation.addItem(liveItem);
-        bottomNavigation.addItem(messageItem);
+        bottomNavigation.addItem(shortVideoItem);
+//        bottomNavigation.addItem(liveItem);
+//        bottomNavigation.addItem(messageItem);
 
         photoAdapter = new PhotoAdapter(this);
         videoAdapter = new ShortVideoAdapter(this);
 
         // TODO: 2018/4/15/015 头像处理
         //获取头像
-//        account = DataSupport.findLast(Account.class);
+//        account = DataSupport.findLast(User.class);
 //        Bitmap userHeadImageBitmap = BitmapFactory.decodeByteArray(account.getUserHeadImage(),
 //                0, account.getUserHeadImage().length);
 //        personalCenter.setImageBitmap(userHeadImageBitmap);
@@ -168,14 +171,10 @@ public class MainActivity extends BaseActivity{
                 switch (position){//index of items
                     case 0:
                         replaceFragment(new PhotoFragment(photoAdapter));
+                        refreshLayout.autoRefresh();
                         selectedTab = 0;
                         break;
                     case 1:
-                        replaceFragment(new ShortVideoFragment(videoAdapter));
-                        refreshLayout.autoRefresh();
-                        selectedTab = 1;
-                        break;
-                    case 2:
                         // TODO: 2018/4/25/025 弹出popupwindow
                         //产生背景变暗效果
 //                        WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -188,21 +187,20 @@ public class MainActivity extends BaseActivity{
                         mUploadPopupWindow.showAtLocation(MainActivity.this.getWindow().getDecorView(),
                                 Gravity.BOTTOM, 0, 0);
                         // TODO: 2018/4/25/025 动画
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                mUploadPopupWindow.showImageView();
-//                            }
-//                        }, 200);
                         break;
-                    case 3:
-                        replaceFragment(new LiveFragment());
+                    case 2:
+                        replaceFragment(new ShortVideoFragment(videoAdapter));
+                        refreshLayout.autoRefresh();
                         selectedTab = 2;
                         break;
-                    case 4:
-                        replaceFragment(new MessageFragment());
-                        selectedTab = 3;
-                        break;
+//                    case 3:
+//                        replaceFragment(new LiveFragment());
+//                        selectedTab = 2;
+//                        break;
+//                    case 4:
+//                        replaceFragment(new MessageFragment());
+//                        selectedTab = 3;
+//                        break;
                     default:
                         break;
                 }
@@ -213,7 +211,7 @@ public class MainActivity extends BaseActivity{
         // TODO: 2018/1/6/006 以后打开应用也自动刷新
         if (isFirstEnter) {
             //第一次进入自动刷新
-//            refreshLayout.autoRefresh();
+            refreshLayout.autoRefresh();
             replaceFragment(new PhotoFragment(photoAdapter));
         }
 
@@ -226,12 +224,12 @@ public class MainActivity extends BaseActivity{
 //                        mPresenter.requestPhoto(photoAdapter, 1, size);
                         break;
                     case 1:
-                        mPresenter.requestVideo(videoAdapter);
                         break;
                     case 2:
+                        mPresenter.requestVideo(videoAdapter);
                         break;
-                    case 3:
-                        break;
+//                    case 3:
+//                        break;
                     default:
                         break;
                 }
@@ -282,5 +280,13 @@ public class MainActivity extends BaseActivity{
     }
 
 
-
+    @Override
+    public void updateProgress(int value) {
+        UploadFragment fragment = (UploadFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
+        Log.d(TAG, "updateProgress: " + fragment);
+        ProgressBar progressBar = fragment.getProgressBar();
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setProgress(value);
+    }
 }

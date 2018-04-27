@@ -281,6 +281,9 @@ public class RegisterDialog extends Dialog implements IRegisterView {
         }
     }
 
+    /**
+     * 注册成功直接跳转MainActivity
+     */
     @Override
     public void showRegisterSuc() {
         Intent intent = new Intent(mContext, MainActivity.class);

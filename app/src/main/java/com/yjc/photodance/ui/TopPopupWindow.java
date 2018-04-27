@@ -37,6 +37,11 @@ public class TopPopupWindow extends BasePopupWindow{
     }
 
     @Override
+    protected int getPopupWindowHeight() {
+        return 0;
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.popup_window_top;
     }

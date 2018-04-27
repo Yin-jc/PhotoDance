@@ -90,6 +90,16 @@
         android:textColor="@color/color_black"
         android:enabled="false"/>
 
+    <TextView
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/progressbar"
+        android:layout_marginTop="10dp"
+        android:text="正在上传,请稍后..."
+        android:textColor="@color/color_black"
+        android:visibility="gone"/>
     <ProgressBar
         android:id="@+id/progressbar"
         android:layout_width="500dp"
@@ -100,7 +110,6 @@
         android:layout_marginTop="30dp"
         android:progress="0"
         android:max="100"
-        android:progressBackgroundTint="@color/color_blue"
-        android:visibility="gone"/>
+        android:indeterminate="true" />
 
 </RelativeLayout>

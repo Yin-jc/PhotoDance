@@ -18,4 +18,8 @@ public interface IMainPresenter {
     void requestLive();
 
     void requestMessage();
+
+    void requestUploadPhoto(String path);
+
+    void requestUploadVideo(String path);
 }

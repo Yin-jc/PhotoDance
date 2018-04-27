@@ -1,11 +1,14 @@
 package com.yjc.photodance.main.view.popupwindow;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import com.mabeijianxi.smallvideorecord2.MediaRecorderActivity;
 import com.mabeijianxi.smallvideorecord2.model.MediaRecorderConfig;
@@ -53,10 +57,17 @@ public class UploadPopupWindow extends BasePopupWindow {
         super(context);
         mContext = context;
         mFragment = fragment;
+
         init();
     }
 
     private void init(){
+
+        //实例化一个ColorDrawable颜色为透明
+        ColorDrawable dw = new ColorDrawable(mContext.getResources().getColor(R.color.dark_white));
+
+        //设置SelectPicPopupWindow弹出窗体的背景
+        setBackgroundDrawable(dw);
 
         mUploadPhotoFromSD = popupWindow.findViewById(R.id.upload_photo_from_SD);
         mUploadVideoFromSD = popupWindow.findViewById(R.id.upload_video_from_SD);
@@ -64,6 +75,7 @@ public class UploadPopupWindow extends BasePopupWindow {
         mUploadVideoByCamera = popupWindow.findViewById(R.id.upload_video_by_camera);
         mDismiss = popupWindow.findViewById(R.id.dismiss);
 
+        setEnterAnimation(mDismiss, 500);
 
         mUploadVideoFromSD.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,12 +135,11 @@ public class UploadPopupWindow extends BasePopupWindow {
         mDismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
-//                WindowManager.LayoutParams lp = getWindow().getAttributes();
-//                lp.alpha = 1.0f;
-//                getWindow().setAttributes(lp);
+                setExitAnimation(view, 0);
             }
         });
+
+
     }
 
 
@@ -138,39 +149,52 @@ public class UploadPopupWindow extends BasePopupWindow {
     }
 
     @Override
+    protected int getPopupWindowHeight() {
+        return ViewGroup.LayoutParams.WRAP_CONTENT;
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.popup_window_upload;
     }
 
-    private void setEnterAnimation(ImageView imageView){
-
-        ObjectAnimator scaleXAnim = ObjectAnimator.ofFloat(imageView,
-                "scaleX", 0.0f, 1.0f);
-        ObjectAnimator scaleYAnim = ObjectAnimator.ofFloat(imageView,
-                "scaleY", 0.0f, 1.0f);
-        ObjectAnimator transYAnim = ObjectAnimator.ofFloat(imageView,
-                "translationY", 1.0f, 0.0f);
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(scaleXAnim, scaleYAnim, transYAnim);
-        set.setInterpolator(new AccelerateDecelerateInterpolator());
-        set.setDuration(300);
-        set.start();
-
+    private void setEnterAnimation(View view, long delay){
+        ObjectAnimator animatorEnter = ObjectAnimator.ofFloat(view, "rotation",
+                0f, 45f);
+        animatorEnter.setDuration(400);
+        animatorEnter.setStartDelay(delay);
+        animatorEnter.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorEnter.start();
     }
 
-    private void setExitAnimation(ImageView imageView){
+    private void setExitAnimation(View view, long delay){
+        ObjectAnimator animatorExit = ObjectAnimator.ofFloat(view, "rotation",
+                45f, 0f);
+        animatorExit.setDuration(400);
+        animatorExit.setStartDelay(delay);
+        animatorExit.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorExit.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
 
-        ObjectAnimator scaleXAnim = ObjectAnimator.ofFloat(imageView,
-                "scaleX", 1.0f, 0.0f);
-        ObjectAnimator scaleYAnim = ObjectAnimator.ofFloat(imageView,
-                "scaleY", 1.0f, 0.0f);
-        ObjectAnimator transYAnim = ObjectAnimator.ofFloat(imageView,
-                "translationY", 0.0f, 1.0f);
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(scaleXAnim, scaleYAnim, transYAnim);
-        set.setInterpolator(new AccelerateDecelerateInterpolator());
-        set.setDuration(3000);
-        set.start();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                UploadPopupWindow.super.dismiss();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        animatorExit.start();
 
     }
 

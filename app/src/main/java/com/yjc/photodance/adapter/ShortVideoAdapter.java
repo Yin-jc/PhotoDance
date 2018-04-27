@@ -21,6 +21,7 @@ import com.yjc.photodance.common.storage.bean.Video;
 import com.yjc.photodance.dkplayer.widget.controller.StandardVideoController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,7 +96,6 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if(mVideos != null) {
             Video video = mVideos.get(position);
 //        new MyAsyncTask().execute(video);
             // TODO: 2018/4/24/024 第一帧在子线程中获取还没有回传数据
@@ -106,25 +106,27 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
             switch (holder.getItemViewType()) {
                 case TYPE_LIST:
                     holder.videoView.setTitle(video.getFilename());
-                    holder.videoView.setUrl(video.getFileUrl());
+                    holder.videoView.setUrl(video.getFile().getFileUrl());
                     holder.videoView.setVideoController(holder.controller);
                     holder.videoView.setPlayerConfig(holder.config);
                     break;
                 case TYPE_STAGGERED:
                     holder.videoView.setTitle(video.getFilename());
-                    holder.videoView.setUrl(video.getFileUrl());
+                    holder.videoView.setUrl(video.getFile().getFileUrl());
                     holder.videoView.setVideoController(holder.controller);
                     holder.videoView.setPlayerConfig(holder.config);
                     break;
                 default:
                     break;
             }
-        }
     }
 
     @Override
     public int getItemCount() {
         Log.d("ShortVideoAdapter", "getItemCount: " + mVideos.size());
+        for (Video video : mVideos){
+            Log.d(TAG, "getItemCount: " + video.getType());
+        }
         return mVideos.size();
     }
 
@@ -174,6 +176,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
     }
 
     public void setVideos(List<Video> videos){
+        Collections.shuffle(videos);
         mVideos = videos;
     }
 

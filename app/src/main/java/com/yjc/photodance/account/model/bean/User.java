@@ -1,40 +1,46 @@
 package com.yjc.photodance.account.model.bean;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Created by Administrator on 2018/4/13/013.
  */
 
-public class User extends BmobObject{
+public class User extends BmobUser{
 
-    private String phoneNumber;
-    private String username;
-    private String password;
+    //已有属性 用户名、密码、邮箱、手机号码
+
+    //注意此处定义的属性一定要和表中的列对应好
+
+    private BmobFile file;
+    private String type;
+    private BmobFile thumb;
     private String expired;
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public BmobFile getFile() {
+        return file;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setFile(BmobFile file) {
+        this.file = file;
     }
 
-    public String getUsername() {
-        return username;
+    public String getType() {
+        return type;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getPassword() {
-        return password;
+    public BmobFile getThumb() {
+        return thumb;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setThumb(BmobFile thumb) {
+        this.thumb = thumb;
     }
 
     public String getExpired() {

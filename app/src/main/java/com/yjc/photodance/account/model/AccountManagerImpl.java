@@ -16,13 +16,15 @@ import java.util.List;
 //import cn.bmob.newsmssdk.listener.VerifySMSCodeListener;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobSMS;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 //import com.yjc.mytaxi.MyTaxiApplication;
-//import com.yjc.mytaxi.account.model.bean.Account;
+//import com.yjc.mytaxi.account.model.bean.User;
 //import com.yjc.mytaxi.account.model.response.LoginResponse;
 //import com.yjc.mytaxi.common.dataBus.RxBus;
 //import com.yjc.mytaxi.common.http.IHttpClient;
@@ -109,10 +111,10 @@ public class AccountManagerImpl implements IAccountManager {
     public void checkUserExist(final String phoneNumber) {
 
         BmobQuery<User> bmobQuery = new BmobQuery<>();
-        bmobQuery.addWhereEqualTo("phoneNumber", phoneNumber);
+        bmobQuery.addWhereEqualTo("mobilePhoneNumber", phoneNumber);
         bmobQuery.findObjects(new FindListener<User>() {
             @Override
-            public void done(List<User> users, cn.bmob.v3.exception.BmobException e) {
+            public void done(List<User> users, BmobException e) {
                 if(!users.isEmpty()){//查询成功，即用户存在
                     Log.i("bmob", "用户已存在");
                     mHandler.sendEmptyMessage(IAccountManager.USER_EXIST);
@@ -134,14 +136,30 @@ public class AccountManagerImpl implements IAccountManager {
     public void register(String phoneNumber, String username, String password) {
 
         User user = new User();
-        user.setPhoneNumber(phoneNumber);
+        user.setMobilePhoneNumber(phoneNumber);
         user.setUsername(username);
         user.setPassword(password);
-        user.save(new SaveListener<String>() {
+//        user.save(new SaveListener<String>() {
+//            @Override
+//            public void done(String objectId, cn.bmob.v3.exception.BmobException e) {
+//                if(e == null){
+//                    Log.i("bmob", "注册成功，返回objectId为：" + objectId);
+//                    mHandler.sendEmptyMessage(IAccountManager.REGISTER_SUC);
+//                    SharedPreferenceDao.getInstance().saveBoolean("isLogin", true);
+//                    //设置token有效时间为24小时
+//                    SharedPreferenceDao.getInstance().saveString("tokenValid",
+//                            String.valueOf(System.currentTimeMillis()) + String.valueOf(24*60*60*1000));
+//                }else{
+//                    Log.i("bmob", "注册失败：" + e.getMessage());
+//                    mHandler.sendEmptyMessage(IAccountManager.SERVER_FAIL);
+//                }
+//            }
+//        });
+        user.signUp(new SaveListener<User>() {
             @Override
-            public void done(String objectId, cn.bmob.v3.exception.BmobException e) {
+            public void done(User user, BmobException e) {
                 if(e == null){
-                    Log.i("bmob", "注册成功，返回objectId为：" + objectId);
+                    Log.i("bmob", "注册成功");
                     mHandler.sendEmptyMessage(IAccountManager.REGISTER_SUC);
                     SharedPreferenceDao.getInstance().saveBoolean("isLogin", true);
                     //设置token有效时间为24小时
@@ -163,14 +181,29 @@ public class AccountManagerImpl implements IAccountManager {
     @Override
     public void login(String username, String password) {
 
-        BmobQuery<User> bmobQuery = new BmobQuery<>();
-        bmobQuery.addWhereEqualTo("username", username);
-        bmobQuery.addWhereEqualTo("password", password);
-        bmobQuery.findObjects(new FindListener<User>() {
+//        BmobQuery<User> bmobQuery = new BmobQuery<>();
+//        bmobQuery.addWhereEqualTo("username", username);
+//        bmobQuery.addWhereEqualTo("password", password);
+//        bmobQuery.findObjects(new FindListener<User>() {
+//            @Override
+//            public void done(List<User> list, cn.bmob.v3.exception.BmobException e) {
+//                if(e == null){//登录成功
+//                    Log.i("bmob", "登录成功");
+//                    mHandler.sendEmptyMessage(IAccountManager.LOGIN_SUC);
+//                }else {//登录失败，用户名或密码错误
+//                    Log.i("bmob", "登录失败" + e.getMessage());
+//                    mHandler.sendEmptyMessage(IAccountManager.UN_OR_PW_ERROR);
+//                }
+//            }
+//        });
+
+        BmobUser.loginByAccount(username, password, new LogInListener<User>() {
             @Override
-            public void done(List<User> list, cn.bmob.v3.exception.BmobException e) {
+            public void done(User user, BmobException e) {
                 if(e == null){//登录成功
                     Log.i("bmob", "登录成功");
+                    //获取当前登录成功的账户
+//                    User user = BmobUser.getCurrentUser(User.class);
                     mHandler.sendEmptyMessage(IAccountManager.LOGIN_SUC);
                 }else {//登录失败，用户名或密码错误
                     Log.i("bmob", "登录失败" + e.getMessage());

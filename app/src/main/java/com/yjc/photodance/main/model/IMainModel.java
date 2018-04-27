@@ -1,5 +1,7 @@
 package com.yjc.photodance.main.model;
 
+import android.os.Handler;
+
 import com.yjc.photodance.adapter.PhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 
@@ -8,6 +10,8 @@ import com.yjc.photodance.adapter.ShortVideoAdapter;
  */
 
 public interface IMainModel {
+
+    int UPDATE_PROGRESS = 1;
 
     /**
      * 请求照片
@@ -31,4 +35,11 @@ public interface IMainModel {
     void getMessage();
 
     void setAdapter();
+
+    void uploadPhoto(String path);
+
+    void uploadVideo(String path);
+
+    void setHandler(Handler mHandler);
+
 }
