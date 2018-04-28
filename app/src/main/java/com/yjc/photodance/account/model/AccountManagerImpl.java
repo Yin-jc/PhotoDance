@@ -110,11 +110,11 @@ public class AccountManagerImpl implements IAccountManager {
     @Override
     public void checkUserExist(final String phoneNumber) {
 
-        BmobQuery<User> bmobQuery = new BmobQuery<>();
+        BmobQuery<BmobUser> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("mobilePhoneNumber", phoneNumber);
-        bmobQuery.findObjects(new FindListener<User>() {
+        bmobQuery.findObjects(new FindListener<BmobUser>() {
             @Override
-            public void done(List<User> users, BmobException e) {
+            public void done(List<BmobUser> users, BmobException e) {
                 if(!users.isEmpty()){//查询成功，即用户存在
                     Log.i("bmob", "用户已存在");
                     mHandler.sendEmptyMessage(IAccountManager.USER_EXIST);
@@ -131,11 +131,12 @@ public class AccountManagerImpl implements IAccountManager {
      * @param phoneNumber
      * @param username
      * @param password
+     *在注册过程中，服务器会对注册用户信息进行检查，以确保注册的用户名和电子邮件地址是独一无二的
      */
     @Override
     public void register(String phoneNumber, String username, String password) {
 
-        User user = new User();
+        BmobUser user = new BmobUser();
         user.setMobilePhoneNumber(phoneNumber);
         user.setUsername(username);
         user.setPassword(password);
@@ -155,9 +156,9 @@ public class AccountManagerImpl implements IAccountManager {
 //                }
 //            }
 //        });
-        user.signUp(new SaveListener<User>() {
+        user.signUp(new SaveListener<BmobUser>() {
             @Override
-            public void done(User user, BmobException e) {
+            public void done(BmobUser user, BmobException e) {
                 if(e == null){
                     Log.i("bmob", "注册成功");
                     mHandler.sendEmptyMessage(IAccountManager.REGISTER_SUC);
@@ -197,9 +198,9 @@ public class AccountManagerImpl implements IAccountManager {
 //            }
 //        });
 
-        BmobUser.loginByAccount(username, password, new LogInListener<User>() {
+        BmobUser.loginByAccount(username, password, new LogInListener<BmobUser>() {
             @Override
-            public void done(User user, BmobException e) {
+            public void done(BmobUser user, BmobException e) {
                 if(e == null){//登录成功
                     Log.i("bmob", "登录成功");
                     //获取当前登录成功的账户
