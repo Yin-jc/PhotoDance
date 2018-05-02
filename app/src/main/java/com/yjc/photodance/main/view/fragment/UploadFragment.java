@@ -420,8 +420,4 @@ public class UploadFragment extends BaseFragment {
         return mProgressBar;
     }
 
-    private void getVideoInfo(String path){
-        File file = new File(path);
-    }
-
 }

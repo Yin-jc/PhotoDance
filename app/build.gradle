@@ -86,4 +86,6 @@ dependencies {
 
     implementation 'com.mabeijianxi:small-video-record2:2.0.3@aar'
 
+    implementation 'com.sackcentury:shinebutton:0.2.0'
+
 }

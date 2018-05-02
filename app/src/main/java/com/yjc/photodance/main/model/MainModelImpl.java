@@ -20,6 +20,7 @@ import com.yjc.photodance.common.network.RetrofitServiceManager;
 import com.yjc.photodance.common.storage.bean.Video;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -126,7 +127,7 @@ public class MainModelImpl implements IMainModel {
         query.findObjects(new FindListener<Video>() {
             @Override
             public void done(List<Video> videos, BmobException e) {
-                if(e == null){
+                if (e == null){
                     Log.d(TAG, "done: 查询成功");
                     adapter.setVideos(videos);
                     adapter.notifyDataSetChanged();
@@ -286,23 +287,24 @@ public class MainModelImpl implements IMainModel {
     private void saveVideo(BmobFile file){
         BmobUser user = User.getCurrentUser();
         String username = user.getUsername();
-        com.yjc.photodance.main.model.bean.File userFile =
-                new com.yjc.photodance.main.model.bean.File();
-        userFile.setFile(file);
-        userFile.setUsername(username);
+
+        Video video = new Video();
+        video.setFile(file);
+        video.setUsername(username);
         // width >= height
         if(Integer.parseInt(info[0]) >= Integer.parseInt(info[1])){
-            userFile.setType("TYPE_LIST");
+            video.setType("TYPE_LIST");
         }else {
-            userFile.setType("TYPE_STAGGERED");
+            video.setType("TYPE_STAGGERED");
         }
-        userFile.save(new SaveListener<String>() {
+
+        video.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null){
-                    Log.d(TAG, "done: " + "保存成功");
+                    Log.d(TAG, "done: 保存成功");
                 }else {
-                    Log.d(TAG, "done: " + "保存失败");
+                    Log.d(TAG, "done: 保存失败");
                 }
             }
         });
@@ -318,6 +320,11 @@ public class MainModelImpl implements IMainModel {
 //        });
     }
 
+    /**
+     * 获得视频的尺寸
+     * @param path
+     * @return
+     */
     private String[] getVideoInfo(String path){
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         String width = "";

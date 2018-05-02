@@ -1,5 +1,6 @@
 package com.yjc.photodance.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -12,23 +13,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.dueeeke.videoplayer.player.PlayerConfig;
+import com.sackcentury.shinebuttonlib.ShineButton;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.storage.bean.Video;
+import com.yjc.photodance.common.util.HandleBitmap;
 import com.yjc.photodance.dkplayer.widget.controller.StandardVideoController;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Administrator on 2018/4/22/022.
@@ -41,10 +44,13 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
     private static final String TAG = "ShortVideoAdapter";
     private Context mContext;
     private List<Video> mVideos = new ArrayList<>();
-    private static Bitmap firstFrameBitmap;
+    private ExecutorService cachedThreadPool;
+    private Activity mActivity;
 
-    public ShortVideoAdapter(Context context){
+    public ShortVideoAdapter(Context context, Activity activity){
         mContext = context;
+        mActivity = activity;
+        cachedThreadPool = Executors.newCachedThreadPool();
     }
 
      class ViewHolder extends RecyclerView.ViewHolder{
@@ -53,11 +59,26 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         private StandardVideoController controller;
         private PlayerConfig config;
 
+        private ShineButton likeBtn;
+        private TextView title;
+        private CircleImageView userImage;
+        private TextView username;
+        private ImageView comment;
+        private TextView commentQuantity;
+
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView;
             videoView = cardView.findViewById(R.id.video_view);
             controller = new StandardVideoController(mContext);
+
+            likeBtn = cardView.findViewById(R.id.like);
+            likeBtn.init(mActivity);
+            title = cardView.findViewById(R.id.title);
+            userImage = cardView.findViewById(R.id.user_head_image);
+            username = cardView.findViewById(R.id.username);
+            comment = cardView.findViewById(R.id.comment);
+            commentQuantity = cardView.findViewById(R.id.comment_quantity);
 
             //高级设置
             config = new PlayerConfig.Builder()
@@ -75,43 +96,58 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.short_video_item, parent, false);
-        StaggeredGridLayoutManager.LayoutParams params =
-                (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
         switch (viewType){
             case TYPE_LIST:
-                params.setFullSpan(true);
-                view.setLayoutParams(params);
-                return new ViewHolder(view);
+                View listView = LayoutInflater.from(parent.getContext()).
+                        inflate(R.layout.short_video_item, parent, false);
+                StaggeredGridLayoutManager.LayoutParams ListParams =
+                        (StaggeredGridLayoutManager.LayoutParams) listView.getLayoutParams();
+                ListParams.setFullSpan(true);
+                listView.setLayoutParams(ListParams);
+                return new ViewHolder(listView);
             case TYPE_STAGGERED:
-                params.setFullSpan(false);
-                view.setLayoutParams(params);
-                return new ViewHolder(view);
+                View staggeredView = LayoutInflater.from(parent.getContext()).
+                        inflate(R.layout.video_item_staggered, parent, false);
+                StaggeredGridLayoutManager.LayoutParams staggeredParams =
+                        (StaggeredGridLayoutManager.LayoutParams) staggeredView.getLayoutParams();
+                staggeredParams.setFullSpan(false);
+                staggeredView.setLayoutParams(staggeredParams);
+                return new ViewHolder(staggeredView);
             default:
                 break;
         }
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(
+                parent.getContext()).inflate(R.layout.short_video_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            Video video = mVideos.get(position);
-//        new MyAsyncTask().execute(video);
-            // TODO: 2018/4/24/024 第一帧在子线程中获取还没有回传数据
-            //显示视频第一帧
-            Glide.with(mContext)
-                    .load(firstFrameBitmap)
-                    .into(holder.controller.getThumb());
-            switch (holder.getItemViewType()) {
+        Video video = mVideos.get(position);
+        // TODO: 2018/4/24/024 第一帧在子线程中获取还没有回传数据
+        //显示视频第一帧
+        Glide.with(mContext)
+                .load(video.getThumb())
+                .into(holder.controller.getThumb());
+
+        switch (holder.getItemViewType()) {
                 case TYPE_LIST:
-                    holder.videoView.setTitle(video.getFilename());
+                    holder.title.setText(video.getFile().getFilename());
+//                    holder.userImage.setImageBitmap(HandleBitmap.compressForFile(
+//                            video.getUserimage().getFileUrl()));
+                    holder.username.setText(video.getUsername());
+                    holder.commentQuantity.setText(video.getComment());
+                    holder.videoView.setTitle(video.getFile().getFilename());
                     holder.videoView.setUrl(video.getFile().getFileUrl());
                     holder.videoView.setVideoController(holder.controller);
                     holder.videoView.setPlayerConfig(holder.config);
                     break;
                 case TYPE_STAGGERED:
-                    holder.videoView.setTitle(video.getFilename());
+                    holder.title.setText(video.getFile().getFilename());
+//                    holder.userImage.setImageBitmap(HandleBitmap.compressForFile(
+//                            video.getUserimage().getFileUrl()));
+                    holder.username.setText(video.getUsername());
+                    holder.commentQuantity.setText(video.getComment());
+                    holder.videoView.setTitle(video.getFile().getFilename());
                     holder.videoView.setUrl(video.getFile().getFileUrl());
                     holder.videoView.setVideoController(holder.controller);
                     holder.videoView.setPlayerConfig(holder.config);
@@ -143,15 +179,6 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         return 0;
     }
 
-    /**
-     * 获取视频第一帧
-     * @param bitmap
-     * @return
-     */
-    private static void setFirstFrameBitmap(Bitmap bitmap){
-        firstFrameBitmap = bitmap;
-    }
-
     static class MyAsyncTask extends AsyncTask<Video, Void, Bitmap>{
         private MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         @Override
@@ -161,7 +188,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         @Override
         protected Bitmap doInBackground(Video... videos) {
             if(retriever != null){
-                retriever.setDataSource(videos[0].getFileUrl(), new HashMap<String, String>());
+                retriever.setDataSource(videos[0].getFile().getFileUrl(), new HashMap<String, String>());
                 return retriever.getFrameAtTime(0);
             }
             return null;
@@ -170,14 +197,36 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             Log.d(TAG, "onPostExecute: " + (bitmap == null));
-            setFirstFrameBitmap(bitmap);
             retriever.release();
         }
     }
 
+    // TODO: 2018/5/2/002 卡顿十分严重，plan B 直接上传第一帧图片
     public void setVideos(List<Video> videos){
-        Collections.shuffle(videos);
         mVideos = videos;
+//        final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+//        for (final Video video : mVideos){
+//            Future<Bitmap> future = cachedThreadPool.submit(new Callable<Bitmap>() {
+//                @Override
+//                public Bitmap call() throws Exception {
+//                    try {
+//                        retriever.setDataSource(video.getFile().getFileUrl(), new HashMap<String, String>());
+//                        return retriever.getFrameAtTime();
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                    }finally {
+////                        retriever.release();
+//                    }
+//                    return null;
+//                }
+//            });
+//            try {
+//                video.setThumb(future.get());
+//            } catch (InterruptedException | ExecutionException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
     }
 
 }

@@ -51,6 +51,7 @@ import org.litepal.crud.DataSupport;
 
 import java.lang.reflect.Field;
 
+import cn.bmob.v3.BmobUser;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -60,6 +61,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public abstract class BaseActivity extends AppCompatActivity{
 
+    private static final String TAG = "BaseActivity";
     private ViewGroup mContentView;
     protected Drawer mDrawer;
     private Toolbar mToolbar;
@@ -168,12 +170,20 @@ public abstract class BaseActivity extends AppCompatActivity{
                                 break;
                             case 5://about
                                 Log.d("BaseActivity", "item5");
+                                startActivity(new Intent
+                                        (BaseActivity.this, InfoActivity.class));
+                                mDrawer.closeDrawer();
                                 break;
                             case 6://setting
                                 Log.d("BaseActivity", "item6");
                                 break;
                             case 7://logoff
                                 Log.d("BaseActivity", "item7");
+                                //清除缓存用户对象
+                                BmobUser.logOut();
+                                // 现在的currentUser是null
+                                BmobUser currentUser = BmobUser.getCurrentUser();
+                                Log.d(TAG, "onItemClick: " + currentUser);
                                 break;
                             default:
                                 break;

@@ -25,6 +25,7 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 import com.yjc.photodance.common.base.BaseActivity;
 import com.yjc.photodance.common.util.MultiMedia;
+import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.model.IMainModel;
 import com.yjc.photodance.main.model.MainModelImpl;
 import com.yjc.photodance.main.presenter.IMainPresenter;
@@ -127,7 +128,7 @@ public class MainActivity extends BaseActivity implements IMainView{
 //        bottomNavigation.addItem(messageItem);
 
         photoAdapter = new PhotoAdapter(this);
-        videoAdapter = new ShortVideoAdapter(this);
+        videoAdapter = new ShortVideoAdapter(this, this);
 
         // TODO: 2018/4/15/015 头像处理
         //获取头像
@@ -288,5 +289,10 @@ public class MainActivity extends BaseActivity implements IMainView{
         ProgressBar progressBar = fragment.getProgressBar();
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setProgress(value);
+    }
+
+    @Override
+    public void showUploadSuc() {
+        ToastUtil.show(this, "上传成功");
     }
 }
