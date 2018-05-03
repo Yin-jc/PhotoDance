@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/light_gray"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/comment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        android:text="还没有评论~~"
+        android:gravity="center"/>
+
+
+    <ListView
+        android:id="@+id/comment_list"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        android:visibility="gone">
+    </ListView>
+
+    <EditText
+        android:id="@+id/comment_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="在此写下精彩的评论~~"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/text_size_small"
+        android:layout_margin="10dp"/>
+
+</LinearLayout>

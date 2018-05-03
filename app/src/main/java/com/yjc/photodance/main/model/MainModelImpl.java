@@ -154,7 +154,8 @@ public class MainModelImpl implements IMainModel {
     @Override
     public void uploadPhoto(String path) {
         Log.d(TAG, "uploadPhoto: " + path);
-        final BmobFile file = new BmobFile(new File(path));
+        //需要对path进行截取，默认传过来的带有file://前缀
+        final BmobFile file = new BmobFile(new File(path.substring(7)));
         file.upload(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
@@ -212,6 +213,7 @@ public class MainModelImpl implements IMainModel {
                     .build();
             onlyCompressOverBean = new LocalMediaCompress(config).startCompress();
             if(onlyCompressOverBean.isSucceed()){
+                Log.d(TAG, "doInBackground: " + onlyCompressOverBean.getVideoPath());
                 return onlyCompressOverBean.getVideoPath();
             }
             return mVideoPath;

@@ -19,7 +19,8 @@
             android:layout_height="30dp"
             android:textColor="@color/color_black"
             android:text="Yjc"
-            android:textSize="@dimen/text_size_large"/>
+            android:textSize="@dimen/text_size_large"
+            android:layout_marginStart="10dp"/>
 
         <com.dueeeke.videoplayer.player.IjkVideoView
             android:id="@+id/video_view"
@@ -53,11 +54,11 @@
 
             <com.sackcentury.shinebuttonlib.ShineButton
                 android:id="@+id/like"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="130dp"
+                android:layout_marginEnd="80dp"
                 app:btn_color="@color/light_gray"
                 app:btn_fill_color="@color/color_red"
                 app:allow_random_color="false"
@@ -65,20 +66,20 @@
 
             <ImageView
                 android:id="@+id/comment"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/comment"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="65dp"
+                android:layout_marginEnd="45dp"
                 android:layout_alignParentEnd="true"/>
 
             <TextView
                 android:id="@+id/comment_quantity"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="30dp"
+                android:layout_marginEnd="20dp"
                 android:text="10"
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/text_size_large"/>

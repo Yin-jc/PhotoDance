@@ -44,13 +44,15 @@
 
             <TextView
                 android:id="@+id/username"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="35dp"
-                android:text="Yjc"
+                android:text="Yjc11111"
                 android:textColor="@color/color_black"
-                android:textSize="@dimen/text_size_small" />
+                android:textSize="@dimen/text_size_small"
+                android:ellipsize="marquee"
+                android:singleLine="true"/>
 
             <com.sackcentury.shinebuttonlib.ShineButton
                 android:id="@+id/like"
@@ -71,7 +73,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="30dp"
-                android:src="@drawable/nav_camera" />
+                android:src="@drawable/comment" />
 
             <TextView
                 android:id="@+id/comment_quantity"

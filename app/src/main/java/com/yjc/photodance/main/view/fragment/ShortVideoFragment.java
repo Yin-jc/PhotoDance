@@ -1,5 +1,6 @@
 package com.yjc.photodance.main.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +21,10 @@ public class ShortVideoFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private ShortVideoAdapter adapter;
 
+    public ShortVideoFragment(){
+        this(null);
+    }
+    @SuppressLint("ValidFragment")
     public ShortVideoFragment(ShortVideoAdapter adapter) {
         this.adapter = adapter;
     }

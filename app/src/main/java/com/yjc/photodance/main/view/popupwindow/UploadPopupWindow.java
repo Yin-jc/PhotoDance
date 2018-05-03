@@ -63,7 +63,7 @@ public class UploadPopupWindow extends BasePopupWindow {
 
     private void init(){
 
-        //实例化一个ColorDrawable颜色为透明
+        //实例化一个ColorDrawable颜色
         ColorDrawable dw = new ColorDrawable(mContext.getResources().getColor(R.color.dark_white));
 
         //设置SelectPicPopupWindow弹出窗体的背景

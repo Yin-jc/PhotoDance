@@ -201,8 +201,8 @@ public class UploadFragment extends BaseFragment {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    mPhotoPath = String.valueOf(photoUri);
-                    Log.d(TAG, "onActivityResult: " + mPhotoPath);
+//                    mPhotoPath = String.valueOf(photoUri);
+//                    Log.d(TAG, "onActivityResult: " + mPhotoPath);
 //                    mTakePhoto = HandleBitmap.compressForFile(mPhotoPath);
                     Log.d(TAG, "onActivityResult: " + mTakePhoto);
                     mPhotoContainer.setImageBitmap(mTakePhoto);
@@ -375,6 +375,7 @@ public class UploadFragment extends BaseFragment {
                         break;
                     case TAKE_PHOTO:
                         mConfirm.setEnabled(false);
+                        Log.d(TAG, "onClick: " + String.valueOf(photoUri));
                         activity.mPresenter.requestUploadPhoto(String.valueOf(photoUri));
                         break;
                     case SELECT_VIDEO:
@@ -384,6 +385,7 @@ public class UploadFragment extends BaseFragment {
                     case RECORD_VIDEO:
                         mConfirm.setEnabled(false);
                         activity.mPresenter.requestUploadVideo(String.valueOf(videoUri));
+                        Log.d(TAG, "onClick: " + String.valueOf(videoUri));
                         break;
                     default:
                         break;
