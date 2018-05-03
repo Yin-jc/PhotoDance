@@ -1,6 +1,7 @@
 package com.yjc.photodance.model;
 
 import com.yjc.photodance.bean.Photo;
+import com.yjc.photodance.bean.searchBean.SearchPhoto;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ import java.util.List;
 public class PhotoData {
 
     public List<Photo> data;
+
+    public List<SearchPhoto> searchData;
 }

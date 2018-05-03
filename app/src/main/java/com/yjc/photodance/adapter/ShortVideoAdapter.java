@@ -136,19 +136,21 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                             commentContent = v.findViewById(R.id.comment_content);
                             int position = (int) comment.getTag();
                             Video video = mVideos.get(position);
-                            String commentStr = video.getUsername() + ":" +
-                                    commentContent.getText().toString();
-                            video.getComment().add(commentStr);
-                            video.update(video.getObjectId(), new UpdateListener() {
-                                @Override
-                                public void done(BmobException e) {
-                                    if (e == null){
-                                        Log.d(TAG, "done: 修改成功");
-                                    }else {
-                                        Log.d(TAG, "done: 修改失败" + e.getMessage());
+                            if (commentContent.getText().toString() != null){
+                                String commentStr = video.getUsername() + ":" +
+                                        commentContent.getText().toString();
+                                video.getComment().add(commentStr);
+                                video.update(video.getObjectId(), new UpdateListener() {
+                                    @Override
+                                    public void done(BmobException e) {
+                                        if (e == null){
+                                            Log.d(TAG, "done: 修改成功");
+                                        }else {
+                                            Log.d(TAG, "done: 修改失败" + e.getMessage());
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
 //                            Video newVideo = new Video();
 //                            newVideo.getComment().add(commentStr);
 //                            newVideo.update(video.getObjectId(), new UpdateListener() {
@@ -235,6 +237,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     holder.likeBtn.setTag(position);
                     holder.username.setText(video.getUsername());
                     holder.comment.setTag(position);
+//                    int position = holder.getAdapterPosition();
                     holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
                     holder.videoView.setTitle(video.getFile().getFilename());
                     holder.videoView.setUrl(video.getFile().getFileUrl());

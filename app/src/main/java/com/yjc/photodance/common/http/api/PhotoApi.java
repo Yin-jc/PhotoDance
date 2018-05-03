@@ -1,6 +1,7 @@
 package com.yjc.photodance.common.http.api;
 
 import com.yjc.photodance.bean.Photo;
+import com.yjc.photodance.bean.searchBean.SearchPhoto;
 
 import java.util.List;
 
@@ -29,14 +30,16 @@ public interface PhotoApi {
 
     @GET("photos")
     Observable<List<Photo>> getPhotos(@Query("client_id") String client_id,
-                                       @Query("page") String page,
-                                       @Query("per_page") String per_page);
+                                      @Query("page") String page,
+                                      @Query("per_page") String per_page);
 
     @GET("search/photos")
-    Observable<List<Photo>> getPhotosBySearch(@Query("client_id") String client_id,
-                                              @Query("query") String query);
+    Observable<SearchPhoto> getPhotosBySearch(@Query("client_id") String client_id,
+                                              @Query("query") String query,
+                                              @Query("page") String page,
+                                              @Query("per_page") String per_page);
 
 
 //    @GET("/photos")
-//    Observable<List<Photo>> getPhotoData(@Query("client_id") String client_id);
+//    Observable<List<SearchPhoto>> getPhotoData(@Query("client_id") String client_id);
 }

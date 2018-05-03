@@ -10,11 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.yjc.photodance.bean.Photo;
+import com.sackcentury.shinebuttonlib.ShineButton;
 import com.yjc.photodance.R;
 import com.yjc.photodance.bean.searchBean.SearchPhoto;
 import com.yjc.photodance.model.Details;
@@ -26,15 +27,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
- * Created by Administrator on 2018/1/4/004.
- * todo 添加图片作者的头像
+ * Created by Administrator on 2018/5/3/003.
  */
 
-public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
+public class SearchPhotoAdapter extends RecyclerView.Adapter<SearchPhotoAdapter.ViewHolder> {
 
-    private static final String TAG = "PhotoAdapter";
-    private List<Photo> mPhotos = new ArrayList<>();
+    private static final String TAG = "SearchPhotoAdapter";
+    private List<SearchPhoto.ResultsBean> mSearchPhotos = new ArrayList<>();
     private static Context mContext;
     private int page = 0;
     private String photoUrl;
@@ -46,41 +48,57 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 //    private static final int MAX_WIDTH = 149;
 //    private static final int MAX_HEIGHT = 149;
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
-        CardView cardView;
-        ImageView image;
+     class ViewHolder extends RecyclerView.ViewHolder{
+        private CardView cardView;
+        private ImageView image;
+
+        private TextView description;
+        private CircleImageView userProfileImage;
+        private TextView username;
+        private ShineButton like;
+        private ShineButton collection;
 
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView;
             image = cardView.findViewById(R.id.photo);
+            description = cardView.findViewById(R.id.description);
+            userProfileImage = cardView.findViewById(R.id.user_profile_image);
+            username = cardView.findViewById(R.id.username);
+            like = cardView.findViewById(R.id.like);
+            collection = cardView.findViewById(R.id.collection);
 
-            CardView.LayoutParams params = (CardView.LayoutParams) image.getLayoutParams();
-            params.width = width;
-            params.height = height;
-            image.setLayoutParams(params);
+//            CardView.LayoutParams params = (CardView.LayoutParams) image.getLayoutParams();
+//            params.width = width;
+//            params.height = height;
+//            image.setLayoutParams(params);
+//            int position = this.getAdapterPosition();
+//            int position = (int) description.getTag();
+//            SearchPhoto.ResultsBean photo = mSearchPhotos.get(position);
+
+
+            // TODO: 2018/5/3/003 like 和 collection点击事件
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    // TODO: 2018/5/3/003 全屏
 //                    Toast.makeText(MyApplication.getMyApplicationContext(), "onClick",
 //                            Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(mContext, ImageDetailsActivity.class);
-                    int p = (int) view.getTag(R.id.image_tag);
-                    List<Details> detailsList = DataSupport.select("id", "username", "location")
-                            .where("position = ?", String.valueOf(p))
-                            .find(Details.class);
-                    intent.putExtra("imageUrl", map.get(p));
-                    intent.putExtra("details", (Parcelable) detailsList.get(0));
-                    mContext.startActivity(intent);
+//                    Intent intent = new Intent(mContext, ImageDetailsActivity.class);
+//                    int p = (int) view.getTag(R.id.image_tag);
+//                    List<Details> detailsList = DataSupport.select("id", "username", "location")
+//                            .where("position = ?", String.valueOf(p))
+//                            .find(Details.class);
+//                    intent.putExtra("imageUrl", map.get(p));
+//                    intent.putExtra("details", (Parcelable) detailsList.get(0));
+//                    mContext.startActivity(intent);
                 }
             });
-            //启用图片缩放功能
-//            image.enable();
         }
     }
 
-    public PhotoAdapter(Context context){
+    public SearchPhotoAdapter(Context context){
         mContext = context;
 
         //屏幕的宽度(px值）
@@ -115,20 +133,29 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Log.d(TAG, String.valueOf(position));
-//        if (mPhotos.size() == page) {
-        Photo photo = mPhotos.get(position);
-        photoUrl = photo.getUrls().getThumb();
-        map.put(position, photo.getUrls().getRegular());
-        //对于glide下设置imageView的tag的正确处理
-        holder.image.setTag(R.id.image_tag, position);
 
-        Details details = new Details();
-        details.setPosition(position);
+        SearchPhoto.ResultsBean photo = mSearchPhotos.get(position);
+        photoUrl = photo.getUrls().getThumb();
+
+//        holder.description.setTag(position);
+
+        holder.description.setText(photo.getDescription());
+        Glide.with(mContext)
+                .load(photo.getUser().getProfile_image().getSmall())
+                .into(holder.userProfileImage);
+        holder.username.setText(photo.getUser().getName());
+
+//        map.put(position, photo.getUrls().getRegular());
+        //对于glide下设置imageView的tag的正确处理
+//        holder.image.setTag(R.id.image_tag, position);
+
+//        Details details = new Details();
+//        details.setPosition(position);
 //        details.setUserId(photo.getUser().getId());
-        details.setUsername(photo.getUser().getUsername());
-        details.setLocation(photo.getUser().getLocation());
+//        details.setUsername(photo.getUser().getUsername());
+//        details.setLocation(photo.getUser().getLocation());
 //        details.setProfileImage(photo.getUser().getPortfolioUrl());
-        details.save();
+//        details.save();
 
         RequestOptions options = new RequestOptions()
                 //占位符
@@ -149,11 +176,15 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mPhotos.size();
+        Log.d(TAG, "getItemCount: " + mSearchPhotos.size());
+        return mSearchPhotos.size();
     }
 
-    public void setPhotos(List<Photo> photos){
-        mPhotos.addAll(photos);
+    public void setSearchPhotos(List<SearchPhoto.ResultsBean> photos){
+        if (mSearchPhotos != null){
+            mSearchPhotos.clear();
+        }
+        //addAll 添加到list尾部，不会覆盖之前的数据
+        mSearchPhotos.addAll(photos);
     }
-
 }

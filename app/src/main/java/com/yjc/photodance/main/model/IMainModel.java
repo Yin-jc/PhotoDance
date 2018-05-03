@@ -3,6 +3,7 @@ package com.yjc.photodance.main.model;
 import android.os.Handler;
 
 import com.yjc.photodance.adapter.PhotoAdapter;
+import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 
 /**
@@ -26,7 +27,7 @@ public interface IMainModel {
      * @param search
      * @param adapter
      */
-    void getPhotoBySearch(PhotoAdapter adapter, String search);
+    void getPhotoBySearch(SearchPhotoAdapter adapter, String search);
 
     void getVideo(ShortVideoAdapter adapter);
 

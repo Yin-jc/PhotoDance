@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.yjc.photodance.R;
 import com.yjc.photodance.adapter.PhotoAdapter;
+import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.common.base.BaseFragment;
 
 /**
@@ -21,12 +22,20 @@ public class PhotoFragment extends BaseFragment {
 
     private RecyclerView photoRecycler;
     private PhotoAdapter adapter;
+    private SearchPhotoAdapter searchAdapter;
+    private boolean isSearch;
 
     public PhotoFragment(){
     }
 
-    public PhotoFragment(PhotoAdapter adapter){
+    public PhotoFragment(PhotoAdapter adapter, boolean isSearch){
         this.adapter = adapter;
+        this.isSearch = isSearch;
+    }
+
+    public PhotoFragment(SearchPhotoAdapter adapter, boolean isSearch){
+        searchAdapter = adapter;
+        this.isSearch = isSearch;
     }
 
     @Override
@@ -52,6 +61,10 @@ public class PhotoFragment extends BaseFragment {
                 StaggeredGridLayoutManager(3,
                 StaggeredGridLayoutManager.VERTICAL);
         photoRecycler.setLayoutManager(layoutManager);
-        photoRecycler.setAdapter(adapter);
+        if (isSearch){
+            photoRecycler.setAdapter(searchAdapter);
+        }else {
+            photoRecycler.setAdapter(adapter);
+        }
     }
 }

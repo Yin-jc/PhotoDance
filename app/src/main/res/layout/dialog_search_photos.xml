@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/light_gray"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/search_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入要搜索的内容~~"
+        android:layout_margin="20dp"/>
+
+</LinearLayout>

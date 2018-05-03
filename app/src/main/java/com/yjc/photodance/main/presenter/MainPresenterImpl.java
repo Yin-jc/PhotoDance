@@ -6,6 +6,7 @@ import android.os.Message;
 import com.yjc.photodance.account.model.IAccountManager;
 import com.yjc.photodance.account.presenter.LoginPresenterImpl;
 import com.yjc.photodance.adapter.PhotoAdapter;
+import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 import com.yjc.photodance.main.model.IMainModel;
 import com.yjc.photodance.main.view.IMainView;
@@ -54,7 +55,7 @@ public class MainPresenterImpl implements IMainPresenter{
     }
 
     @Override
-    public void requestPhotoBySearch(PhotoAdapter adapter, String query) {
+    public void requestPhotoBySearch(SearchPhotoAdapter adapter, String query) {
         mModel.getPhotoBySearch(adapter, query);
     }
 

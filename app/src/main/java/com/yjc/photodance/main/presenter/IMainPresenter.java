@@ -1,6 +1,7 @@
 package com.yjc.photodance.main.presenter;
 
 import com.yjc.photodance.adapter.PhotoAdapter;
+import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 
 /**
@@ -11,7 +12,7 @@ public interface IMainPresenter {
 
     void requestPhoto(PhotoAdapter adapter, int page, int size);
 
-    void requestPhotoBySearch(PhotoAdapter adapter, String query);
+    void requestPhotoBySearch(SearchPhotoAdapter adapter, String query);
 
     void requestVideo(ShortVideoAdapter adapter);
 

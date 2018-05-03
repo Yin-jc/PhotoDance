@@ -37,14 +37,14 @@ public class NetworkWithOkHttp {
 //                String resData = response.body().string();
 //
 ////                Gson gson = new Gson();
-////                mPhotos = gson.fromJson(resData, new TypeToken<List<Photo>>(){}.getType());
+////                mPhotos = gson.fromJson(resData, new TypeToken<List<SearchPhoto>>(){}.getType());
 //                try {
 //                    JSONArray jsonArray = new JSONArray(resData);
 //                    for (int i=0; i<jsonArray.length(); i++){
 //                        JSONObject jsonObject = jsonArray.getJSONObject(i);
 //                        String id = jsonObject.getString("_id");
 //                        String url = jsonObject.getString("url");
-//                        mPhotos.add(new Photo(id, url));
+//                        mPhotos.add(new SearchPhoto(id, url));
 //                    }
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
@@ -71,7 +71,7 @@ public class NetworkWithOkHttp {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String id = jsonObject.getString("_id");
                         String url = jsonObject.getString("url");
-//                        mPhotos.add(new Photo(id, url));
+//                        mPhotos.add(new SearchPhoto(id, url));
                     }
                 }catch (IOException e) {
                     e.printStackTrace();

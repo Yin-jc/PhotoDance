@@ -12,15 +12,16 @@ import com.mabeijianxi.smallvideorecord2.model.LocalMediaConfig;
 import com.mabeijianxi.smallvideorecord2.model.OnlyCompressOverBean;
 import com.yjc.photodance.account.model.bean.User;
 import com.yjc.photodance.adapter.PhotoAdapter;
+import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 import com.yjc.photodance.bean.Photo;
+import com.yjc.photodance.bean.searchBean.SearchPhoto;
 import com.yjc.photodance.common.http.api.ApiConfig;
 import com.yjc.photodance.common.http.api.PhotoApi;
 import com.yjc.photodance.common.network.RetrofitServiceManager;
 import com.yjc.photodance.common.storage.bean.Video;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,10 +29,8 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.http.bean.Api;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -92,26 +91,28 @@ public class MainModelImpl implements IMainModel {
     }
 
     @Override
-    public void getPhotoBySearch(final PhotoAdapter adapter, String search) {
+    public void getPhotoBySearch(final SearchPhotoAdapter adapter, String search) {
         RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotosBySearch(
-                ApiConfig.getApplication_ID(), search)
+                ApiConfig.getApplication_ID(), search, String.valueOf(1), String.valueOf(30))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Photo>>() {
+                .subscribe(new Observer<SearchPhoto>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(List<Photo> photos) {
-                        adapter.setPhotos(photos);
+                    public void onNext(SearchPhoto photo) {
+                        Log.d(TAG, "onNext: ");
+                        adapter.setSearchPhotos(photo.getResults());
                         adapter.notifyDataSetChanged();
+                        Log.d(TAG, "onNext: ");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.d(TAG, "onError: " + e.getMessage());
                     }
 
                     @Override

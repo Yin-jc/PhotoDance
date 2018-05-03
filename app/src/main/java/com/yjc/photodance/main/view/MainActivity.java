@@ -1,17 +1,21 @@
 package com.yjc.photodance.main.view;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -22,6 +26,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yjc.photodance.R;
+import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 import com.yjc.photodance.common.base.BaseActivity;
 import com.yjc.photodance.common.util.MultiMedia;
@@ -55,6 +60,7 @@ public class MainActivity extends BaseActivity implements IMainView{
     private RefreshLayout refreshLayout;
     public AHBottomNavigation bottomNavigation;
     private PhotoAdapter photoAdapter;
+    private SearchPhotoAdapter searchPhotoAdapter;
     private ShortVideoAdapter videoAdapter;
 
     public IMainPresenter mPresenter;
@@ -128,6 +134,7 @@ public class MainActivity extends BaseActivity implements IMainView{
 //        bottomNavigation.addItem(messageItem);
 
         photoAdapter = new PhotoAdapter(this);
+        searchPhotoAdapter = new SearchPhotoAdapter(this);
         videoAdapter = new ShortVideoAdapter(this, this);
 
         // TODO: 2018/4/15/015 头像处理
@@ -171,7 +178,7 @@ public class MainActivity extends BaseActivity implements IMainView{
             public boolean onTabSelected(int position, boolean wasSelected) {
                 switch (position){//index of items
                     case 0:
-                        replaceFragment(new PhotoFragment(photoAdapter));
+                        replaceFragment(new PhotoFragment(photoAdapter, false));
                         refreshLayout.autoRefresh();
                         selectedTab = 0;
                         break;
@@ -213,7 +220,7 @@ public class MainActivity extends BaseActivity implements IMainView{
         if (isFirstEnter) {
             //第一次进入自动刷新
             refreshLayout.autoRefresh();
-            replaceFragment(new PhotoFragment(photoAdapter));
+            replaceFragment(new PhotoFragment(photoAdapter, false));
         }
 
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -248,12 +255,31 @@ public class MainActivity extends BaseActivity implements IMainView{
         });
 
         //悬浮按钮的点击事件处理
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // TODO: 2018/1/6/006 回到顶部
-//            }
-//        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //搜索
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("搜索图片");
+                builder.setIcon(R.drawable.android_search);
+                View v = LayoutInflater.from(MainActivity.this)
+                        .inflate(R.layout.dialog_search_photos, null);
+                builder.setView(v);
+                final EditText search = v.findViewById(R.id.search_content);
+                builder.setPositiveButton("搜索", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String searchContent = search.getText().toString();
+                        replaceFragment(new PhotoFragment(searchPhotoAdapter, true));
+                        Log.d(TAG, "onClick: " + searchContent);
+                        mPresenter.requestPhotoBySearch(searchPhotoAdapter, searchContent);
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel, null);
+                builder.create().setCanceledOnTouchOutside(true);
+                builder.show();
+            }
+        });
     }
 
     @Override
