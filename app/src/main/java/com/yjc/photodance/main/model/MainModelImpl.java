@@ -1,5 +1,6 @@
 package com.yjc.photodance.main.model;
 
+import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -248,11 +249,13 @@ public class MainModelImpl implements IMainModel {
         @Override
         protected void onPostExecute(String path) {
             Log.d(TAG, "onPostExecute: ");
-            uploadVideoAfterCompress(path);
+            Bitmap firstFrame = getVideoFirstFrame(path);
+            Log.d(TAG, "onPostExecute: " + firstFrame);
+            uploadVideoAfterCompress(path, firstFrame);
         }
     }
 
-    private void uploadVideoAfterCompress(String path){
+    private void uploadVideoAfterCompress(String path, final Bitmap firstFrame){
 
         final BmobFile file = new BmobFile(new File(path));
         file.upload(new UploadFileListener() {
@@ -262,7 +265,7 @@ public class MainModelImpl implements IMainModel {
                     mVideoPathAfterUpload = file.getFileUrl();
                     Log.d(TAG, "done: " + "上传成功" + mVideoPathAfterUpload);
                     Log.d(TAG, "done: " + User.getCurrentUser().getMobilePhoneNumber());
-                    saveVideo(file);
+                    saveVideo(file, firstFrame);
                 }else {
                     Log.d(TAG, "done: " + "上传失败" + e.getMessage());
                 }
@@ -307,13 +310,14 @@ public class MainModelImpl implements IMainModel {
 //        });
     }
 
-    private void saveVideo(BmobFile file){
+    private void saveVideo(BmobFile file, Bitmap firstFrame){
         BmobUser user = User.getCurrentUser();
         String username = user.getUsername();
 
         Video video = new Video();
         video.setFile(file);
         video.setUsername(username);
+        video.setThumb(firstFrame);
         // width >= height
         if(Integer.parseInt(info[0]) >= Integer.parseInt(info[1])){
             video.setType("TYPE_LIST");
@@ -369,6 +373,19 @@ public class MainModelImpl implements IMainModel {
         }
         Log.d(TAG, "getVideoInfo: " + width + " " + height);
         return new String[]{"500", "300"};
+    }
+
+    private Bitmap getVideoFirstFrame(String path){
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(path);
+            return retriever.getFrameAtTime();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            retriever.release();
+        }
+        return null;
     }
 
 }

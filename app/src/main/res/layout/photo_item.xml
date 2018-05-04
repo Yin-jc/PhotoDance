@@ -17,9 +17,7 @@
     <com.ramotion.foldingcell.FoldingCell
         android:id="@+id/folding_cell"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        folding-cell:additionalFlipsCount="2"
-        folding-cell:cameraHeight="30">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/cell_content_view"
@@ -79,7 +77,7 @@
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
-                    android:src="@drawable/ic_access_time_black_48dp"/>
+                    android:src="@drawable/create_time"/>
 
                 <TextView
                     android:id="@+id/create_time"
@@ -100,7 +98,7 @@
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
-                    android:src="@drawable/ic_photo_black_48dp"/>
+                    android:src="@drawable/size"/>
 
                 <TextView
                     android:id="@+id/size"
@@ -121,7 +119,7 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_star_black_48dp"/>
+                    android:src="@drawable/star"/>
 
                 <TextView
                     android:id="@+id/like_count"

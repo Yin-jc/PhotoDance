@@ -15,7 +15,7 @@ import cn.bmob.v3.datatype.BmobFile;
 public class Video extends BmobObject{
 
     private BmobFile file;
-    private Bitmap thumb;
+    private Object thumb;
     private String type;
     private String username;
     private BmobFile userimage;
@@ -32,11 +32,11 @@ public class Video extends BmobObject{
         this.file = file;
     }
 
-    public Bitmap getThumb() {
+    public Object getThumb() {
         return thumb;
     }
 
-    public void setThumb(Bitmap thumb) {
+    public void setThumb(Object thumb) {
         this.thumb = thumb;
     }
 

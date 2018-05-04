@@ -2,6 +2,7 @@ package com.yjc.photodance.common.base;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -203,11 +205,10 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     private void changePassword(){
         AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
-        builder.setIcon(R.drawable.setting);
-        builder.setTitle("修改密码");
+        builder.setCustomTitle(LayoutInflater.from(BaseActivity.this)
+                .inflate(R.layout.custom_title_change_pwd_layout, null));
         View v = LayoutInflater.from(BaseActivity.this).inflate(R.layout.dialog_change_password, null);
         builder.setView(v);
-
         TextInputLayout oldPwdLayout = v.findViewById(R.id.old_pwd_layout);
         final TextInputEditText oldPwdEdit = oldPwdLayout.findViewById(R.id.old_pwd_edit);
 
@@ -227,10 +228,15 @@ public abstract class BaseActivity extends AppCompatActivity{
         newPwdLayout.setCounterMaxLength(10);
         newPwdConfirmLayout.setCounterMaxLength(10);
         //控制密码可见开关启用
-        // TODO: 2018/5/4/004 不显示
         oldPwdLayout.setPasswordVisibilityToggleEnabled(true);
+        oldPwdLayout.setPasswordVisibilityToggleDrawable(getResources()
+                .getDrawable(R.drawable.show_hide_pwd_selector));
         newPwdLayout.setPasswordVisibilityToggleEnabled(true);
+        newPwdLayout.setPasswordVisibilityToggleDrawable(getResources()
+                .getDrawable(R.drawable.show_hide_pwd_selector));
         newPwdConfirmLayout.setPasswordVisibilityToggleEnabled(true);
+        newPwdConfirmLayout.setPasswordVisibilityToggleDrawable(getResources()
+                .getDrawable(R.drawable.show_hide_pwd_selector));
 
         oldPwdEdit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -329,7 +335,10 @@ public abstract class BaseActivity extends AppCompatActivity{
         builder.setNegativeButton(android.R.string.cancel, null);
         //点击外面退出dialog
         builder.create().setCanceledOnTouchOutside(true);
-        builder.show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.RED);
     }
 
 }

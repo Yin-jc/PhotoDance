@@ -1,27 +1,20 @@
 package com.yjc.photodance.main.view;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.media.Image;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.mikepenz.materialdrawer.Drawer;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -35,8 +28,6 @@ import com.yjc.photodance.main.model.IMainModel;
 import com.yjc.photodance.main.model.MainModelImpl;
 import com.yjc.photodance.main.presenter.IMainPresenter;
 import com.yjc.photodance.main.presenter.MainPresenterImpl;
-import com.yjc.photodance.main.view.fragment.LiveFragment;
-import com.yjc.photodance.main.view.fragment.MessageFragment;
 import com.yjc.photodance.main.view.fragment.PhotoFragment;
 import com.yjc.photodance.main.view.fragment.ShortVideoFragment;
 import com.yjc.photodance.adapter.PhotoAdapter;
@@ -101,7 +92,7 @@ public class MainActivity extends BaseActivity implements IMainView{
         // TODO: 2018/4/16/016 修改AhBottomNavigation的源码，解决colorful icon的问题
 
         //BottomNavigation的初始化
-        bottomNavigation.setDefaultBackgroundColor(getResources().getColor(R.color.light_gray));
+        bottomNavigation.setDefaultBackgroundColor(getResources().getColor(R.color.dark_white));
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
         // Enable the translation of the FloatingActionButton
         bottomNavigation.manageFloatingActionButtonBehavior(fab);
@@ -253,8 +244,9 @@ public class MainActivity extends BaseActivity implements IMainView{
             public void onClick(View view) {
                 //搜索
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("搜索图片");
-                builder.setIcon(R.drawable.android_search);
+                //icon和title必须一起设置，写一个布局
+                builder.setCustomTitle(LayoutInflater.from(MainActivity.this)
+                        .inflate(R.layout.custom_title_search_layout, null));
                 View v = LayoutInflater.from(MainActivity.this)
                         .inflate(R.layout.dialog_search_photos, null);
                 builder.setView(v);
@@ -270,7 +262,9 @@ public class MainActivity extends BaseActivity implements IMainView{
                 });
                 builder.setNegativeButton(android.R.string.cancel, null);
                 builder.create().setCanceledOnTouchOutside(true);
-                builder.show();
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
         });
     }
