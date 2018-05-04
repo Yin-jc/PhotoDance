@@ -14,8 +14,8 @@ import com.yjc.photodance.account.model.bean.User;
 import com.yjc.photodance.adapter.PhotoAdapter;
 import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
-import com.yjc.photodance.bean.Photo;
-import com.yjc.photodance.bean.searchBean.SearchPhoto;
+import com.yjc.photodance.common.jsonBean.LatestPhoto;
+import com.yjc.photodance.common.jsonBean.searchBean.SearchPhoto;
 import com.yjc.photodance.common.http.api.ApiConfig;
 import com.yjc.photodance.common.http.api.PhotoApi;
 import com.yjc.photodance.common.network.RetrofitServiceManager;
@@ -61,14 +61,14 @@ public class MainModelImpl implements IMainModel {
                 String.valueOf(page), String.valueOf(size))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Photo>>() {
+                .subscribe(new Observer<List<LatestPhoto>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(List<Photo> photos) {
+                    public void onNext(List<LatestPhoto> photos) {
 //                        if(isFirstEnter || !flag) {
 //                            isFirstEnter = false;
                             //下拉刷新，防止添加重复数据
@@ -163,7 +163,7 @@ public class MainModelImpl implements IMainModel {
                 if(e == null){
                     mPhotoPathAfterUpload = file.getFileUrl();
                     Log.d(TAG, "done: " + "上传成功" + mPhotoPathAfterUpload);
-                    savePhoto(file);
+                    savePhoto(mPhotoPathAfterUpload);
                 }else {
                     Log.d(TAG, "done: " + "上传失败" + e.getMessage());
                 }
@@ -188,6 +188,24 @@ public class MainModelImpl implements IMainModel {
     @Override
     public void setHandler(Handler handler) {
         mHandler = handler;
+    }
+
+    @Override
+    public void getUploadPhoto(final PhotoAdapter adapter) {
+        BmobQuery<com.yjc.photodance.main.model.bean.Photo> query = new BmobQuery<>();
+        query.addWhereEqualTo("isUpload", true);
+        query.findObjects(new FindListener<com.yjc.photodance.main.model.bean.Photo>() {
+            @Override
+            public void done(List<com.yjc.photodance.main.model.bean.Photo> photos, BmobException e) {
+                if (e == null){
+                    Log.d(TAG, "done: 查询成功");
+                    Log.d(TAG, "done: " + photos.size());
+                    adapter.setUploadPhotos(photos);
+                }else {
+                    Log.d(TAG, "done: 查询失败");
+                }
+            }
+        });
     }
 
     class MyTask extends AsyncTask<String, Integer, String>{
@@ -258,14 +276,16 @@ public class MainModelImpl implements IMainModel {
         });
     }
 
-    private void savePhoto(BmobFile file){
+    private void savePhoto(String url){
         BmobUser user = User.getCurrentUser();
         String username = user.getUsername();
-        com.yjc.photodance.main.model.bean.File userFile =
-                new com.yjc.photodance.main.model.bean.File();
-        userFile.setUsername(username);
-        userFile.setFile(file);
-        userFile.save(new SaveListener<String>() {
+        com.yjc.photodance.main.model.bean.Photo photo =
+                new com.yjc.photodance.main.model.bean.Photo();
+        photo.setUsername(username);
+        photo.setUploadPhotoUrl(url);
+        photo.setIsUpload(true);
+        // TODO: 2018/5/4/004 上传用户头像
+        photo.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null){

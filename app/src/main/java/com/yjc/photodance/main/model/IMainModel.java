@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.yjc.photodance.adapter.PhotoAdapter;
 import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
+import com.yjc.photodance.main.model.bean.Photo;
 
 /**
  * Created by Administrator on 2018/4/16/016.
@@ -42,5 +43,7 @@ public interface IMainModel {
     void uploadVideo(String path);
 
     void setHandler(Handler mHandler);
+
+    void getUploadPhoto(PhotoAdapter adapter);
 
 }

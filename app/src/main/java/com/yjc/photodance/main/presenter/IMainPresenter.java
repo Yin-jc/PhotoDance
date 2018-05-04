@@ -12,6 +12,8 @@ public interface IMainPresenter {
 
     void requestPhoto(PhotoAdapter adapter, int page, int size);
 
+    void requestPhotoFromUser(PhotoAdapter adapter);
+
     void requestPhotoBySearch(SearchPhotoAdapter adapter, String query);
 
     void requestVideo(ShortVideoAdapter adapter);

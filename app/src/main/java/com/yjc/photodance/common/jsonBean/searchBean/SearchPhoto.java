@@ -1,4 +1,4 @@
-package com.yjc.photodance.bean.searchBean;
+package com.yjc.photodance.common.jsonBean.searchBean;
 
 import java.util.List;
 

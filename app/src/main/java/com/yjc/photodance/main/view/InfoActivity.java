@@ -1,4 +1,4 @@
-package com.yjc.photodance.ui;
+package com.yjc.photodance.main.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.yjc.photodance.R;
-import com.yjc.photodance.main.view.MainActivity;
 
 /**
  * Created by Administrator on 2018/1/6/006.

@@ -1,8 +1,8 @@
-package com.yjc.photodance.ui;
+package com.yjc.photodance.main.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,10 +10,9 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -21,67 +20,51 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.yjc.photodance.MyApplication;
 import com.yjc.photodance.R;
+import com.yjc.photodance.adapter.CollectionPhotoAdapter;
+import com.yjc.photodance.common.base.BaseFragment;
+import com.yjc.photodance.common.util.ToastUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Random;
 import java.util.UUID;
 
+
 /**
- * Created by Administrator on 2018/1/7/007.
+ * Created by Administrator on 2018/5/4/004.
  */
 
-public class ImageFullScreenActivity extends AppCompatActivity{
+@SuppressLint("ValidFragment")
+public class FullScreenFragment extends BaseFragment {
 
-    private static final String TAG = "ImageFullScreenActivity";
+    private static final String TAG = "FullScreenFragment";
+    private String rawUrl;
     private ImageView imageView;
-    private ImageView back;
-    private Uri photoUri;
+
+    public FullScreenFragment(String url){
+        rawUrl = url;
+    }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_full_screen);
+    protected int getLayoutId() {
+        return R.layout.fragment_image_full_screen;
+    }
 
-        Toolbar toolbar=findViewById(R.id.toolbar_full_screen);
-        setSupportActionBar(toolbar);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated: " + (getActivity() == null));
+        imageView = getActivity().findViewById(R.id.image_full_screen);
+        Log.d(TAG, "onActivityCreated: " + rawUrl);
 
-        back = findViewById(R.id.back_full_screen);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //从收藏中打开
-                if (MyApplication.getIsFromCollections()){
-                    Intent intent = new Intent(ImageFullScreenActivity.this,
-                            CollectionsActivity.class);
-                    startActivity(intent);
-                    finish();
-                }else {
-                    Intent intent = new Intent(ImageFullScreenActivity.this,
-                            ImageDetailsActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        });
+        RequestOptions options = new RequestOptions()
+                //占位符
+//                .placeholder(R.drawable.splash_image)
+                .override(1200, 1920);
 
-        imageView = findViewById(R.id.image_full_screen);
-        RequestOptions options = new RequestOptions();
-        options.centerCrop();
-
-        //从收藏中打开
-        if (MyApplication.getIsFromCollections()){
-            Glide.with(this)
-                    .load(getIntent().getStringExtra("imageUrlFromCollections"))
-                    .apply(options)
-                    .into(imageView);
-        }else {
-            Glide.with(this)
-                    .load(getIntent().getStringExtra("imageUrl"))
-                    .apply(options)
-                    .into(imageView);
-        }
+        Glide.with(getActivity())
+                .load(rawUrl)
+                .apply(options)
+                .into(imageView);
 
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -92,14 +75,20 @@ public class ImageFullScreenActivity extends AppCompatActivity{
                             public void onClick(View view) {
                                 // TODO: 2018/1/7/007 添加保存到本地的功能
                                 imageView.setDrawingCacheEnabled(true);
-                                boolean b = saveImage(imageView.getDrawingCache());
-                                Log.d(TAG, String.valueOf(b));
+                                boolean result = saveImage(imageView.getDrawingCache());
+                                if (result){
+                                    ToastUtil.show(getActivity(), "保存成功");
+                                }else {
+                                    ToastUtil.show(getActivity(), "保存失败,请稍后重试");
+                                }
+                                Log.d(TAG, String.valueOf(result));
                                 imageView.setDrawingCacheEnabled(false);
                             }
                         }).show();
                 return true;
             }
         });
+
     }
 
     private boolean saveImage(Bitmap bitmap){
@@ -128,19 +117,19 @@ public class ImageFullScreenActivity extends AppCompatActivity{
             out.flush();
             out.close();
 
-            //保存图片后发送广播通知更新数据库
             //Android 7.0 之后不可以直接使用Uri
+            Uri photoUri;
             if(Build.VERSION.SDK_INT >= 24){
                 photoUri = FileProvider.getUriForFile(MyApplication.getMyApplicationContext(),
                         "com.yjc.photodance.fileprovider", file);
             }else {
-                photoUri= Uri.fromFile(file);
+                photoUri = Uri.fromFile(file);
             }
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, photoUri));
+            //保存图片后发送广播通知更新数据库
+            getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, photoUri));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
     }
-
 }

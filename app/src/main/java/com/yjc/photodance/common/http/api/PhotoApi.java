@@ -1,7 +1,7 @@
 package com.yjc.photodance.common.http.api;
 
-import com.yjc.photodance.bean.Photo;
-import com.yjc.photodance.bean.searchBean.SearchPhoto;
+import com.yjc.photodance.common.jsonBean.LatestPhoto;
+import com.yjc.photodance.common.jsonBean.searchBean.SearchPhoto;
 
 import java.util.List;
 
@@ -29,9 +29,9 @@ public interface PhotoApi {
     //https://api.unsplash.com/photos/?client_id=0535d74bb5e01f81938fc7e4156e801f9d06cebb3117b9e207ee5ff5d3f66abd
 
     @GET("photos")
-    Observable<List<Photo>> getPhotos(@Query("client_id") String client_id,
-                                      @Query("page") String page,
-                                      @Query("per_page") String per_page);
+    Observable<List<LatestPhoto>> getPhotos(@Query("client_id") String client_id,
+                                            @Query("page") String page,
+                                            @Query("per_page") String per_page);
 
     @GET("search/photos")
     Observable<SearchPhoto> getPhotosBySearch(@Query("client_id") String client_id,

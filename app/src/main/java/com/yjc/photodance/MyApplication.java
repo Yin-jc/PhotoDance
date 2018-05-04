@@ -1,21 +1,17 @@
 package com.yjc.photodance;
 
-import android.app.Application;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Environment;
 
 import com.mabeijianxi.smallvideorecord2.DeviceUtils;
 import com.mabeijianxi.smallvideorecord2.JianXiCamera;
 import com.yjc.photodance.common.storage.SharedPreferenceDao;
-import com.yjc.photodance.model.Account;
 
 import org.litepal.LitePal;
 import org.litepal.LitePalApplication;
 import org.litepal.tablemanager.Connector;
 
 import java.io.File;
-import java.lang.reflect.Field;
 
 import cn.bmob.v3.Bmob;
 
@@ -74,22 +70,6 @@ public class MyApplication extends LitePalApplication {
         }
         // 初始化拍摄，遇到问题可选择开启此标记，以方便生成日志
         JianXiCamera.initialize(false,null);
-    }
-
-    public static int getCollectionsCount(){
-        return collectionsCount++;
-    }
-
-    public static int getCollectionsCountOnly(){
-        return collectionsCount;
-    }
-
-    public static boolean getIsFromCollections(){
-        return isFromCollections;
-    }
-
-    public static void setIsFromCollections(boolean b){
-        isFromCollections = b;
     }
 
 }

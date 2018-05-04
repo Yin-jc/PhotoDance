@@ -8,6 +8,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 
 import com.yjc.photodance.R;
 import com.yjc.photodance.adapter.PhotoAdapter;
@@ -67,4 +68,5 @@ public class PhotoFragment extends BaseFragment {
             photoRecycler.setAdapter(adapter);
         }
     }
+
 }

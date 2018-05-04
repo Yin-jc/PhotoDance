@@ -88,4 +88,6 @@ dependencies {
 
     implementation 'com.sackcentury:shinebutton:0.2.0'
 
+    implementation 'com.ramotion.foldingcell:folding-cell:1.2.2'
+
 }

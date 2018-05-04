@@ -55,6 +55,11 @@ public class MainPresenterImpl implements IMainPresenter{
     }
 
     @Override
+    public void requestPhotoFromUser(PhotoAdapter adapter) {
+        mModel.getUploadPhoto(adapter);
+    }
+
+    @Override
     public void requestPhotoBySearch(SearchPhotoAdapter adapter, String query) {
         mModel.getPhotoBySearch(adapter, query);
     }

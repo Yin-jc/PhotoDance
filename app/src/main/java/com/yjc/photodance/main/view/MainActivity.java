@@ -66,9 +66,7 @@ public class MainActivity extends BaseActivity implements IMainView{
     public IMainPresenter mPresenter;
     private IMainModel mModel;
 
-    private ImageView search;
     private FloatingActionButton fab;
-    private Toolbar toolbar;
 
     private String mUsername;
     private String mPhoneNum;
@@ -76,6 +74,9 @@ public class MainActivity extends BaseActivity implements IMainView{
     private ImageView camera;
 
     private UploadPopupWindow mUploadPopupWindow;
+
+    private int size = 20;
+    private int page = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +106,7 @@ public class MainActivity extends BaseActivity implements IMainView{
         // Enable the translation of the FloatingActionButton
         bottomNavigation.manageFloatingActionButtonBehavior(fab);
         // Disable the translation inside the CoordinatorLayout
-        bottomNavigation.setBehaviorTranslationEnabled(false);
+        bottomNavigation.setBehaviorTranslationEnabled(true);
         // Force to tint the drawable (useful for font with icon for example)
 //        bottomNavigation.setForceTint(true);
         // Display color under navigation bar (API 21+)
@@ -201,14 +202,6 @@ public class MainActivity extends BaseActivity implements IMainView{
                         refreshLayout.autoRefresh();
                         selectedTab = 2;
                         break;
-//                    case 3:
-//                        replaceFragment(new LiveFragment());
-//                        selectedTab = 2;
-//                        break;
-//                    case 4:
-//                        replaceFragment(new MessageFragment());
-//                        selectedTab = 3;
-//                        break;
                     default:
                         break;
                 }
@@ -229,7 +222,8 @@ public class MainActivity extends BaseActivity implements IMainView{
                 flag = true;
                 switch (selectedTab){
                     case 0:
-//                        mPresenter.requestPhoto(photoAdapter, 1, size);
+                        mPresenter.requestPhotoFromUser(photoAdapter);
+                        mPresenter.requestPhoto(photoAdapter, page, size);
                         break;
                     case 1:
                         break;
@@ -241,7 +235,6 @@ public class MainActivity extends BaseActivity implements IMainView{
                     default:
                         break;
                 }
-//                getPhotos(1, size);
                 refreshLayout.finishRefresh(2000);
             }
         });
@@ -249,8 +242,8 @@ public class MainActivity extends BaseActivity implements IMainView{
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
                 flag = false;
+                mPresenter.requestPhoto(photoAdapter, ++page, size);
                 refreshlayout.finishLoadmore(1000);
-//                getPhotos(++page, size);
             }
         });
 
