@@ -1,5 +1,6 @@
 package com.yjc.photodance.main.presenter;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 
@@ -42,6 +43,9 @@ public class MainPresenterImpl implements IMainPresenter{
             switch (msg.what){
                 case IMainModel.UPDATE_PROGRESS:
                     presenter.mView.updateProgress((Integer) msg.obj);
+                    break;
+                case IMainModel.UPLOAD_SUC:
+                    presenter.mView.showUploadSuc();
                     break;
                 default:
                     break;
@@ -88,5 +92,10 @@ public class MainPresenterImpl implements IMainPresenter{
     @Override
     public void requestUploadVideo(String path) {
         mModel.uploadVideo(path);
+    }
+
+    @Override
+    public void requestUploadUserProfileImage(Bitmap bitmap) {
+        mModel.uploadUserProfileImage(bitmap);
     }
 }

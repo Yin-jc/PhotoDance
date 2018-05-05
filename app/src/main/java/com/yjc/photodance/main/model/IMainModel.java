@@ -1,5 +1,6 @@
 package com.yjc.photodance.main.model;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 
 import com.yjc.photodance.adapter.PhotoAdapter;
@@ -14,6 +15,7 @@ import com.yjc.photodance.main.model.bean.Photo;
 public interface IMainModel {
 
     int UPDATE_PROGRESS = 1;
+    int UPLOAD_SUC = 2;
 
     /**
      * 请求照片
@@ -45,5 +47,7 @@ public interface IMainModel {
     void setHandler(Handler mHandler);
 
     void getUploadPhoto(PhotoAdapter adapter);
+
+    void uploadUserProfileImage(Bitmap bitmap);
 
 }

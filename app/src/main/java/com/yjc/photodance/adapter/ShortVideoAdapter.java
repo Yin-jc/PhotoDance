@@ -24,9 +24,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.dueeeke.videoplayer.player.PlayerConfig;
+import com.ramotion.foldingcell.FoldingCell;
 import com.sackcentury.shinebuttonlib.ShineButton;
 import com.yjc.photodance.R;
 import com.yjc.photodance.common.storage.bean.Video;
+import com.yjc.photodance.common.util.DBUtil;
 import com.yjc.photodance.common.util.HandleBitmap;
 import com.yjc.photodance.dkplayer.widget.controller.StandardVideoController;
 
@@ -56,11 +58,13 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
     private List<Video> mVideos = new ArrayList<>();
     private ExecutorService cachedThreadPool;
     private Activity mActivity;
+    private Bitmap mUserProfileImage;
 
     public ShortVideoAdapter(Context context, Activity activity){
         mContext = context;
         mActivity = activity;
         cachedThreadPool = Executors.newCachedThreadPool();
+        mUserProfileImage = DBUtil.queryUserProfileImage();
     }
 
      class ViewHolder extends RecyclerView.ViewHolder{
@@ -78,6 +82,11 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         private EditText commentContent;
         private ListView commentList;
         private TextView commentPlaceHolder;
+        private FoldingCell foldingCell;
+        private ImageView firstFrame;
+        private TextView createTime;
+        private TextView size;
+        private TextView likeCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -136,8 +145,9 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                             commentContent = v.findViewById(R.id.comment_content);
                             int position = (int) comment.getTag();
                             Video video = mVideos.get(position);
-                            if (commentContent.getText().toString() != null){
-                                String commentStr = video.getUsername() + ":" +
+                            if (commentContent.getText().toString().length() >= 1){
+                                //有效评论才添加
+                                String commentStr = BmobUser.getCurrentUser().getUsername() + ":" +
                                         commentContent.getText().toString();
                                 video.getComment().add(commentStr);
                                 video.update(video.getObjectId(), new UpdateListener() {
@@ -174,6 +184,21 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
             });
             commentQuantity = cardView.findViewById(R.id.comment_quantity);
 
+            foldingCell = cardView.findViewById(R.id.folding_cell);
+            firstFrame = cardView.findViewById(R.id.first_frame);
+
+            //折叠视图不可设置点击事件（折叠下显示的图片），否则会冲突
+            foldingCell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "onClick: click");
+                    foldingCell.toggle(false);
+                }
+            });
+
+            createTime = cardView.findViewById(R.id.create_time);
+            size = cardView.findViewById(R.id.size);
+            likeCount = cardView.findViewById(R.id.like_count);
 
             //高级设置
             config = new PlayerConfig.Builder()
@@ -186,6 +211,8 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     .addToPlayerManager()//required
                     .build();
         }
+
+
     }
 
     @NonNull
@@ -219,11 +246,28 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Video video = mVideos.get(position);
         String[] fileName;
+        boolean isUpload = video.getUpload();
         // TODO: 2018/4/24/024 第一帧在子线程中获取还没有回传数据
         //显示视频第一帧
-        Glide.with(mContext)
-                .load(video.getThumb())
-                .into(holder.controller.getThumb());
+        if (isUpload){
+            //上传的文件
+            Glide.with(mContext)
+                    .load(video.getThumbUpload())
+                    .into(holder.controller.getThumb());
+            //加载折叠视图第一帧
+            Glide.with(mContext)
+                    .load(video.getThumbUpload())
+                    .into(holder.firstFrame);
+        }else {
+            //网络的文件
+            Glide.with(mContext)
+                    .load(video.getThumbInternet().getFileUrl())
+                    .into(holder.controller.getThumb());
+            //加载折叠视图第一帧
+            Glide.with(mContext)
+                    .load(video.getThumbInternet().getFileUrl())
+                    .into(holder.firstFrame);
+        }
 
         switch (holder.getItemViewType()) {
                 case TYPE_LIST:
@@ -234,10 +278,13 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                                 .load(video.getUserimage().getFileUrl())
                                 .into(holder.userImage);
                     }
+                    holder.userImage.setImageBitmap(mUserProfileImage);
+                    holder.size.setText(video.getSize());
+                    holder.createTime.setText(video.getCreateTime());
+                    holder.likeCount.setText(video.getLike().size());
                     holder.likeBtn.setTag(position);
                     holder.username.setText(video.getUsername());
                     holder.comment.setTag(position);
-//                    int position = holder.getAdapterPosition();
                     holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
                     holder.videoView.setTitle(video.getFile().getFilename());
                     holder.videoView.setUrl(video.getFile().getFileUrl());
@@ -252,7 +299,11 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                                 .load(video.getUserimage().getFileUrl())
                                 .into(holder.userImage);
                     }
+                    holder.userImage.setImageBitmap(mUserProfileImage);
                     holder.username.setText(video.getUsername());
+                    holder.size.setText(video.getSize());
+                    holder.createTime.setText(video.getCreateTime());
+                    holder.likeCount.setText(video.getLike().size());
                     holder.comment.setTag(position);
                     holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
                     holder.videoView.setTitle(video.getFile().getFilename());

@@ -15,14 +15,17 @@ import cn.bmob.v3.datatype.BmobFile;
 public class Video extends BmobObject{
 
     private BmobFile file;
-    private Object thumb;
+    private String thumbUpload;
     private String type;
     private String username;
     private BmobFile userimage;
     private Integer id;
     private List<String> like = new ArrayList<>();
     private List<String> comment = new ArrayList<>();
-
+    private BmobFile thumbInternet;
+    private Boolean isUpload;
+    private String size;
+    private String createTime;
 
     public BmobFile getFile() {
         return file;
@@ -32,12 +35,12 @@ public class Video extends BmobObject{
         this.file = file;
     }
 
-    public Object getThumb() {
-        return thumb;
+    public String getThumbUpload() {
+        return thumbUpload;
     }
 
-    public void setThumb(Object thumb) {
-        this.thumb = thumb;
+    public void setThumbUpload(String thumb) {
+        this.thumbUpload = thumb;
     }
 
     public String getType() {
@@ -86,5 +89,37 @@ public class Video extends BmobObject{
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public BmobFile getThumbInternet() {
+        return thumbInternet;
+    }
+
+    public void setThumbInternet(BmobFile thumbInternet) {
+        this.thumbInternet = thumbInternet;
+    }
+
+    public Boolean getUpload() {
+        return isUpload;
+    }
+
+    public void setUpload(Boolean upload) {
+        isUpload = upload;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

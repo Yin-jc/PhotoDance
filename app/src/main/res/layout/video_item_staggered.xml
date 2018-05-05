@@ -3,92 +3,209 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="200dp"
-    android:layout_height="420dp"
+    android:layout_height="wrap_content"
     android:layout_margin="10dp"
     app:cardCornerRadius="@dimen/radius"
-    app:cardElevation="@dimen/radius">
+    app:cardElevation="@dimen/radius"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
-    <LinearLayout
+    <com.ramotion.foldingcell.FoldingCell
+        android:id="@+id/folding_cell"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/title"
+        <LinearLayout
+            android:id="@+id/cell_content_view"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="Yjc"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/text_size_large"
-            android:layout_marginStart="10dp"/>
-
-        <com.dueeeke.videoplayer.player.IjkVideoView
-            android:id="@+id/video_view"
-            android:layout_width="match_parent"
-            android:layout_height="330dp">
-
-        </com.dueeeke.videoplayer.player.IjkVideoView>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_head_image"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-
-                android:src="@drawable/personal_center" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:id="@+id/username"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="35dp"
-                android:text="Yjc11111"
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="Yjc"
                 android:textColor="@color/color_black"
-                android:textSize="@dimen/text_size_small"
-                android:ellipsize="marquee"
-                android:singleLine="true"/>
+                android:textSize="@dimen/text_size_large"
+                android:layout_marginStart="10dp"
+                android:gravity="center"/>
 
-            <com.sackcentury.shinebuttonlib.ShineButton
-                android:id="@+id/like"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="55dp"
-                app:btn_color="@color/light_gray"
-                app:btn_fill_color="@color/color_red"
-                app:allow_random_color="false"
-                app:siShape="@raw/like"/>
+            <com.dueeeke.videoplayer.player.IjkVideoView
+                android:id="@+id/video_view"
+                android:layout_width="match_parent"
+                android:layout_height="330dp">
+
+            </com.dueeeke.videoplayer.player.IjkVideoView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_head_image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/personal_center" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="50dp"
+                    android:text="Yjc11111"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/text_size_small"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/create_time"/>
+
+                <TextView
+                    android:id="@+id/create_time"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="Yjc"
+                    android:layout_marginStart="50dp"
+                    android:textColor="@color/color_black"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/size"/>
+
+                <TextView
+                    android:id="@+id/size"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="50dp"
+                    android:textColor="@color/color_black"
+                    android:text="Yjc"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/star"/>
+
+                <TextView
+                    android:id="@+id/like_count"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_centerVertical="true"
+                    android:text="Yjc"
+                    android:textColor="@color/color_black"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/mime_type"/>
+
+                <TextView
+                    android:id="@+id/mime_type"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_centerVertical="true"
+                    android:text="Yjc"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/text_size_large"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <com.sackcentury.shinebuttonlib.ShineButton
+                    android:id="@+id/like"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="50dp"
+                    app:btn_color="@color/light_gray"
+                    app:btn_fill_color="@color/color_red"
+                    app:allow_random_color="false"
+                    app:siShape="@raw/like"/>
+
+                <ImageView
+                    android:id="@+id/comment"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="50dp"
+                    android:src="@drawable/comment" />
+
+                <TextView
+                    android:id="@+id/comment_quantity"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="30dp"
+                    android:text="10"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/text_size_medium" />
+
+            </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/cell_title_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/comment"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="30dp"
-                android:src="@drawable/comment" />
+                android:id="@+id/first_frame"
+                android:layout_width="match_parent"
+                android:layout_height="330dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true" />
 
-            <TextView
-                android:id="@+id/comment_quantity"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="5dp"
-                android:text="10"
-                android:textColor="@color/color_black"
-                android:textSize="12sp" />
+        </FrameLayout>
 
-        </RelativeLayout>
-
-    </LinearLayout>
+    </com.ramotion.foldingcell.FoldingCell>
 
 </android.support.v7.widget.CardView>
 

@@ -1,6 +1,7 @@
 package com.yjc.photodance.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.sackcentury.shinebuttonlib.ShineButton;
 import com.yjc.photodance.common.base.BaseActivity;
 import com.yjc.photodance.common.jsonBean.LatestPhoto;
 import com.yjc.photodance.R;
+import com.yjc.photodance.common.util.DBUtil;
 import com.yjc.photodance.main.view.fragment.FullScreenFragment;
 
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     private static Context mContext;
     private int count;
     private boolean hasValue = false;
+    private Bitmap mUserProfileImage;
 
     private List<String> collectionThumbUrls = new ArrayList<>();
     private List<String> likeThumbUrls = new ArrayList<>();
@@ -106,6 +109,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         // TODO: 2018/1/5/005 设置放置的行数
         int screenHeight = mContext.getResources().getDisplayMetrics().heightPixels;
 //        height = screenHeight / 5;
+
+        mUserProfileImage = DBUtil.queryUserProfileImage();
     }
 
     /**
@@ -163,7 +168,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                             .load(photo.getUser().getProfile_image().getSmall())
                             .into(holder.userProfileImage);
                 }
-
+                holder.userProfileImage.setImageBitmap(mUserProfileImage);
                 holder.username.setText(photo.getUser().getName());
                 holder.createTime.setText(photo.getCreated_at().substring(0, 10));
                 String size = photo.getWidth() + "*" + photo.getHeight();
@@ -264,10 +269,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 //                }
 
                 holder.username.setText(photo.getUsername());
+                holder.userProfileImage.setImageBitmap(mUserProfileImage);
                 // TODO: 2018/5/4/004 创建时间以及尺寸
-//                holder.createTime.setText(photo.getCreated_at().substring(0, 10));
-//                String size = photo.getWidth() + "*" + photo.getHeight();
-//                holder.size.setText(size);
+                holder.createTime.setText(photo.getCreateTime());
+                holder.size.setText(photo.getSize());
                 holder.likeCount.setText(String.valueOf(photo.getLike().size()));
 
                 //收藏点击事件

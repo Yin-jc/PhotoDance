@@ -1,5 +1,7 @@
 package com.yjc.photodance.main.presenter;
 
+import android.graphics.Bitmap;
+
 import com.yjc.photodance.adapter.PhotoAdapter;
 import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
@@ -25,4 +27,6 @@ public interface IMainPresenter {
     void requestUploadPhoto(String path);
 
     void requestUploadVideo(String path);
+
+    void requestUploadUserProfileImage(Bitmap bitmap);
 }

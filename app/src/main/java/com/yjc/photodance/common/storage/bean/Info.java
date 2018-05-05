@@ -8,100 +8,100 @@ import org.litepal.crud.DataSupport;
 
 public class Info extends DataSupport{
 
-    private String mPhoneNum;
-    private String mUsername;
-    private byte[] mBackgroundImage;
-    private byte[] mUserHeadImage;
-    private String mBase;
-    private String mSex;
-    private String mEmail;
-    private String mHome;
-    private String mCompany;
-    private String mProfession;
-    private String mSignature;
+    private String phoneNum;
+    private String username;
+    private byte[] backgroundImage;
+    private byte[] userHeadImage;
+    private String base;
+    private String sex;
+    private String email;
+    private String home;
+    private String company;
+    private String profession;
+    private String signature;
 
     public Info(String phoneNum, String username){
-        mPhoneNum = phoneNum;
-        mUsername = username;
+        this.phoneNum = phoneNum;
+        this.username = username;
     }
 
     public String getPhoneNum() {
-        return mPhoneNum;
+        return phoneNum;
     }
 
     public byte[] getBackgroundImage() {
-        return mBackgroundImage;
+        return backgroundImage;
     }
 
     public void setBackgroundImage(byte[] mBackgroundImage) {
-        this.mBackgroundImage = mBackgroundImage;
+        this.backgroundImage = mBackgroundImage;
     }
 
     public byte[] getUserHeadImage() {
-        return mUserHeadImage;
+        return userHeadImage;
     }
 
     public void setUserHeadImage(byte[] mUserHeadImage) {
-        this.mUserHeadImage = mUserHeadImage;
+        this.userHeadImage = mUserHeadImage;
     }
 
     public String getUsername() {
-        return mUsername;
+        return username;
     }
 
     public String getBase() {
-        return mBase;
+        return base;
     }
 
     public void setBase(String mBase) {
-        this.mBase = mBase;
+        this.base = mBase;
     }
 
     public String getSex() {
-        return mSex;
+        return sex;
     }
 
     public void setSex(String mSex) {
-        this.mSex = mSex;
+        this.sex = mSex;
     }
 
     public String getEmail() {
-        return mEmail;
+        return email;
     }
 
     public void setEmail(String mEmail) {
-        this.mEmail = mEmail;
+        this.email = mEmail;
     }
 
     public String getHome() {
-        return mHome;
+        return home;
     }
 
     public void setHome(String mHome) {
-        this.mHome = mHome;
+        this.home = mHome;
     }
 
     public String getCompany() {
-        return mCompany;
+        return company;
     }
 
     public void setCompany(String mCompany) {
-        this.mCompany = mCompany;
+        this.company = mCompany;
     }
 
     public String getProfession() {
-        return mProfession;
+        return profession;
     }
 
     public void setProfession(String mProfession) {
-        this.mProfession = mProfession;
+        this.profession = mProfession;
     }
 
     public String getSignature() {
-        return mSignature;
+        return signature;
     }
 
     public void setSignature(String mSignature) {
-        this.mSignature = mSignature;
+        this.signature = mSignature;
     }
 }

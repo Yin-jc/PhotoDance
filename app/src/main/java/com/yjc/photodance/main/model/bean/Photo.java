@@ -22,6 +22,8 @@ public class Photo extends BmobObject{
     private String username;
     private String uploadPhotoUrl;
     private Boolean isUpload;
+    private String createTime;
+    private String size;
 
     public String getThumbUrl() {
         return thumbUrl;
@@ -93,5 +95,21 @@ public class Photo extends BmobObject{
 
     public void setIsUpload(Boolean isUpload) {
         this.isUpload = isUpload;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 }

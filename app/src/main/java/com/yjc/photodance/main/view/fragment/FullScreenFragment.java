@@ -93,7 +93,7 @@ public class FullScreenFragment extends BaseFragment {
 
     private boolean saveImage(Bitmap bitmap){
         String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                "/PhotoDance/save/photos/";
+                "/PhotoDance/download/photos/";
         File dir = new File(dirPath);
         if(!dir.exists()){
             dir.mkdirs();

@@ -25,6 +25,7 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.common.base.BaseFragment;
 import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.common.storage.bean.Info;
+import com.yjc.photodance.common.storage.bean.Video;
 import com.yjc.photodance.common.util.HandleBitmap;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.MainActivity;
@@ -85,7 +86,7 @@ public class InfoFragment extends BaseFragment {
 
     private boolean isFirstEnter = SharedPreferenceDao.getInstance()
             .getBoolean("isFirstEnterInfoFragment");
-
+//    private boolean isFirstEnter = true;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_info;
@@ -117,7 +118,7 @@ public class InfoFragment extends BaseFragment {
 
         if(! isFirstEnter){
             List<Info> infos = DataSupport
-                    .where("mPhoneNum = ?", mPhoneNumStr)
+                    .where("phoneNum = ?", mPhoneNumStr)
                     .find(Info.class);
             Info info = infos.get(0);
             mBackground.setImageBitmap(BitmapFactory.decodeByteArray(info.getBackgroundImage(),
@@ -164,10 +165,14 @@ public class InfoFragment extends BaseFragment {
         info.setProfession(mProfession.getText().toString());
         info.setSignature(mSignature.getText().toString());
         if(isFirstEnter){
+            //第一次编辑信息就保存
             boolean result = info.save();
             Log.d(TAG, "save success?" + String.valueOf(result));
+//            uploadUserProfileImage(userHeadImageBitmap);
         }else {
-            info.updateAll("mPhoneNum = ?", mPhoneNumStr);
+            //之后修改信息就更新
+            info.updateAll("phoneNum = ?", mPhoneNumStr);
+//            uploadUserProfileImage(userHeadImageBitmap);
         }
 
     }
@@ -322,6 +327,9 @@ public class InfoFragment extends BaseFragment {
 
     }
 
-
+    private void uploadUserProfileImage(Bitmap userProfileImage){
+        MainActivity activity = (MainActivity) getActivity();
+        activity.uploadUserProfileImage(userProfileImage);
+    }
 
 }

@@ -2,6 +2,8 @@ package com.yjc.photodance.common.base;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,10 +35,14 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.yjc.photodance.R;
 import com.yjc.photodance.adapter.CollectionPhotoAdapter;
+import com.yjc.photodance.common.storage.SharedPreferenceDao;
+import com.yjc.photodance.common.storage.bean.Info;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.fragment.CollectionFragment;
 import com.yjc.photodance.main.view.fragment.InfoFragment;
 import com.yjc.photodance.main.view.InfoActivity;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
@@ -60,6 +66,9 @@ public abstract class BaseActivity extends AppCompatActivity{
     private String oldPwd;
     private String newPwd;
     private String newPwdConfirm;
+
+    private Bitmap userProfileImage;
+    private String email;
 
     private CollectionPhotoAdapter adapter;
 
@@ -96,6 +105,27 @@ public abstract class BaseActivity extends AppCompatActivity{
 
         adapter = new CollectionPhotoAdapter(this);
 
+        List<Info> infos = DataSupport.select("userHeadImage")
+                .where("username = ?", BmobUser.getCurrentUser().getUsername())
+                .find(Info.class);
+        //用户未设置头像，显示默认的
+
+        if (infos.size() != 0){
+            if (infos.get(0).getUserHeadImage() != null){
+                userProfileImage = BitmapFactory.decodeByteArray(infos.get(0).getUserHeadImage(), 0,
+                        infos.get(0).getUserHeadImage().length);
+            }else {
+                userProfileImage = BitmapFactory.decodeResource(
+                        getResources(), R.drawable.personal_center);
+            }
+
+            if (infos.get(0).getEmail() != null){
+                email = infos.get(0).getEmail();
+            }else {
+                email = "example@example.com";
+            }
+        }
+
         SecondaryDrawerItem item_info = new SecondaryDrawerItem()
                 .withIdentifier(1).withName("个人信息")
                 .withIcon(GoogleMaterial.Icon.gmd_person);
@@ -122,8 +152,8 @@ public abstract class BaseActivity extends AppCompatActivity{
                         new ProfileDrawerItem()
                                 .withName(BmobUser.getCurrentUser().getUsername())
                                 // TODO: 2018/5/3/003 信息设置完毕回传数据
-                                .withEmail("example@example.com")
-                                .withIcon(getResources().getDrawable(R.drawable.personal_center))
+                                .withEmail(email)
+                                .withIcon(userProfileImage)
                 )
                 .build();
 
@@ -133,6 +163,10 @@ public abstract class BaseActivity extends AppCompatActivity{
                 .withSliderBackgroundDrawableRes(R.drawable.drawer_background)
                 .withToolbar(mToolbar)
                 .withSelectedItem(-1)
+                .withFooterDivider(false)
+                .withFooter(R.layout.drawer_footer)
+//                .addStickyDrawerItems(item_setting, item_logoff)
+//                .withStickyFooterShadow(false)
                 .addDrawerItems(
                         item_info,
                         item_collection,
@@ -172,6 +206,8 @@ public abstract class BaseActivity extends AppCompatActivity{
                                 // 现在的currentUser是null
                                 BmobUser currentUser = BmobUser.getCurrentUser();
                                 Log.d(TAG, "onItemClick: " + currentUser);
+                                SharedPreferenceDao.getInstance()
+                                        .saveBoolean("isFirstEnterInfoFragment", true);
                                 break;
                             default:
                                 break;

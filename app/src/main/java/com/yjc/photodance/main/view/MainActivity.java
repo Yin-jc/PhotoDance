@@ -1,6 +1,8 @@
 package com.yjc.photodance.main.view;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 import com.yjc.photodance.common.base.BaseActivity;
+import com.yjc.photodance.common.storage.bean.Info;
 import com.yjc.photodance.common.util.MultiMedia;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.model.IMainModel;
@@ -33,6 +36,13 @@ import com.yjc.photodance.main.view.fragment.ShortVideoFragment;
 import com.yjc.photodance.adapter.PhotoAdapter;
 import com.yjc.photodance.main.view.fragment.UploadFragment;
 import com.yjc.photodance.main.view.popupwindow.UploadPopupWindow;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
+
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobUser;
 
 /**
  * Created by Administrator on 2017/12/29/001.
@@ -68,6 +78,8 @@ public class MainActivity extends BaseActivity implements IMainView{
 
     private int size = 20;
     private int page = 1;
+
+    private Bitmap userHeadImageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,10 +143,20 @@ public class MainActivity extends BaseActivity implements IMainView{
 
         // TODO: 2018/4/15/015 头像处理
         //获取头像
-//        account = DataSupport.findLast(User.class);
-//        Bitmap userHeadImageBitmap = BitmapFactory.decodeByteArray(account.getUserHeadImage(),
-//                0, account.getUserHeadImage().length);
-//        personalCenter.setImageBitmap(userHeadImageBitmap);
+        List<Info> infos = DataSupport.select("userHeadImage")
+                .where("username = ?", BmobUser.getCurrentUser().getUsername())
+                .find(Info.class);
+        //用户未设置头像，显示默认的
+        if (infos.size() != 0){
+            if (infos.get(0).getUserHeadImage() != null){
+                userHeadImageBitmap = BitmapFactory.decodeByteArray(infos.get(0).getUserHeadImage(),
+                        0, infos.get(0).getUserHeadImage().length);
+            }else {
+                userHeadImageBitmap = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.personal_center);
+            }
+        }
+        personalCenter.setImageBitmap(userHeadImageBitmap);
     }
 
     @Override
@@ -156,13 +178,6 @@ public class MainActivity extends BaseActivity implements IMainView{
                 mDrawer.openDrawer();
             }
         });
-        
-
-        //必须要现获取header
-//        View headerView = super.navigation.getHeaderView(0);
-        //头部图片
-//        userHeadImage = headerView.findViewById(R.id.userHeadImage);
-//        userHeadImage.setImageBitmap(userHeadImageBitmap);
 
         //默认选中第一个tab不会触发此监听器
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
@@ -307,5 +322,9 @@ public class MainActivity extends BaseActivity implements IMainView{
     @Override
     public void showUploadSuc() {
         ToastUtil.show(this, "上传成功");
+    }
+
+    public void uploadUserProfileImage(Bitmap userProfileImage){
+        mPresenter.requestUploadUserProfileImage(userProfileImage);
     }
 }
