@@ -281,7 +281,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     holder.userImage.setImageBitmap(mUserProfileImage);
                     holder.size.setText(video.getSize());
                     holder.createTime.setText(video.getCreateTime());
-                    holder.likeCount.setText(video.getLike().size());
+                    holder.likeCount.setText(String.valueOf(video.getLike().size()));
                     holder.likeBtn.setTag(position);
                     holder.username.setText(video.getUsername());
                     holder.comment.setTag(position);
@@ -303,7 +303,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     holder.username.setText(video.getUsername());
                     holder.size.setText(video.getSize());
                     holder.createTime.setText(video.getCreateTime());
-                    holder.likeCount.setText(video.getLike().size());
+                    holder.likeCount.setText(String.valueOf(video.getLike().size()));
                     holder.comment.setTag(position);
                     holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
                     holder.videoView.setTitle(video.getFile().getFilename());

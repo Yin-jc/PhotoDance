@@ -26,6 +26,7 @@ public class Video extends BmobObject{
     private Boolean isUpload;
     private String size;
     private String createTime;
+    private String mimeType;
 
     public BmobFile getFile() {
         return file;
@@ -121,5 +122,13 @@ public class Video extends BmobObject{
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 }

@@ -29,6 +29,7 @@ import com.yjc.photodance.common.util.MultiMedia;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.model.IMainModel;
 import com.yjc.photodance.main.model.MainModelImpl;
+import com.yjc.photodance.main.model.bean.Photo;
 import com.yjc.photodance.main.presenter.IMainPresenter;
 import com.yjc.photodance.main.presenter.MainPresenterImpl;
 import com.yjc.photodance.main.view.fragment.PhotoFragment;
@@ -42,7 +43,10 @@ import org.litepal.crud.DataSupport;
 import java.util.List;
 
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.CountListener;
 
 /**
  * Created by Administrator on 2017/12/29/001.
@@ -76,10 +80,13 @@ public class MainActivity extends BaseActivity implements IMainView{
 
     private UploadPopupWindow mUploadPopupWindow;
 
-    private int size = 20;
+    private int first_page_size;
     private int page = 1;
+    private int per_page = 12;
 
     private Bitmap userHeadImageBitmap;
+
+    private int uploadPhotoCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +94,9 @@ public class MainActivity extends BaseActivity implements IMainView{
 
         mModel = new MainModelImpl();
         mPresenter = new MainPresenterImpl(this, mModel);
-        
+
+        getUploadPhotoCount();
+
         initView();
         initData();
         initListener();
@@ -126,22 +135,15 @@ public class MainActivity extends BaseActivity implements IMainView{
                 new AHBottomNavigationItem("视频", R.drawable.ic_videocam_white_24dp);
         AHBottomNavigationItem uploadItem =
                 new AHBottomNavigationItem("上传", R.drawable.ic_add_box_white_24dp);
-//        AHBottomNavigationItem liveItem =
-//                new AHBottomNavigationItem("直播", R.drawable.ic_live_tv_white_24dp);
-//        AHBottomNavigationItem messageItem =
-//                new AHBottomNavigationItem("消息", R.drawable.ic_message_white_24dp);
 
         bottomNavigation.addItem(photoItem);
         bottomNavigation.addItem(uploadItem);
         bottomNavigation.addItem(shortVideoItem);
-//        bottomNavigation.addItem(liveItem);
-//        bottomNavigation.addItem(messageItem);
 
         photoAdapter = new PhotoAdapter(this);
         searchPhotoAdapter = new SearchPhotoAdapter(this);
         videoAdapter = new ShortVideoAdapter(this, this);
 
-        // TODO: 2018/4/15/015 头像处理
         //获取头像
         List<Info> infos = DataSupport.select("userHeadImage")
                 .where("username = ?", BmobUser.getCurrentUser().getUsername())
@@ -157,6 +159,7 @@ public class MainActivity extends BaseActivity implements IMainView{
             }
         }
         personalCenter.setImageBitmap(userHeadImageBitmap);
+
     }
 
     @Override
@@ -228,8 +231,15 @@ public class MainActivity extends BaseActivity implements IMainView{
                 flag = true;
                 switch (selectedTab){
                     case 0:
+                        Log.d(TAG, "onRefresh: " + first_page_size);
+                        if (uploadPhotoCount > 0){
+                            first_page_size = 12 -uploadPhotoCount;
+                        }else {
+                            first_page_size = 100;
+                        }
                         mPresenter.requestPhotoFromUser(photoAdapter);
-                        mPresenter.requestPhoto(photoAdapter, page, size);
+                        mPresenter.requestPhoto(photoAdapter, page, first_page_size, flag, isFirstEnter);
+                        isFirstEnter = false;
                         break;
                     case 1:
                         break;
@@ -248,7 +258,7 @@ public class MainActivity extends BaseActivity implements IMainView{
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
                 flag = false;
-                mPresenter.requestPhoto(photoAdapter, ++page, size);
+                mPresenter.requestPhoto(photoAdapter, ++page, per_page, flag, false);
                 refreshlayout.finishLoadmore(1000);
             }
         });
@@ -326,5 +336,21 @@ public class MainActivity extends BaseActivity implements IMainView{
 
     public void uploadUserProfileImage(Bitmap userProfileImage){
         mPresenter.requestUploadUserProfileImage(userProfileImage);
+    }
+
+    private void getUploadPhotoCount(){
+        BmobQuery<Photo> query = new BmobQuery<>();
+        query.addWhereEqualTo("isUpload", true);
+        query.count(Photo.class, new CountListener() {
+            @Override
+            public void done(Integer count, BmobException e) {
+                if (e == null){
+                    uploadPhotoCount = count;
+                    Log.d(TAG, "done: 查询成功" + count);
+                }else {
+                    Log.d(TAG, "done: 查询失败" + e.getMessage());
+                }
+            }
+        });
     }
 }

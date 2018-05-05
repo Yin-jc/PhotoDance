@@ -371,12 +371,12 @@ public class UploadFragment extends BaseFragment {
                 switch (optionCode){
                     case SELECT_PHOTO:
                         mConfirm.setEnabled(false);
-                        activity.mPresenter.requestUploadPhoto(mPhotoPath);
+                        activity.mPresenter.requestUploadPhoto(mPhotoPath, true);
                         break;
                     case TAKE_PHOTO:
                         mConfirm.setEnabled(false);
                         Log.d(TAG, "onClick: " + String.valueOf(photoUri));
-                        activity.mPresenter.requestUploadPhoto(String.valueOf(photoUri));
+                        activity.mPresenter.requestUploadPhoto(String.valueOf(photoUri), false);
                         break;
                     case SELECT_VIDEO:
                         mConfirm.setEnabled(false);

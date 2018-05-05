@@ -30,6 +30,7 @@ public class MainPresenterImpl implements IMainPresenter{
         model.setHandler(new MyHandler(this));
     }
 
+    //在哪new Handler 就在哪回调handleMessage
     private static class MyHandler extends Handler {
         WeakReference<MainPresenterImpl> refContext;
 
@@ -54,8 +55,9 @@ public class MainPresenterImpl implements IMainPresenter{
     }
 
     @Override
-    public void requestPhoto(PhotoAdapter adapter, int page, int size) {
-        mModel.getPhoto(adapter, page, size);
+    public void requestPhoto(PhotoAdapter adapter, int page, int size, boolean flag,
+                             boolean isFirstEnter) {
+        mModel.getPhoto(adapter, page, size, flag, isFirstEnter);
     }
 
     @Override
@@ -85,8 +87,8 @@ public class MainPresenterImpl implements IMainPresenter{
     }
 
     @Override
-    public void requestUploadPhoto(String path) {
-        mModel.uploadPhoto(path);
+    public void requestUploadPhoto(String path, boolean isFromSD) {
+        mModel.uploadPhoto(path, isFromSD);
     }
 
     @Override

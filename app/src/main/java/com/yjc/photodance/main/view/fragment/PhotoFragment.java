@@ -25,7 +25,7 @@ public class PhotoFragment extends BaseFragment {
     private PhotoAdapter adapter;
     private SearchPhotoAdapter searchAdapter;
     private boolean isSearch;
-
+    private int count;
     public PhotoFragment(){
     }
 
@@ -67,6 +67,23 @@ public class PhotoFragment extends BaseFragment {
         }else {
             photoRecycler.setAdapter(adapter);
         }
+
+        photoRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy < 0){
+
+                }
+            }
+        });
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }

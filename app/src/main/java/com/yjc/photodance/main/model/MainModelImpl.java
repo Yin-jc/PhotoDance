@@ -60,20 +60,20 @@ public class MainModelImpl implements IMainModel {
 
     private static final String TAG = "MainModelImpl";
 
-    private String mPhotoPath;
-    private String mVideoPath;
-
-    private String mPhotoPathAfterUpload;
-    private String mVideoPathAfterUpload;
-
-    private String mVideoFirstFramePath;
-
     private Handler mHandler;
 
     private String[] info;
+    private String mimeType;
+
+    private boolean flag;
+    private boolean isFirstEnter;
 
     @Override
-    public void getPhoto(final PhotoAdapter adapter, int page, int size) {
+    public void getPhoto(final PhotoAdapter adapter, int page, int size, boolean b, boolean bb) {
+//        final boolean flag = b;
+//        final boolean isFirstEnter = bb;
+        flag = b;
+        isFirstEnter = bb;
         RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotos(ApiConfig.getApplication_ID(),
                 String.valueOf(page), String.valueOf(size))
                 .subscribeOn(Schedulers.io())
@@ -86,12 +86,12 @@ public class MainModelImpl implements IMainModel {
 
                     @Override
                     public void onNext(List<LatestPhoto> photos) {
-//                        if(isFirstEnter || !flag) {
-//                            isFirstEnter = false;
+                        if(isFirstEnter || ! flag) {
                             //下拉刷新，防止添加重复数据
+                            isFirstEnter = false;
                             adapter.setPhotos(photos);
                             adapter.notifyDataSetChanged();
-//                        }
+                        }
                         Log.d("MainActivity", "onNext");
                     }
 
@@ -172,18 +172,25 @@ public class MainModelImpl implements IMainModel {
     }
 
     @Override
-    public void uploadPhoto(String path) {
+    public void uploadPhoto(String path, boolean isFromSD) {
         Log.d(TAG, "uploadPhoto: " + path);
-        final int[] size = getPhotoSize(path);
-        //需要对path进行截取，默认传过来的带有file://前缀
-        final BmobFile file = new BmobFile(new File(path.substring(7)));
+        final BmobFile file;
+        final int[] size;
+        if (isFromSD){
+            //不做处理
+            file = new BmobFile(new File(path));
+            size = getPhotoSize(path);
+        }else {
+            //需要对path进行截取，默认传过来的带有file://前缀
+            file = new BmobFile(new File(path.substring(7)));
+            size = getPhotoSize(path.substring(7));
+        }
         file.upload(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
                 if(e == null){
-                    mPhotoPathAfterUpload = file.getFileUrl();
-                    Log.d(TAG, "done: " + "上传成功" + mPhotoPathAfterUpload);
-                    savePhoto(mPhotoPathAfterUpload, size);
+                    //此处并不直接将文件上传，为了在加载图片时更方便
+                    savePhoto(file.getFileUrl(), size);
                 }else {
                     Log.d(TAG, "done: " + "上传失败" + e.getMessage());
                 }
@@ -201,7 +208,9 @@ public class MainModelImpl implements IMainModel {
     public void uploadVideo(String path) {
         Log.d(TAG, "uploadVideo: " + path);
         info = getVideoInfo(path);
+        mimeType = getVideoMimeType(path);
         Log.d(TAG, "uploadVideo: " + info[0] + " " + info[1]);
+        Log.d(TAG, "uploadVideo: " + mimeType);
         new MyTask().execute(path);
     }
 
@@ -240,7 +249,6 @@ public class MainModelImpl implements IMainModel {
         @Override
         protected void onPreExecute() {
             Log.d(TAG, "onPreExecute: ");
-            mVideoPath = null;
         }
 
         @Override
@@ -260,7 +268,7 @@ public class MainModelImpl implements IMainModel {
                 Log.d(TAG, "doInBackground: " + onlyCompressOverBean.getVideoPath());
                 return onlyCompressOverBean.getVideoPath();
             }
-            return mVideoPath;
+            return "";
         }
 
         @Override
@@ -289,10 +297,8 @@ public class MainModelImpl implements IMainModel {
             public void done(BmobException e) {
                 if(e == null){
                     //必须上传的视频才可以去获取url
-                    mVideoPathAfterUpload = file.getFileUrl();
-                    Log.d(TAG, "done: " + "上传成功" + mVideoPathAfterUpload);
                     Log.d(TAG, "done: " + User.getCurrentUser().getMobilePhoneNumber());
-                    saveVideo(file, firstFramePath, videoSize);
+                    saveVideoFirstFrame(file, firstFramePath, videoSize);
                 }else {
                     Log.d(TAG, "done: " + "上传失败" + e.getMessage());
                 }
@@ -339,26 +345,30 @@ public class MainModelImpl implements IMainModel {
 //        });
     }
 
-    private void saveVideo(BmobFile file, String firstFramePath, String videoSize){
+    private void saveVideoFirstFrame(final BmobFile file, final String videoSize, String firstFramePath){
+
         final BmobFile firstFrameFile = new BmobFile(new File(firstFramePath));
         firstFrameFile.upload(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
                 if (e == null){
                     Log.d(TAG, "done: 上传成功");
-                    mVideoFirstFramePath = firstFrameFile.getFileUrl();
+                    saveVideo(file, videoSize, firstFrameFile.getFileUrl());
                 }else {
                     Log.d(TAG, "done: 上传失败" + e.getMessage());
                 }
             }
         });
+    }
+
+    private void saveVideo(BmobFile file, String videoSize, String firstFrameUrl){
+
         BmobUser user = User.getCurrentUser();
         String username = user.getUsername();
-        Log.d(TAG, "saveVideo: " + firstFramePath);
         Video video = new Video();
         video.setFile(file);
         video.setUsername(username);
-        video.setThumbUpload(mVideoFirstFramePath);
+        video.setThumbUpload(firstFrameUrl);
         video.setUpload(true);
         video.setSize(videoSize);
         video.setCreateTime(getUploadTime());
@@ -368,6 +378,7 @@ public class MainModelImpl implements IMainModel {
         }else {
             video.setType("TYPE_STAGGERED");
         }
+        video.setMimeType(mimeType);
 
         video.save(new SaveListener<String>() {
             @Override
@@ -380,6 +391,7 @@ public class MainModelImpl implements IMainModel {
                 }
             }
         });
+
 //        newUser.update(user.getObjectId(), new UpdateListener() {
 //            @Override
 //            public void done(BmobException e) {
@@ -401,6 +413,7 @@ public class MainModelImpl implements IMainModel {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         String width = "";
         String height = "";
+        String rotation = "";
         try {
             HashMap<String, String> headers = new HashMap<>();
             headers.put("User-Agent", "Mozilla/5.0 (Linux; U; Android 4.4.2; zh-CN; MW-KW-001 Build/JRO03C) " +
@@ -408,13 +421,19 @@ public class MainModelImpl implements IMainModel {
             retriever.setDataSource(path, headers);
             width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
             height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+            rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
         }catch (Exception e){
             e.printStackTrace();
         }finally {
             retriever.release();
         }
         if (!width.equals("") && !height.equals("")){
-            return new String[]{width, height};
+            if ("90".equals(rotation)){//竖屏
+                return new String[]{height, width};
+            }else {//横屏
+                return new String[]{width, height};
+            }
+
         }
         Log.d(TAG, "getVideoInfo: " + width + " " + height);
         return new String[]{"500", "300"};
@@ -501,6 +520,49 @@ public class MainModelImpl implements IMainModel {
         int width=options.outWidth;
         int height=options.outHeight;
         return new int[]{width, height};
+    }
+
+    private String getVideoMimeType(String path){
+        MediaMetadataRetriever retriever = null;
+        try {
+            retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(path);
+            return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE).substring(6);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            retriever.release();
+        }
+        return "mp4";
+    }
+
+    //获取视频时长
+    // TODO: 2018/5/5/005 优化一下算法
+    private String getVideoDuration(String path){
+        int minute = 0;
+        int second = 0;
+        MediaMetadataRetriever retriever = null;
+        try {
+            retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(path);
+            //ms
+            int duration = Integer.parseInt(retriever.extractMetadata(
+                    MediaMetadataRetriever.METADATA_KEY_DURATION));
+            duration = duration / 1000; //s
+            if (duration < 60){//1分钟以内
+                return "00 : " + String.valueOf(duration);
+            }else {
+                duration = duration / 60;
+                if (duration < 60){//1小时以内
+                    return String.valueOf(duration);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            retriever.release();
+        }
+        return "";
     }
 
 }

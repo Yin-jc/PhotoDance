@@ -23,7 +23,7 @@ public interface IMainModel {
      * @param page
      * @param size
      */
-    void getPhoto(PhotoAdapter adapter ,int page, int size);
+    void getPhoto(PhotoAdapter adapter ,int page, int size, boolean flag, boolean isFirstEnter);
 
     /**
      * 通过搜索请求照片
@@ -40,7 +40,7 @@ public interface IMainModel {
 
     void setAdapter();
 
-    void uploadPhoto(String path);
+    void uploadPhoto(String path, boolean isFromSD);
 
     void uploadVideo(String path);
 

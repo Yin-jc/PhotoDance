@@ -12,7 +12,7 @@ import com.yjc.photodance.adapter.ShortVideoAdapter;
 
 public interface IMainPresenter {
 
-    void requestPhoto(PhotoAdapter adapter, int page, int size);
+    void requestPhoto(PhotoAdapter adapter, int page, int size, boolean flag, boolean isFirstEnter);
 
     void requestPhotoFromUser(PhotoAdapter adapter);
 
@@ -24,7 +24,7 @@ public interface IMainPresenter {
 
     void requestMessage();
 
-    void requestUploadPhoto(String path);
+    void requestUploadPhoto(String path, boolean isFromSD);
 
     void requestUploadVideo(String path);
 
