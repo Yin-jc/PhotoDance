@@ -55,7 +55,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RegisterDialog dialog = new RegisterDialog(LoginActivity.this);
+                RegisterDialog dialog = new RegisterDialog(LoginActivity.this,
+                        LoginActivity.this);
                 dialog.show();
             }
         });

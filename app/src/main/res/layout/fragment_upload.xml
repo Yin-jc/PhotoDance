@@ -4,14 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <!--<ImageView-->
+        <!--android:id="@+id/place_holder"-->
+        <!--android:layout_width="500dp"-->
+        <!--android:layout_height="375dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="50dp"-->
+        <!--android:src="@mipmap/splash_image"-->
+        <!--android:scaleType="fitCenter"/>-->
+
+    <pl.droidsonroids.gif.GifImageView
         android:id="@+id/place_holder"
         android:layout_width="500dp"
         android:layout_height="375dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:src="@mipmap/splash_image"
-        android:scaleType="fitCenter"/>
+        android:src="@drawable/gif1"/>
 
     <ImageView
         android:id="@+id/video_first_frame_container"

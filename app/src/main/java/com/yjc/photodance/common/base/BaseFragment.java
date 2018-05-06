@@ -26,6 +26,16 @@ public abstract class BaseFragment extends Fragment{
         return mRootView;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
     protected abstract int getLayoutId();
 
 }

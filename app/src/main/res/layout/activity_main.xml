@@ -2,7 +2,6 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -65,7 +64,7 @@
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.scwang.smartrefresh.header.PhoenixHeader
@@ -75,7 +74,7 @@
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
         </FrameLayout>
 
         <com.scwang.smartrefresh.layout.footer.BallPulseFooter
@@ -86,12 +85,6 @@
         </com.scwang.smartrefresh.layout.footer.BallPulseFooter>
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="bottom">
 
         <!--<com.github.clans.fab.FloatingActionMenu-->
             <!--android:id="@+id/fam"-->
@@ -151,27 +144,28 @@
 
         <!--</com.github.clans.fab.FloatingActionMenu>-->
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:layout_gravity="end"
-            android:padding="5dp"
-            android:src="@drawable/android_search"
-            android:clickable="true"
-            android:focusable="true"
-            app:backgroundTint="@color/color_blue" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="70dp"
+        android:layout_gravity="bottom|end"
+        android:padding="5dp"
+        android:src="@drawable/android_search"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@color/color_blue" />
 
-        <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
 
-        </com.aurelhubert.ahbottomnavigation.AHBottomNavigation>
+    <!--必须写在最下面-->
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
 
-    </LinearLayout>
+    </com.aurelhubert.ahbottomnavigation.AHBottomNavigation>
 
 </android.support.design.widget.CoordinatorLayout>
 

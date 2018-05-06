@@ -24,6 +24,7 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.adapter.SearchPhotoAdapter;
 import com.yjc.photodance.adapter.ShortVideoAdapter;
 import com.yjc.photodance.common.base.BaseActivity;
+import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.common.storage.bean.Info;
 import com.yjc.photodance.common.util.MultiMedia;
 import com.yjc.photodance.common.util.ToastUtil;
@@ -55,23 +56,20 @@ import cn.bmob.v3.listener.CountListener;
 public class MainActivity extends BaseActivity implements IMainView{
 
     private static final String TAG = "MainActivity";
-    private boolean isFirstEnter = true;
 
     private int selectedTab = 0;
 
     //判断是下拉刷新还是上拉加载
     private boolean flag = true;
 
-    private RefreshLayout refreshLayout;
+    public RefreshLayout refreshLayout;
     public AHBottomNavigation bottomNavigation;
     private PhotoAdapter photoAdapter;
-    private SearchPhotoAdapter searchPhotoAdapter;
     private ShortVideoAdapter videoAdapter;
+    private SearchPhotoAdapter searchAdapter;
 
     public IMainPresenter mPresenter;
     private IMainModel mModel;
-
-    private FloatingActionButton fab;
 
     private String mUsername;
     private String mPhoneNum;
@@ -79,6 +77,7 @@ public class MainActivity extends BaseActivity implements IMainView{
     private ImageView camera;
 
     private UploadPopupWindow mUploadPopupWindow;
+    private FloatingActionButton fab;
 
     private int first_page_size;
     private int page = 1;
@@ -141,23 +140,23 @@ public class MainActivity extends BaseActivity implements IMainView{
         bottomNavigation.addItem(shortVideoItem);
 
         photoAdapter = new PhotoAdapter(this);
-        searchPhotoAdapter = new SearchPhotoAdapter(this);
         videoAdapter = new ShortVideoAdapter(this, this);
+        searchAdapter = new SearchPhotoAdapter(this);
 
         //获取头像
         List<Info> infos = DataSupport.select("userHeadImage")
                 .where("username = ?", BmobUser.getCurrentUser().getUsername())
                 .find(Info.class);
         //用户未设置头像，显示默认的
-        if (infos.size() != 0){
-            if (infos.get(0).getUserHeadImage() != null){
+//        if (infos.size() != 0){
+//            if (infos.get(0).getUserHeadImage() != null){
                 userHeadImageBitmap = BitmapFactory.decodeByteArray(infos.get(0).getUserHeadImage(),
                         0, infos.get(0).getUserHeadImage().length);
-            }else {
-                userHeadImageBitmap = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.personal_center);
-            }
-        }
+//            }else {
+//                userHeadImageBitmap = BitmapFactory.decodeResource(getResources(),
+//                        R.drawable.personal_center);
+//            }
+//        }
         personalCenter.setImageBitmap(userHeadImageBitmap);
 
     }
@@ -188,30 +187,37 @@ public class MainActivity extends BaseActivity implements IMainView{
             public boolean onTabSelected(int position, boolean wasSelected) {
                 switch (position){//index of items
                     case 0:
+                        refreshLayout.setEnableRefresh(true);
+                        refreshLayout.setEnableLoadmore(true);
                         replaceFragment(new PhotoFragment(photoAdapter, false));
                         refreshLayout.autoRefresh();
                         selectedTab = 0;
                         break;
                     case 1:
-                        // TODO: 2018/4/25/025 弹出popupwindow
                         //产生背景变暗效果
 //                        WindowManager.LayoutParams lp = getWindow().getAttributes();
 //                        lp.alpha = 0.4f;
 //                        getWindow().setAttributes(lp);
                         UploadFragment uploadFragment = new UploadFragment();
-                        replaceFragment(uploadFragment);
                         mUploadPopupWindow = new UploadPopupWindow(MainActivity.this,
                                 uploadFragment);
                         mUploadPopupWindow.showAtLocation(MainActivity.this.getWindow().getDecorView(),
                                 Gravity.BOTTOM, 0, 0);
-                        // TODO: 2018/4/25/025 动画
+                        replaceFragment(uploadFragment);
+                        //禁用refreshLayout
+                        refreshLayout.setEnableRefresh(false);
+                        refreshLayout.setEnableLoadmore(false);
                         break;
                     case 2:
+                        refreshLayout.setEnableRefresh(true);
+                        refreshLayout.setEnableLoadmore(true);
                         replaceFragment(new ShortVideoFragment(videoAdapter));
                         refreshLayout.autoRefresh();
                         selectedTab = 2;
                         break;
                     default:
+                        //collection 加载
+
                         break;
                 }
                 return true;
@@ -219,6 +225,7 @@ public class MainActivity extends BaseActivity implements IMainView{
         });
 
         // TODO: 2018/1/6/006 以后打开应用也自动刷新
+        boolean isFirstEnter = true;
         if (isFirstEnter) {
             //第一次进入自动刷新
             refreshLayout.autoRefresh();
@@ -231,6 +238,9 @@ public class MainActivity extends BaseActivity implements IMainView{
                 flag = true;
                 switch (selectedTab){
                     case 0:
+                        //是否需要获取数据
+                        boolean isNeedLoadData =
+                                SharedPreferenceDao.getInstance().getBoolean("needLoadData");
                         Log.d(TAG, "onRefresh: " + first_page_size);
                         if (uploadPhotoCount > 0){
                             first_page_size = 12 -uploadPhotoCount;
@@ -238,16 +248,14 @@ public class MainActivity extends BaseActivity implements IMainView{
                             first_page_size = 100;
                         }
                         mPresenter.requestPhotoFromUser(photoAdapter);
-                        mPresenter.requestPhoto(photoAdapter, page, first_page_size, flag, isFirstEnter);
-                        isFirstEnter = false;
+                        mPresenter.requestPhoto(photoAdapter, page, first_page_size, flag,
+                                isNeedLoadData);
                         break;
                     case 1:
                         break;
                     case 2:
                         mPresenter.requestVideo(videoAdapter);
                         break;
-//                    case 3:
-//                        break;
                     default:
                         break;
                 }
@@ -280,9 +288,9 @@ public class MainActivity extends BaseActivity implements IMainView{
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String searchContent = search.getText().toString();
-                        replaceFragment(new PhotoFragment(searchPhotoAdapter, true));
+                        replaceFragment(new PhotoFragment(searchAdapter, true));
                         Log.d(TAG, "onClick: " + searchContent);
-                        mPresenter.requestPhotoBySearch(searchPhotoAdapter, searchContent);
+                        mPresenter.requestPhotoBySearch(searchAdapter, searchContent);
                     }
                 });
                 builder.setNegativeButton(android.R.string.cancel, null);
@@ -300,8 +308,8 @@ public class MainActivity extends BaseActivity implements IMainView{
         refreshLayout = findViewById(R.id.refresh_layout);
         bottomNavigation = findViewById(R.id.bottom_navigation);
         personalCenter=findViewById(R.id.personal_center);
-        camera=findViewById(R.id.camera);
         fab = findViewById(R.id.fab_search);
+        camera=findViewById(R.id.camera);
 
     }
 
@@ -332,6 +340,7 @@ public class MainActivity extends BaseActivity implements IMainView{
     @Override
     public void showUploadSuc() {
         ToastUtil.show(this, "上传成功");
+
     }
 
     public void uploadUserProfileImage(Bitmap userProfileImage){

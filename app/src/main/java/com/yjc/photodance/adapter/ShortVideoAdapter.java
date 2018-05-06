@@ -56,15 +56,11 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
     private static final String TAG = "ShortVideoAdapter";
     private Context mContext;
     private List<Video> mVideos = new ArrayList<>();
-    private ExecutorService cachedThreadPool;
     private Activity mActivity;
-    private Bitmap mUserProfileImage;
 
     public ShortVideoAdapter(Context context, Activity activity){
         mContext = context;
         mActivity = activity;
-        cachedThreadPool = Executors.newCachedThreadPool();
-        mUserProfileImage = DBUtil.queryUserProfileImage();
     }
 
      class ViewHolder extends RecyclerView.ViewHolder{
@@ -94,6 +90,17 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
             cardView = (CardView) itemView;
             videoView = cardView.findViewById(R.id.video_view);
             controller = new StandardVideoController(mContext);
+            createTime = cardView.findViewById(R.id.create_time);
+            size = cardView.findViewById(R.id.size);
+            likeCount = cardView.findViewById(R.id.like_count);
+            mimeType = cardView.findViewById(R.id.mime_type);
+            title = cardView.findViewById(R.id.title);
+            userImage = cardView.findViewById(R.id.user_head_image);
+            username = cardView.findViewById(R.id.username);
+            comment = cardView.findViewById(R.id.comment);
+            commentQuantity = cardView.findViewById(R.id.comment_quantity);
+            foldingCell = cardView.findViewById(R.id.folding_cell);
+            firstFrame = cardView.findViewById(R.id.first_frame);
 
             likeBtn = cardView.findViewById(R.id.like);
             likeBtn.init(mActivity);
@@ -117,10 +124,6 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                 }
             });
 
-            title = cardView.findViewById(R.id.title);
-            userImage = cardView.findViewById(R.id.user_head_image);
-            username = cardView.findViewById(R.id.username);
-            comment = cardView.findViewById(R.id.comment);
             comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -162,18 +165,6 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                                     }
                                 });
                             }
-//                            Video newVideo = new Video();
-//                            newVideo.getComment().add(commentStr);
-//                            newVideo.update(video.getObjectId(), new UpdateListener() {
-//                                @Override
-//                                public void done(BmobException e) {
-//                                    if (e == null){
-//                                        Log.d(TAG, "done: 修改成功");
-//                                    }else {
-//                                        Log.d(TAG, "done: 修改失败" + e.getMessage());
-//                                    }
-//                                }
-//                            });
                         }
                     });
                     //点击取消键退出dialog
@@ -183,10 +174,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     builder.show();
                 }
             });
-            commentQuantity = cardView.findViewById(R.id.comment_quantity);
 
-            foldingCell = cardView.findViewById(R.id.folding_cell);
-            firstFrame = cardView.findViewById(R.id.first_frame);
 
             //折叠视图不可设置点击事件（折叠下显示的图片），否则会冲突
             foldingCell.setOnClickListener(new View.OnClickListener() {
@@ -196,11 +184,6 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     foldingCell.toggle(false);
                 }
             });
-
-            createTime = cardView.findViewById(R.id.create_time);
-            size = cardView.findViewById(R.id.size);
-            likeCount = cardView.findViewById(R.id.like_count);
-            mimeType = cardView.findViewById(R.id.mime_type);
 
             //高级设置
             config = new PlayerConfig.Builder()
@@ -249,7 +232,6 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         Video video = mVideos.get(position);
         String[] fileName;
         boolean isUpload = video.getUpload();
-        // TODO: 2018/4/24/024 第一帧在子线程中获取还没有回传数据
         //显示视频第一帧
         if (isUpload){
             //上传的文件
@@ -270,54 +252,71 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     .load(video.getThumbInternet().getFileUrl())
                     .into(holder.firstFrame);
         }
+        fileName = video.getFile().getFilename().split(".mp4");
+        holder.title.setText(fileName[0]);
+        if (video.getUserimage() != null){
+            Glide.with(mContext)
+                    .load(video.getUserimage().getFileUrl())
+                    .into(holder.userImage);
+        }
+        holder.size.setText(video.getSize());
+        holder.createTime.setText(video.getCreateTime());
+        holder.likeCount.setText(String.valueOf(video.getLike().size()));
+        holder.likeBtn.setTag(position);
+        holder.username.setText(video.getUsername());
+        holder.comment.setTag(position);
+        holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
+        holder.mimeType.setText(video.getMimeType());
+        holder.videoView.setTitle(video.getFile().getFilename());
+        holder.videoView.setUrl(video.getFile().getFileUrl());
+        holder.videoView.setVideoController(holder.controller);
+        holder.videoView.setPlayerConfig(holder.config);
 
-        switch (holder.getItemViewType()) {
-                case TYPE_LIST:
-                    fileName = video.getFile().getFilename().split(".mp4");
-                    holder.title.setText(fileName[0]);
-                    if (video.getUserimage() != null){
-                        Glide.with(mContext)
-                                .load(video.getUserimage().getFileUrl())
-                                .into(holder.userImage);
-                    }
-                    holder.userImage.setImageBitmap(mUserProfileImage);
-                    holder.size.setText(video.getSize());
-                    holder.createTime.setText(video.getCreateTime());
-                    holder.likeCount.setText(String.valueOf(video.getLike().size()));
-                    holder.likeBtn.setTag(position);
-                    holder.username.setText(video.getUsername());
-                    holder.comment.setTag(position);
-                    holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
-                    holder.mimeType.setText(video.getMimeType());
-                    holder.videoView.setTitle(video.getFile().getFilename());
-                    holder.videoView.setUrl(video.getFile().getFileUrl());
-                    holder.videoView.setVideoController(holder.controller);
-                    holder.videoView.setPlayerConfig(holder.config);
-                    break;
-                case TYPE_STAGGERED:
-                    fileName = video.getFile().getFilename().split(".mp4");
-                    holder.title.setText(fileName[0]);
-                    if (video.getUserimage() != null){
-                        Glide.with(mContext)
-                                .load(video.getUserimage().getFileUrl())
-                                .into(holder.userImage);
-                    }
-                    holder.userImage.setImageBitmap(mUserProfileImage);
-                    holder.username.setText(video.getUsername());
-                    holder.size.setText(video.getSize());
-                    holder.createTime.setText(video.getCreateTime());
-                    holder.likeCount.setText(String.valueOf(video.getLike().size()));
-                    holder.comment.setTag(position);
-                    holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
-                    holder.mimeType.setText(video.getMimeType());
-                    holder.videoView.setTitle(video.getFile().getFilename());
-                    holder.videoView.setUrl(video.getFile().getFileUrl());
-                    holder.videoView.setVideoController(holder.controller);
-                    holder.videoView.setPlayerConfig(holder.config);
-                    break;
-                default:
-                    break;
-            }
+//        switch (holder.getItemViewType()) {
+//                case TYPE_LIST:
+//                    fileName = video.getFile().getFilename().split(".mp4");
+//                    holder.title.setText(fileName[0]);
+//                    if (video.getUserimage() != null){
+//                        Glide.with(mContext)
+//                                .load(video.getUserimage().getFileUrl())
+//                                .into(holder.userImage);
+//                    }
+//                    holder.size.setText(video.getSize());
+//                    holder.createTime.setText(video.getCreateTime());
+//                    holder.likeCount.setText(String.valueOf(video.getLike().size()));
+//                    holder.likeBtn.setTag(position);
+//                    holder.username.setText(video.getUsername());
+//                    holder.comment.setTag(position);
+//                    holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
+//                    holder.mimeType.setText(video.getMimeType());
+//                    holder.videoView.setTitle(video.getFile().getFilename());
+//                    holder.videoView.setUrl(video.getFile().getFileUrl());
+//                    holder.videoView.setVideoController(holder.controller);
+//                    holder.videoView.setPlayerConfig(holder.config);
+//                    break;
+//                case TYPE_STAGGERED:
+//                    fileName = video.getFile().getFilename().split(".mp4");
+//                    holder.title.setText(fileName[0]);
+//                    if (video.getUserimage() != null){
+//                        Glide.with(mContext)
+//                                .load(video.getUserimage().getFileUrl())
+//                                .into(holder.userImage);
+//                    }
+//                    holder.username.setText(video.getUsername());
+//                    holder.size.setText(video.getSize());
+//                    holder.createTime.setText(video.getCreateTime());
+//                    holder.likeCount.setText(String.valueOf(video.getLike().size()));
+//                    holder.comment.setTag(position);
+//                    holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
+//                    holder.mimeType.setText(video.getMimeType());
+//                    holder.videoView.setTitle(video.getFile().getFilename());
+//                    holder.videoView.setUrl(video.getFile().getFileUrl());
+//                    holder.videoView.setVideoController(holder.controller);
+//                    holder.videoView.setPlayerConfig(holder.config);
+//                    break;
+//                default:
+//                    break;
+//            }
     }
 
     @Override
@@ -364,33 +363,9 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         }
     }
 
-    // TODO: 2018/5/2/002 卡顿十分严重，plan B 直接上传第一帧图片
     public void setVideos(List<Video> videos){
         Collections.reverse(videos);
         mVideos = videos;
-//        final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-//        for (final Video video : mVideos){
-//            Future<Bitmap> future = cachedThreadPool.submit(new Callable<Bitmap>() {
-//                @Override
-//                public Bitmap call() throws Exception {
-//                    try {
-//                        retriever.setDataSource(video.getFile().getFileUrl(), new HashMap<String, String>());
-//                        return retriever.getFrameAtTime();
-//                    }catch (Exception e){
-//                        e.printStackTrace();
-//                    }finally {
-////                        retriever.release();
-//                    }
-//                    return null;
-//                }
-//            });
-//            try {
-//                video.setThumb(future.get());
-//            } catch (InterruptedException | ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
     }
 
 }

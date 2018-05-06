@@ -103,33 +103,36 @@ public class InfoFragment extends BaseFragment {
         //username 不可修改
         mUsername.setText(BmobUser.getCurrentUser().getUsername());
 
-//        if(! isFirstEnter){
-        List<Info> infos = DataSupport
-                .where("phoneNum = ?", mPhoneNumStr)
-                .find(Info.class);
-        Info info = infos.get(0);
-//            mBackground.setImageBitmap(BitmapFactory.decodeByteArray(info.getBackgroundImage(),
-//                    0, info.getBackgroundImage().length));
-        mUserHeadImage.setImageBitmap(BitmapFactory.decodeByteArray(info.getUserHeadImage(),
-                0, info.getUserHeadImage().length));
-        mBase.setText(info.getBase());
-        // 获取性别设置
-        String sex = info.getSex();
-        if (sex.equals("男")){
-            mSex.check(R.id.rb_male);
-        }else {
-            mSex.check(R.id.rb_female);
+        mUserHeadImage.setImageDrawable(
+                getActivity().getResources().getDrawable(R.drawable.personal_center));
+
+        if(! isFirstEnter){
+            List<Info> infos = DataSupport
+                    .where("phoneNum = ?", mPhoneNumStr)
+                    .find(Info.class);
+            Info info = infos.get(0);
+            byte[] bytes = infos.get(0).getUserHeadImage();
+            mUserHeadImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            mBase.setText(info.getBase());
+            // 获取性别设置
+            String sex = info.getSex();
+            if (sex != null){
+                if (sex.equals("男")){
+                    mSex.check(R.id.rb_male);
+                }else {
+                    mSex.check(R.id.rb_female);
+                }
+            }
+            mEmail.setText(info.getEmail());
+            mHome.setText(info.getHome());
+            mCompany.setText(info.getCompany());
+            mProfession.setText(info.getProfession());
+            mSignature.setText(info.getSignature());
         }
-        mEmail.setText(info.getEmail());
-        mHome.setText(info.getHome());
-        mCompany.setText(info.getCompany());
-        mProfession.setText(info.getProfession());
-        mSignature.setText(info.getSignature());
-//        }
     }
 
     private void initView(){
-        mBackground = getActivity().findViewById(R.id.background_info);
+//        mBackground = getActivity().findViewById(R.id.background_info);
         mUserHeadImage = getActivity().findViewById(R.id.userHeadImage_info);
         mUsername = getActivity().findViewById(R.id.username_info);
         mBase = getActivity().findViewById(R.id.base_info);
@@ -146,7 +149,7 @@ public class InfoFragment extends BaseFragment {
 
     private void updateData(){
         Info info = new Info();
-        if(userHeadImageBitmap != null){
+        if (userHeadImageBitmap != null){
             info.setUserHeadImage(HandleBitmap.img(userHeadImageBitmap));
         }
         info.setBase(mBase.getText().toString());
@@ -159,6 +162,7 @@ public class InfoFragment extends BaseFragment {
 //        if(isFirstEnter){
             //第一次编辑信息就保存
 //            boolean result = info.save();
+            SharedPreferenceDao.getInstance().saveBoolean("isFirstEnterInfoFragment", false);
 //            sendUpdateBroadcast();
 //            Log.d(TAG, "save success?" + String.valueOf(result));
 //            uploadUserProfileImage(userHeadImageBitmap);
@@ -219,22 +223,26 @@ public class InfoFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: " + isFirstEnter);
-                updateData();
-                SharedPreferenceDao.getInstance().saveBoolean("isFirstEnterInfoFragment",
-                        false);
-                ToastUtil.show(getActivity(), "保存成功");
+                //进入后只选择性别也会触发此条件
+                Boolean condition = isFirstEnter
+                        && mBase.getText().toString().equals("")
+                        && mEmail.getText().toString().equals("")
+                        && mCompany.getText().toString().equals("")
+                        && mHome.getText().toString().equals("")
+                        && mProfession.getText().toString().equals("")
+                        && mSignature.getText().toString().equals("");
+                if (condition){
+                    ToastUtil.show(getActivity(), "您还没有输入任何有效的信息");
+                }else {
+                    updateData();
+                    ToastUtil.show(getActivity(), "保存成功");
+                    //返回上一个fragment
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
                 Log.d(TAG, "onClick: " + isFirstEnter);
-                // TODO: 2018/4/21/021 退出此Fragment
             }
         });
 
-//        mBackground.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                selectPhoto(CHOOSE_PHOTO_FOR_BACKGROUND);
-//                return true;
-//            }
-//        });
     }
 
     private void takePhoto(){
@@ -319,11 +327,6 @@ public class InfoFragment extends BaseFragment {
                 break;
         }
 
-    }
-
-    private void uploadUserProfileImage(Bitmap userProfileImage){
-        MainActivity activity = (MainActivity) getActivity();
-        activity.uploadUserProfileImage(userProfileImage);
     }
 
     private void sendUpdateBroadcast(){

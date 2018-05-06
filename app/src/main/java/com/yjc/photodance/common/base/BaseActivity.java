@@ -1,7 +1,5 @@
 package com.yjc.photodance.common.base;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -24,13 +22,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
@@ -41,20 +39,21 @@ import com.yjc.photodance.adapter.CollectionPhotoAdapter;
 import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.common.storage.bean.Info;
 import com.yjc.photodance.common.util.ToastUtil;
-import com.yjc.photodance.main.model.MainModelImpl;
+import com.yjc.photodance.main.model.bean.Photo;
+import com.yjc.photodance.main.view.MainActivity;
 import com.yjc.photodance.main.view.fragment.CollectionFragment;
 import com.yjc.photodance.main.view.fragment.InfoFragment;
 import com.yjc.photodance.main.view.InfoActivity;
 
 import org.litepal.crud.DataSupport;
 
-import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.b.I;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -77,6 +76,7 @@ public abstract class BaseActivity extends AppCompatActivity{
     private String email;
 
     private CollectionPhotoAdapter adapter;
+
 
 
 //    public static class InfoBroadcastReceiver extends BroadcastReceiver {
@@ -103,11 +103,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        //初始化本地数据库一条数据,防止其他类查空
-        Info info = new Info();
-        info.setPhoneNum(BmobUser.getCurrentUser().getMobilePhoneNumber());
-        info.setUsername(BmobUser.getCurrentUser().getUsername());
-        info.save();
+        getCollectionPhotoCount();
     }
 
     /**
@@ -142,29 +138,28 @@ public abstract class BaseActivity extends AppCompatActivity{
                 .where("username = ?", BmobUser.getCurrentUser().getUsername())
                 .find(Info.class);
         //用户未设置头像，显示默认的
-        if (infos.size() != 0){
+//        if (infos.size() != 0){
             byte[] bytes = infos.get(0).getUserHeadImage();
             String emailStr = infos.get(0).getEmail();
-            if (bytes != null){
-                userProfileImage = BitmapFactory.decodeByteArray(infos.get(0).getUserHeadImage(),
-                        0, infos.get(0).getUserHeadImage().length);
-            }else {
-                userProfileImage = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.personal_center);
-            }
+//            if (bytes != null){
+                userProfileImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//            }else {
+//                userProfileImage = BitmapFactory.decodeResource(getResources(),
+//                        R.drawable.personal_center);
+//            }
             if (emailStr != null){
                 email = emailStr;
             }else {
                 email = "example@example.com";
             }
-        }
+//        }
 
 
         SecondaryDrawerItem item_info = new SecondaryDrawerItem()
                 .withIdentifier(1).withName("个人信息")
                 .withIcon(GoogleMaterial.Icon.gmd_person);
-        SecondaryDrawerItem item_collection = new SecondaryDrawerItem()
-                .withIdentifier(2).withName("我的收藏")
+        SecondaryDrawerItem item_collection= new SecondaryDrawerItem()
+                .withIdentifier(2).withName("我的收藏").withBadge("0")
                 .withIcon(GoogleMaterial.Icon.gmd_star);
         SecondaryDrawerItem item_setting = new SecondaryDrawerItem()
                 .withIdentifier(3).withName("修改密码")
@@ -179,7 +174,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.drawer_background)
+                .withHeaderBackground(R.drawable.shape_gradient_3)
                 .withHeightDp(220)
                 .withPaddingBelowHeader(true)
                 .addProfiles(
@@ -197,11 +192,11 @@ public abstract class BaseActivity extends AppCompatActivity{
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(false)
                 .withAccountHeader(headerResult)
-                .withSliderBackgroundDrawableRes(R.drawable.drawer_background)
+                .withSliderBackgroundDrawableRes(R.drawable.drawerlayout_background)
                 .withToolbar(mToolbar)
                 .withSelectedItem(-1)
-                .withFooterDivider(false)
-                .withFooter(R.layout.drawer_footer)
+//                .withFooterDivider(false)
+//                .withFooter(R.layout.drawer_footer)
                 .addDrawerItems(
                         item_info,
                         item_collection,
@@ -217,6 +212,9 @@ public abstract class BaseActivity extends AppCompatActivity{
                                 Log.d("BaseActivity", "item1");
                                 replaceFragment(new InfoFragment());
                                 mDrawer.closeDrawer();
+//                                MainActivity activity = getMainActivityFiled();
+//                                activity.refreshLayout.setEnableRefresh(false);
+//                                activity.refreshLayout.setEnableLoadmore(false);
                                 break;
                             case 2://collection
                                 Log.d("BaseActivity", "item2");
@@ -413,6 +411,45 @@ public abstract class BaseActivity extends AppCompatActivity{
         dialog.show();
 
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.RED);
+    }
+
+    private MainActivity getMainActivityFiled(){
+        try {
+            Class mainClass = Class.forName("com.yjc.photodance.main.view.MainActivity");
+            return (MainActivity) mainClass.newInstance();
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void getCollectionPhotoCount(){
+        BmobQuery<Photo> query = new BmobQuery<>();
+        String[] users = {BmobUser.getCurrentUser().getUsername()};
+        query.addWhereContainsAll("collection", Arrays.asList(users));
+//        query.count(Photo.class, new CountListener() {
+//            @Override
+//            public void done(Integer count, BmobException e) {
+//                if (e == null){
+//                    collectionPhotoCount = count;
+//                    Log.d(TAG, "done: 查询成功" + count);
+//                }else {
+//                    Log.d(TAG, "done: 查询失败" + e.getMessage());
+//                }
+//            }
+//        });
+        query.findObjects(new FindListener<Photo>() {
+            @Override
+            public void done(List<Photo> photos, BmobException e) {
+                if (e == null){
+                    Log.d(TAG, "done: 查询成功");
+                    Log.d(TAG, "done: " + photos.size());
+                    mDrawer.updateBadge(2, new StringHolder(String.valueOf(photos.size())));
+                }else {
+                    Log.d(TAG, "done: 查询失败");
+                }
+            }
+        });
     }
 
 }

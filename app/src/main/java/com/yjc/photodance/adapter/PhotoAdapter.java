@@ -46,11 +46,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     private static final String TAG = "PhotoAdapter";
     private List<LatestPhoto> mPhotos = new ArrayList<>();
     private List<Photo> mUploadPhotos = new ArrayList<>();
-    private static Context mContext;
+    private Context mContext;
+
     //用户上传的图片数量
     private int count;
+
     private boolean hasValue = false;
-    private Bitmap mUserProfileImage;
 
     private List<String> collectionThumbUrls = new ArrayList<>();
     private List<String> likeThumbUrls = new ArrayList<>();
@@ -95,8 +96,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                 }
             });
 
-            searchCollectionPhotos();
-            searchLikePhotos();
+//            searchCollectionPhotos();
+//            searchLikePhotos();
         }
     }
 
@@ -104,15 +105,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         mContext = context;
 
         //屏幕的宽度(px值）
-        int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+//        int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
         //Item的宽度，或图片的宽度
 //        width = screenWidth / 3;
 
-        // TODO: 2018/1/5/005 设置放置的行数
-        int screenHeight = mContext.getResources().getDisplayMetrics().heightPixels;
+//        int screenHeight = mContext.getResources().getDisplayMetrics().heightPixels;
 //        height = screenHeight / 5;
-
-        mUserProfileImage = DBUtil.queryUserProfileImage();
     }
 
     /**
@@ -152,16 +150,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
             final LatestPhoto photo = mPhotos.get(position - count);
             final String photoUrl = photo.getUrls().getThumb();
 
-            if (collectionThumbUrls.contains(photoUrl)){
-                //收藏的项目
-                Log.d(TAG, "onBindViewHolder: true");
-                holder.collection.setChecked(true);
-            }
-
-            if (likeThumbUrls.contains(position)){
-                Log.d(TAG, "onBindViewHolder:  true");
-                holder.like.setChecked(true);
-            }
+//            if (collectionThumbUrls.contains(photoUrl)){
+//                //收藏的项目
+//                Log.d(TAG, "onBindViewHolder: true");
+//                holder.collection.setChecked(true);
+//            }
+//
+//            if (likeThumbUrls.contains(position)){
+//                Log.d(TAG, "onBindViewHolder:  true");
+//                holder.like.setChecked(true);
+//            }
 
             if (photo.getDescription() != null){
                 holder.description.setText(photo.getDescription());
@@ -171,7 +169,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                         .load(photo.getUser().getProfile_image().getSmall())
                         .into(holder.userProfileImage);
             }
-            holder.userProfileImage.setImageBitmap(mUserProfileImage);
+            //加载用户头像
+            Glide.with(mContext)
+                    .load(photo.getUser().getProfile_image().getSmall())
+                    .into(holder.userProfileImage);
             holder.username.setText(photo.getUser().getName());
             holder.createTime.setText(photo.getCreated_at().substring(0, 10));
             String size = photo.getWidth() + "*" + photo.getHeight();
@@ -189,6 +190,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                     collectionPhoto.setThumbUrl(photoUrl);
                     collectionPhoto.setRegularUrl(photo.getUrls().getRegular());
                     collectionPhoto.setRawUrl(photo.getUrls().getRaw());
+                    collectionPhoto.setIsUpload(false);
                     collectionPhoto.getCollection().add(BmobUser.getCurrentUser().getUsername());
                     collectionPhoto.save(new SaveListener<String>() {
                         @Override
@@ -248,24 +250,22 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
             });
 
         }else {
-
-            final com.yjc.photodance.main.model.bean.Photo photo = mUploadPhotos.get(position);
+            final Photo photo = mUploadPhotos.get(position);
             final String photoUrl = photo.getUploadPhotoUrl();
-            if (collectionThumbUrls.contains(photoUrl)){
-                //收藏的项目
-                Log.d(TAG, "onBindViewHolder: true");
-                holder.collection.setChecked(true);
-            }
-
-            if (likeThumbUrls.contains(position)){
-                Log.d(TAG, "onBindViewHolder:  true");
-                holder.like.setChecked(true);
-            }
-
-            if (photo.getDescription() != null){
-                holder.description.setText(photo.getDescription());
-            }
-            // TODO: 2018/5/4/004 上传用户头像 设置之后
+//            if (collectionThumbUrls.contains(photoUrl)){
+//                //收藏的项目
+//                Log.d(TAG, "onBindViewHolder: true");
+//                holder.collection.setChecked(true);
+//            }
+//
+//            if (likeThumbUrls.contains(position)){
+//                Log.d(TAG, "onBindViewHolder:  true");
+//                holder.like.setChecked(true);
+//            }
+//
+//            if (photo.getDescription() != null){
+//                holder.description.setText(photo.getDescription());
+//            }
 //                if (photo.getUser().getProfile_image().getSmall() != null){
 //                    Glide.with(mContext)
 //                            .load(photo.getUser().getProfile_image().getSmall())
@@ -273,8 +273,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 //                }
 
             holder.username.setText(photo.getUsername());
-            holder.userProfileImage.setImageBitmap(mUserProfileImage);
-            // TODO: 2018/5/4/004 创建时间以及尺寸
+            //加载头像
+            Glide.with(mContext)
+                    .load(photo.getUserProfileImage())
+                    .into(holder.userProfileImage);
             holder.createTime.setText(photo.getCreateTime());
             holder.size.setText(photo.getSize());
             holder.likeCount.setText(String.valueOf(photo.getLike().size()));
@@ -285,10 +287,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                 public void onClick(View view) {
                     com.yjc.photodance.main.model.bean.Photo collectionPhoto = new com.yjc.photodance.main.model.bean.Photo();
                     collectionPhoto.setDescription(photo.getDescription());
-//                        collectionPhoto.setUserProfileImage(photo.getUser().getProfile_image().getSmall());
+                    collectionPhoto.setUserProfileImage(photo.getUserProfileImage());
                     collectionPhoto.setUsername(photo.getUsername());
                     collectionPhoto.setThumbUrl(photoUrl);
-//                        collectionPhoto.setRegularUrl(photo.getUrls().getRegular());
+                    collectionPhoto.setRegularUrl(photoUrl);
+                    collectionPhoto.setIsUpload(true);
 //                        collectionPhoto.setRawUrl(photo.getUrls().getRaw());
                     collectionPhoto.getCollection().add(BmobUser.getCurrentUser().getUsername());
                     collectionPhoto.save(new SaveListener<String>() {
@@ -345,7 +348,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                 public void onClick(View view) {
                     holder.foldingCell.toggle(false);
                     BaseActivity activity = (BaseActivity) mContext;
-                    activity.replaceFragment(new FullScreenFragment(photo.getRegularUrl()));
+                    activity.replaceFragment(new FullScreenFragment(photo.getUploadPhotoUrl()));
                 }
             });
         }
@@ -354,12 +357,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         Log.d(TAG, "getItemCount: " + (mUploadPhotos.size() + mPhotos.size()));
-        if (mUploadPhotos.size() > 0 && !hasValue ){
-            hasValue = true;
+        if (mUploadPhotos.size() > 0){
             count = mUploadPhotos.size();
         }
         return mUploadPhotos.size() + mPhotos.size();
-
     }
 
     public void setPhotos(List<LatestPhoto> photos){
@@ -367,19 +368,24 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         Log.d(TAG, "setPhotos: " + mPhotos.size());
     }
 
-    public void setUploadPhotos(List<com.yjc.photodance.main.model.bean.Photo> photos){
-        mUploadPhotos.addAll(photos);
+    public void setUploadPhotos(List<Photo> photos){
+        //防止重复添加
+//        if (photos.size() - mUploadPhotos.size() > 0){
+//            mUploadPhotos.clear();
+//            mUploadPhotos.addAll(photos);
+//        }
+        mUploadPhotos = photos;
     }
 
     private void searchCollectionPhotos(){
-        BmobQuery<com.yjc.photodance.main.model.bean.Photo> query = new BmobQuery<>();
+        BmobQuery<Photo> query = new BmobQuery<>();
         query.addWhereContains("collection", BmobUser.getCurrentUser().getUsername());
         query.findObjects(new FindListener<com.yjc.photodance.main.model.bean.Photo>() {
             @Override
             public void done(List<com.yjc.photodance.main.model.bean.Photo> photos, BmobException e) {
                 if (e == null){
                     Log.d(TAG, "done: 查询成功");
-                    for (com.yjc.photodance.main.model.bean.Photo photo : photos){
+                    for (Photo photo : photos){
                         collectionThumbUrls.add(photo.getThumbUrl());
                     }
                 }else {
@@ -390,14 +396,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     }
 
     private void searchLikePhotos(){
-        BmobQuery<com.yjc.photodance.main.model.bean.Photo> query = new BmobQuery<>();
+        BmobQuery<Photo> query = new BmobQuery<>();
         query.addWhereContains("like", BmobUser.getCurrentUser().getUsername());
         query.findObjects(new FindListener<com.yjc.photodance.main.model.bean.Photo>() {
             @Override
             public void done(List<com.yjc.photodance.main.model.bean.Photo> photos, BmobException e) {
                 if (e == null){
                     Log.d(TAG, "done: 查询成功");
-                    for (com.yjc.photodance.main.model.bean.Photo photo : photos){
+                    for (Photo photo : photos){
                         likeThumbUrls.add(photo.getThumbUrl());
                     }
                 }else {
@@ -405,15 +411,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                 }
             }
         });
-    }
-
-    private void saveLikePhoto(){
-
-
-    }
-
-    private void saveCollectionPhoto(){
-
     }
 
 }

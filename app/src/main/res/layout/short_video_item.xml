@@ -13,7 +13,8 @@
     <com.ramotion.foldingcell.FoldingCell
         android:id="@+id/folding_cell"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_gradient_5">
 
         <LinearLayout
             android:id="@+id/cell_content_view"
@@ -201,7 +202,7 @@
                 android:id="@+id/first_frame"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 android:adjustViewBounds="true" />
 
         </FrameLayout>

@@ -23,11 +23,14 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.common.base.BaseFragment;
 import com.yjc.photodance.common.util.HandleBitmap;
 import com.yjc.photodance.common.util.MultiMedia;
+import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.MainActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import pl.droidsonroids.gif.GifImageView;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -55,7 +58,7 @@ public class UploadFragment extends BaseFragment {
     private ImageView mPhotoContainer;
     private ImageView mVideoFirstFrameContainer;
 
-    private ImageView mPlaceHolder;
+    private GifImageView mPlaceHolder;
     private Button mConfirm;
     private Button mCancel;
     private ProgressBar mProgressBar;
@@ -357,6 +360,8 @@ public class UploadFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 MainActivity activity = (MainActivity) getActivity();
+                ToastUtil.showLong(activity, "上传中，请稍后...");
+                mCancel.setEnabled(false);
                 // TODO: 2018/4/26/026 上传逻辑
 //                if(mPhotoContainer.getVisibility() == View.VISIBLE){
 //                    //上传照片

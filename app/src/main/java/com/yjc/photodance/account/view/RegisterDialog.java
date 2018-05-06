@@ -3,6 +3,7 @@ package com.yjc.photodance.account.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -24,9 +25,13 @@ import com.yjc.photodance.account.model.AccountManagerImpl;
 import com.yjc.photodance.account.model.IAccountManager;
 import com.yjc.photodance.account.presenter.IRegisterPresenter;
 import com.yjc.photodance.account.presenter.RegisterPresenterImpl;
+import com.yjc.photodance.common.storage.bean.Info;
 import com.yjc.photodance.common.util.FormUtil;
+import com.yjc.photodance.common.util.HandleBitmap;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.MainActivity;
+
+import cn.bmob.v3.BmobUser;
 
 /**
  * Created by Administrator on 2017/12/29/029.
@@ -52,10 +57,13 @@ public class RegisterDialog extends Dialog implements IRegisterView {
     private String mUsername;
     private String mPassword;
     private String mPhoneNumber;
+    private LoginActivity activity;
 
-    public RegisterDialog(@NonNull Context context) {
+
+    public RegisterDialog(@NonNull Context context, LoginActivity activity) {
         super(context);
         mContext = context;
+        this.activity = activity;
         mManager = new AccountManagerImpl(mContext);
         mPresenter = new RegisterPresenterImpl(this, mManager);
     }
@@ -85,7 +93,7 @@ public class RegisterDialog extends Dialog implements IRegisterView {
         mRegister.setEnabled(false);
         mDismiss = findViewById(R.id.dismiss);
         mVerificationCodeInput = findViewById(R.id.verificationCodeInput);
-        mVerificationCodeInput.setEnabled(false);
+        mVerificationCodeInput.setEnabled(true);
 
         //设置可以计数
         mRegisterPhoneNum.setCounterEnabled(true);
@@ -291,10 +299,23 @@ public class RegisterDialog extends Dialog implements IRegisterView {
      */
     @Override
     public void showRegisterSuc() {
+        //生成一条初始化数据
+        //初始化本地数据库一条数据,防止其他类查空
+        Info info = new Info();
+        info.setPhoneNum(BmobUser.getCurrentUser().getMobilePhoneNumber());
+        info.setUsername(BmobUser.getCurrentUser().getUsername());
+        info.setUserHeadImage(HandleBitmap.img(BitmapFactory.decodeResource(getContext().getResources(),
+                R.drawable.personal_center)));
+        info.save();
+
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.putExtra("username", mUsername);
         intent.putExtra("phoneNum", mPhoneNumber);
         mContext.startActivity(intent);
+
+        ToastUtil.show(mContext, "注册成功，自动登录中...");
+
+        activity.finish();
     }
 
     @Override

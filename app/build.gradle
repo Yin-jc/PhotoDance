@@ -90,4 +90,7 @@ dependencies {
 
     implementation 'com.ramotion.foldingcell:folding-cell:1.2.2'
 
+    //一个开源gif控件
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+
 }

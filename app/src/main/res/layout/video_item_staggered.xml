@@ -13,7 +13,8 @@
     <com.ramotion.foldingcell.FoldingCell
         android:id="@+id/folding_cell"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_gradient_5">
 
         <LinearLayout
             android:id="@+id/cell_content_view"
@@ -146,8 +147,7 @@
                     android:layout_marginStart="50dp"
                     android:layout_centerVertical="true"
                     android:text="Yjc"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/text_size_large"/>
+                    android:textColor="@color/color_black" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -200,7 +200,7 @@
                 android:id="@+id/first_frame"
                 android:layout_width="match_parent"
                 android:layout_height="330dp"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 android:adjustViewBounds="true" />
 
         </FrameLayout>

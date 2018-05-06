@@ -4,8 +4,8 @@
 
     <gradient
         android1:angle="90"
-        android1:startColor="@color/gradient_6"
-        android1:endColor="@color/gradient_5">
+        android1:startColor="@color/gradient_9"
+        android1:endColor="@color/gradient_10">
     </gradient>
 
 

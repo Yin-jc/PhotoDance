@@ -21,10 +21,10 @@ public class DBUtil {
         List<Info> infos = DataSupport.select("userHeadImage")
                 .where("username = ?", BmobUser.getCurrentUser().getUsername())
                 .find(Info.class);
-        if (infos.size() != 0){
+//        if (infos.size() != 0){
             byte[] bytes = infos.get(0).getUserHeadImage();
             return BitmapFactory.decodeByteArray(bytes, 0 ,bytes.length);
-        }
-        return null;
+//        }
+//        return null;
     }
 }

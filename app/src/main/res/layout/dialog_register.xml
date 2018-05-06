@@ -11,9 +11,11 @@
         android:id="@+id/dismiss"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_margin="30dp"
         android:src="@drawable/clear"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="5dp"/>
 
     <LinearLayout
         android:id="@+id/phone_number_sms_code"
@@ -60,6 +62,7 @@
         android:layout_margin="20dp"
         android:layout_below="@+id/phone_number_sms_code"
         ver:box="6"
+        ver:box_bg_focus="@drawable/verification_edit_bg_focus"
         ver:child_h_padding="5dp"
         android:layout_centerInParent="true"
         android:layout_marginBottom="16dp" />

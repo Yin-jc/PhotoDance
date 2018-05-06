@@ -35,11 +35,10 @@ public class CollectionPhotoAdapter extends RecyclerView.Adapter<CollectionPhoto
 
     private static final String TAG = "CollectionPhotoAdapter";
     private Context mContext;
-    private List<Photo> collectionPhotos;
+    private List<Photo> collectionPhotos = new ArrayList<>();
 
     public CollectionPhotoAdapter(Context context){
         mContext = context;
-        searchCollectionPhotos();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -84,31 +83,24 @@ public class CollectionPhotoAdapter extends RecyclerView.Adapter<CollectionPhoto
             @Override
             public void onClick(View view) {
                 BaseActivity activity = (BaseActivity) mContext;
-                activity.replaceFragment(new FullScreenFragment(photo.getRegularUrl()));
+                boolean isUpload = photo.getIsUpload();
+                if (isUpload){
+                    activity.replaceFragment(new FullScreenFragment(photo.getUploadPhotoUrl()));
+                }else {
+                    activity.replaceFragment(new FullScreenFragment(photo.getRegularUrl()));
+                }
             }
         });
     }
 
     @Override
     public int getItemCount() {
+        //此处发生空指针异常大多是因为List没有初始化
         return collectionPhotos.size();
     }
 
-    private void searchCollectionPhotos(){
-        BmobQuery<Photo> query = new BmobQuery<>();
-        String[] users = {BmobUser.getCurrentUser().getUsername()};
-        query.addWhereContainsAll("collection", Arrays.asList(users));
-        query.findObjects(new FindListener<Photo>() {
-            @Override
-            public void done(List<Photo> photos, BmobException e) {
-                if (e == null){
-                    Log.d(TAG, "done: 查询成功");
-                    collectionPhotos = photos;
-                    Log.d(TAG, "done: " + collectionPhotos.size());
-                }else {
-                    Log.d(TAG, "done: 查询失败");
-                }
-            }
-        });
+    public void setPhotos(List<Photo> photos){
+        collectionPhotos = photos;
     }
+
 }
