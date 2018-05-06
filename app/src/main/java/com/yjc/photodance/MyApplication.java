@@ -59,14 +59,14 @@ public class MyApplication extends LitePalApplication {
         File dcim = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         if (DeviceUtils.isZte()) {
             if (dcim.exists()) {
-                JianXiCamera.setVideoCachePath(dcim + "/mabeijianxi/");
+                JianXiCamera.setVideoCachePath(dcim + "/PhotoDance/");
             } else {
                 JianXiCamera.setVideoCachePath(dcim.getPath().replace("/sdcard/",
                         "/sdcard-ext/")
-                        + "/mabeijianxi/");
+                        + "/PhotoDance/");
             }
         } else {
-            JianXiCamera.setVideoCachePath(dcim + "/mabeijianxi/");
+            JianXiCamera.setVideoCachePath(dcim + "/PhotoDance/");
         }
         // 初始化拍摄，遇到问题可选择开启此标记，以方便生成日志
         JianXiCamera.initialize(false,null);

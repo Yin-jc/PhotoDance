@@ -35,6 +35,8 @@ public interface IAccountManager {
     int UN_OR_PW_ERROR = -7;
     //未登录
     int NO_LOGIN = -8;
+    //用户名已存在
+    int USERNAME_EXIST = -9;
 
     /**
      * 下发验证码

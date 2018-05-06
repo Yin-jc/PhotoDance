@@ -57,6 +57,16 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
+        <receiver android:name=".common.base.BaseActivity$InfoBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.yjc.photodance.UPDATE_BROADCAST"/>
+            </intent-filter>
+
+
+        </receiver>
+
     </application>
 
 </manifest>

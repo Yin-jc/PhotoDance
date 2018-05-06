@@ -18,7 +18,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.yjc.photodance.account.view.LoginActivity;
 import com.yjc.photodance.R;
+import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.MainActivity;
+
+import cn.bmob.v3.BmobUser;
 
 /**
  * Created by Administrator on 2017/12/28/028.
@@ -131,8 +134,15 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                BmobUser user = BmobUser.getCurrentUser();
+                if (user == null){
+                    //登录界面
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                }else {
+                    //自动登录
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    ToastUtil.show(SplashActivity.this, "自动登录中...");
+                }
                 //结束此Activity
                 finish();
             }

@@ -33,4 +33,8 @@ public interface IRegisterView {
      */
     void showServerError();
 
+    /**
+     * 显示用户名已存在
+     */
+    void showUsernameExist();
 }

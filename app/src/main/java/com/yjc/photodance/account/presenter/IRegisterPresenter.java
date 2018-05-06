@@ -31,4 +31,5 @@ public interface IRegisterPresenter {
      * @param password
      */
     void requestRegister(String phoneNumber, String username, String password);
+
 }

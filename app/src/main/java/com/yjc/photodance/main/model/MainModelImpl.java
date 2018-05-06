@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,17 +62,21 @@ public class MainModelImpl implements IMainModel {
     private static final String TAG = "MainModelImpl";
 
     private Handler mHandler;
+    private Handler mMainModelHandler;
 
-    private String[] info;
-    private String mimeType;
 
     private boolean flag;
     private boolean isFirstEnter;
 
+    // TODO: 2018/5/6/006 在这里初始化是否合适
+    public MainModelImpl(){
+//        mMainModelHandler = new MainModelHandler(this);
+    }
+
+
+
     @Override
     public void getPhoto(final PhotoAdapter adapter, int page, int size, boolean b, boolean bb) {
-//        final boolean flag = b;
-//        final boolean isFirstEnter = bb;
         flag = b;
         isFirstEnter = bb;
         RetrofitServiceManager.getInstance().create(PhotoApi.class).getPhotos(ApiConfig.getApplication_ID(),
@@ -207,10 +212,7 @@ public class MainModelImpl implements IMainModel {
     @Override
     public void uploadVideo(String path) {
         Log.d(TAG, "uploadVideo: " + path);
-        info = getVideoInfo(path);
-        mimeType = getVideoMimeType(path);
-        Log.d(TAG, "uploadVideo: " + info[0] + " " + info[1]);
-        Log.d(TAG, "uploadVideo: " + mimeType);
+
         new MyTask().execute(path);
     }
 
@@ -242,7 +244,7 @@ public class MainModelImpl implements IMainModel {
 
     }
 
-    class MyTask extends AsyncTask<String, Integer, String>{
+    class MyTask extends AsyncTask<String, Integer, String[]>{
 
         private OnlyCompressOverBean onlyCompressOverBean;
 
@@ -252,7 +254,7 @@ public class MainModelImpl implements IMainModel {
         }
 
         @Override
-        protected String doInBackground(String... path) {
+        protected String[] doInBackground(String... path) {
             Log.d(TAG, "doInBackground: ");
             // 选择本地视频压缩
             LocalMediaConfig.Buidler builder = new LocalMediaConfig.Buidler();
@@ -266,9 +268,10 @@ public class MainModelImpl implements IMainModel {
             onlyCompressOverBean = new LocalMediaCompress(config).startCompress();
             if(onlyCompressOverBean.isSucceed()){
                 Log.d(TAG, "doInBackground: " + onlyCompressOverBean.getVideoPath());
-                return onlyCompressOverBean.getVideoPath();
+                return new String[]{onlyCompressOverBean.getVideoPath(),
+                        onlyCompressOverBean.getPicPath()};
             }
-            return "";
+            return new String[]{"", ""};
         }
 
         @Override
@@ -279,18 +282,16 @@ public class MainModelImpl implements IMainModel {
         }
 
         @Override
-        protected void onPostExecute(String path) {
+        protected void onPostExecute(String[] path) {
             Log.d(TAG, "onPostExecute: ");
-            String firstFramePath = getVideoFirstFrame(path);
 //            Log.d(TAG, "onPostExecute: " + firstFrame);
-            uploadVideoAfterCompress(path ,firstFramePath);
+            uploadVideoFirstFrame(path);
         }
     }
 
-    private void uploadVideoAfterCompress(String path, final String firstFramePath){
+    private void uploadVideoAfterCompress(final String path, final String url){
 
         // TODO: 2018/5/5/005 获取视频size
-        final String videoSize = getVideoSize(new File(path));
         final BmobFile file = new BmobFile(new File(path));
         file.upload(new UploadFileListener() {
             @Override
@@ -298,7 +299,7 @@ public class MainModelImpl implements IMainModel {
                 if(e == null){
                     //必须上传的视频才可以去获取url
                     Log.d(TAG, "done: " + User.getCurrentUser().getMobilePhoneNumber());
-                    saveVideoFirstFrame(file, firstFramePath, videoSize);
+                    saveVideo(file, url, path);
                 }else {
                     Log.d(TAG, "done: " + "上传失败" + e.getMessage());
                 }
@@ -333,27 +334,18 @@ public class MainModelImpl implements IMainModel {
                 }
             }
         });
-//        newUser.update(user.getObjectId(), new UpdateListener() {
-//            @Override
-//            public void done(BmobException e) {
-//                if (e == null){
-//                    Log.d("bmob", "done: " + "保存成功");
-//                }else {
-//                    Log.d("bmob", "done: " + "保存失败" + e.getMessage());
-//                }
-//            }
-//        });
     }
 
-    private void saveVideoFirstFrame(final BmobFile file, final String videoSize, String firstFramePath){
+    private void uploadVideoFirstFrame(final String[] path){
 
-        final BmobFile firstFrameFile = new BmobFile(new File(firstFramePath));
+//        String firstFramePath = getVideoFirstFrame(path);
+        final BmobFile firstFrameFile = new BmobFile(new File(path[1]));
         firstFrameFile.upload(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
                 if (e == null){
                     Log.d(TAG, "done: 上传成功");
-                    saveVideo(file, videoSize, firstFrameFile.getFileUrl());
+                    uploadVideoAfterCompress(path[0], firstFrameFile.getFileUrl());
                 }else {
                     Log.d(TAG, "done: 上传失败" + e.getMessage());
                 }
@@ -361,7 +353,14 @@ public class MainModelImpl implements IMainModel {
         });
     }
 
-    private void saveVideo(BmobFile file, String videoSize, String firstFrameUrl){
+    private void saveVideo(BmobFile file, String firstFrameUrl, String originalPath){
+
+        String videoSize = getVideoSize(new File(originalPath));
+        String[] info = getVideoInfo(originalPath);
+        String mimeType = getVideoMimeType(originalPath);
+        Log.d(TAG, "saveVideo: " + videoSize);
+        Log.d(TAG, "uploadVideo: " + info[0] + " " + info[1]);
+        Log.d(TAG, "uploadVideo: " + mimeType);
 
         BmobUser user = User.getCurrentUser();
         String username = user.getUsername();
@@ -372,13 +371,13 @@ public class MainModelImpl implements IMainModel {
         video.setUpload(true);
         video.setSize(videoSize);
         video.setCreateTime(getUploadTime());
+        video.setMimeType(mimeType);
         // width >= height
         if(Integer.parseInt(info[0]) >= Integer.parseInt(info[1])){
             video.setType("TYPE_LIST");
         }else {
             video.setType("TYPE_STAGGERED");
         }
-        video.setMimeType(mimeType);
 
         video.save(new SaveListener<String>() {
             @Override
@@ -391,17 +390,6 @@ public class MainModelImpl implements IMainModel {
                 }
             }
         });
-
-//        newUser.update(user.getObjectId(), new UpdateListener() {
-//            @Override
-//            public void done(BmobException e) {
-//                if (e == null){
-//                    Log.d("bmob", "done: " + "保存成功");
-//                }else {
-//                    Log.d("bmob", "done: " + "保存失败" + e.getMessage());
-//                }
-//            }
-//        });
     }
 
     /**
@@ -449,7 +437,7 @@ public class MainModelImpl implements IMainModel {
         }finally {
             retriever.release();
         }
-        return null;
+        return "";
     }
 
     private String saveBitmapToSD(Bitmap bitmap, String customName){
@@ -488,9 +476,10 @@ public class MainModelImpl implements IMainModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 
+    //获取压缩后的视频的大小
     private String getVideoSize(File file){
         try {
             FileInputStream stream = new FileInputStream(file);

@@ -25,7 +25,6 @@ import com.yjc.photodance.R;
 import com.yjc.photodance.common.base.BaseFragment;
 import com.yjc.photodance.common.storage.SharedPreferenceDao;
 import com.yjc.photodance.common.storage.bean.Info;
-import com.yjc.photodance.common.storage.bean.Video;
 import com.yjc.photodance.common.util.HandleBitmap;
 import com.yjc.photodance.common.util.ToastUtil;
 import com.yjc.photodance.main.view.MainActivity;
@@ -36,9 +35,9 @@ import org.litepal.crud.DataSupport;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 
+import cn.bmob.v3.BmobUser;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
@@ -66,27 +65,23 @@ public class InfoFragment extends BaseFragment {
     private RadioButton mMale;
     private RadioButton mFemale;
     private Button mSaveBtn;
-    private HashSet<String> info = new HashSet<>();
 
     private PopupWindow popupWindow;
     private Bitmap userHeadImageBitmap;
-    private Bitmap backgroundBitmap;
     private static final int CHOOSE_PHOTO_FOR_BACKGROUND = 2;
-    private static final int CHOOSE_PHOTO_FOR_USERHEADIMAGE = -2;
+    private static final int CHOOSE_PHOTO_FOR_USERHEADIMAGE = 3;
     private static final int TYPE = 1;
-    private static final int TAKE_PHOTO = 3;
+    private static final int TAKE_PHOTO = 4;
 
-    private String imagePathForBackground;
-    private String imagePathForUserHeadImage;
     private Uri photoUri;
 
     private String mSexStr;
-    private String mUsernameStr;
     private String mPhoneNumStr;
 
     private boolean isFirstEnter = SharedPreferenceDao.getInstance()
             .getBoolean("isFirstEnterInfoFragment");
 //    private boolean isFirstEnter = true;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_info;
@@ -96,43 +91,41 @@ public class InfoFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        //短生命周期对象引用长生命周期对象，不会造成内存泄漏
-        MainActivity activity = (MainActivity) getActivity();
-        mPhoneNumStr = activity.getPhoneNum();
-        Log.d(TAG, "onActivityCreated: " + mPhoneNumStr);
-        mUsernameStr = activity.getUsername();
-
-        Log.d(TAG, "onActivityCreated: " + isFirstEnter);
         initData();
         initListener();
     }
 
     // TODO: 2018/4/20/020 初始化username 注册时使用sharedPreferenceDao存储，在此取出
     private void initData(){
-//        HashSet<String> info_dao = SharedPreferenceDao.getInstance().getSet("info");
-        //HashSet转ArrayList
-//        ArrayList<String> info_array = new ArrayList<>(info_dao);
+
+        mPhoneNumStr = BmobUser.getCurrentUser().getMobilePhoneNumber();
 
         //username 不可修改
-        mUsername.setText(mUsernameStr);
+        mUsername.setText(BmobUser.getCurrentUser().getUsername());
 
-        if(! isFirstEnter){
-            List<Info> infos = DataSupport
-                    .where("phoneNum = ?", mPhoneNumStr)
-                    .find(Info.class);
-            Info info = infos.get(0);
-            mBackground.setImageBitmap(BitmapFactory.decodeByteArray(info.getBackgroundImage(),
-                    0, info.getBackgroundImage().length));
-            mUserHeadImage.setImageBitmap(BitmapFactory.decodeByteArray(info.getUserHeadImage(),
-                    0, info.getUserHeadImage().length));
-            mBase.setText(info.getBase());
-            // TODO: 2018/4/21/021 获取性别设置
-            mEmail.setText(info.getEmail());
-            mHome.setText(info.getHome());
-            mCompany.setText(info.getCompany());
-            mProfession.setText(info.getProfession());
-            mSignature.setText(info.getSignature());
+//        if(! isFirstEnter){
+        List<Info> infos = DataSupport
+                .where("phoneNum = ?", mPhoneNumStr)
+                .find(Info.class);
+        Info info = infos.get(0);
+//            mBackground.setImageBitmap(BitmapFactory.decodeByteArray(info.getBackgroundImage(),
+//                    0, info.getBackgroundImage().length));
+        mUserHeadImage.setImageBitmap(BitmapFactory.decodeByteArray(info.getUserHeadImage(),
+                0, info.getUserHeadImage().length));
+        mBase.setText(info.getBase());
+        // 获取性别设置
+        String sex = info.getSex();
+        if (sex.equals("男")){
+            mSex.check(R.id.rb_male);
+        }else {
+            mSex.check(R.id.rb_female);
         }
+        mEmail.setText(info.getEmail());
+        mHome.setText(info.getHome());
+        mCompany.setText(info.getCompany());
+        mProfession.setText(info.getProfession());
+        mSignature.setText(info.getSignature());
+//        }
     }
 
     private void initView(){
@@ -151,10 +144,9 @@ public class InfoFragment extends BaseFragment {
         mSaveBtn = getActivity().findViewById(R.id.save_info);
     }
 
-    private void saveOrUpdateData(boolean isFirstEnter){
-        Info info = new Info(mPhoneNumStr, mUsernameStr);
-        if(backgroundBitmap != null && userHeadImageBitmap != null){
-            info.setBackgroundImage(HandleBitmap.img(backgroundBitmap));
+    private void updateData(){
+        Info info = new Info();
+        if(userHeadImageBitmap != null){
             info.setUserHeadImage(HandleBitmap.img(userHeadImageBitmap));
         }
         info.setBase(mBase.getText().toString());
@@ -164,16 +156,18 @@ public class InfoFragment extends BaseFragment {
         info.setCompany(mCompany.getText().toString());
         info.setProfession(mProfession.getText().toString());
         info.setSignature(mSignature.getText().toString());
-        if(isFirstEnter){
+//        if(isFirstEnter){
             //第一次编辑信息就保存
-            boolean result = info.save();
-            Log.d(TAG, "save success?" + String.valueOf(result));
+//            boolean result = info.save();
+//            sendUpdateBroadcast();
+//            Log.d(TAG, "save success?" + String.valueOf(result));
 //            uploadUserProfileImage(userHeadImageBitmap);
-        }else {
+//        }else {
             //之后修改信息就更新
             info.updateAll("phoneNum = ?", mPhoneNumStr);
+//            sendUpdateBroadcast();
 //            uploadUserProfileImage(userHeadImageBitmap);
-        }
+//        }
 
     }
 
@@ -225,7 +219,7 @@ public class InfoFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: " + isFirstEnter);
-                saveOrUpdateData(isFirstEnter);
+                updateData();
                 SharedPreferenceDao.getInstance().saveBoolean("isFirstEnterInfoFragment",
                         false);
                 ToastUtil.show(getActivity(), "保存成功");
@@ -234,13 +228,13 @@ public class InfoFragment extends BaseFragment {
             }
         });
 
-        mBackground.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                selectPhoto(CHOOSE_PHOTO_FOR_BACKGROUND);
-                return true;
-            }
-        });
+//        mBackground.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                selectPhoto(CHOOSE_PHOTO_FOR_BACKGROUND);
+//                return true;
+//            }
+//        });
     }
 
     private void takePhoto(){
@@ -293,7 +287,7 @@ public class InfoFragment extends BaseFragment {
             // TODO: 2018/4/20/020 同步头像
             case CHOOSE_PHOTO_FOR_USERHEADIMAGE:
                 if(resultCode == RESULT_OK){
-                    imagePathForUserHeadImage = handleFile(data, TYPE);
+                    String imagePathForUserHeadImage = handleFile(data, TYPE);
                     userHeadImageBitmap = HandleBitmap.compressForFile(imagePathForUserHeadImage);
                     mUserHeadImage.setImageBitmap(userHeadImageBitmap);
                     popupWindow.dismiss();
@@ -302,8 +296,8 @@ public class InfoFragment extends BaseFragment {
 
             case CHOOSE_PHOTO_FOR_BACKGROUND:
                 if(resultCode == RESULT_OK){
-                    imagePathForBackground = handleFile(data ,TYPE);
-                    backgroundBitmap = HandleBitmap.compressForFile(imagePathForBackground);
+                    String imagePathForBackground = handleFile(data, TYPE);
+                    Bitmap backgroundBitmap = HandleBitmap.compressForFile(imagePathForBackground);
                     mUserHeadImage.setImageBitmap(backgroundBitmap);
                 }
                 break;
@@ -330,6 +324,12 @@ public class InfoFragment extends BaseFragment {
     private void uploadUserProfileImage(Bitmap userProfileImage){
         MainActivity activity = (MainActivity) getActivity();
         activity.uploadUserProfileImage(userProfileImage);
+    }
+
+    private void sendUpdateBroadcast(){
+        //发送广播
+        Intent intent = new Intent("com.yjc.photodance.UPDATE_BROADCAST");
+        getActivity().sendBroadcast(intent);
     }
 
 }

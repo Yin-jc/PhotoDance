@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
 
         // TODO: 2018/4/13/013  密码显示开关
 
-        mPresenter.isLogin();
+//        mPresenter.isLogin();
 
         /**
          * 注册点击事件

@@ -48,6 +48,9 @@ public class RegisterPresenterImpl implements IRegisterPresenter{
                     break;
                 case IAccountManager.REGISTER_SUC:
                     presenter.view.showRegisterSuc();
+                    break;
+                case IAccountManager.USERNAME_EXIST:
+                    presenter.view.showUsernameExist();
                 default:
                     break;
             }

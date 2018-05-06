@@ -133,7 +133,10 @@ public class RegisterDialog extends Dialog implements IRegisterView {
             @Override
             public void afterTextChanged(Editable editable) {
                 mPhoneNumber= mRegisterPhoneNumEdit.getText().toString();
-                if(mPhoneNumber.length() == 11){
+                if (mPhoneNumber.equals("") || mPhoneNumber.length() < 11){
+                    //未输入或者不满11位不可获取验证码
+                    mGetSmsCode.setEnabled(false);
+                }else {
                     boolean isLegal = check(mPhoneNumber);
                     if(isLegal){
                         mPresenter.requestCheckUserExist(mPhoneNumber);
@@ -260,6 +263,7 @@ public class RegisterDialog extends Dialog implements IRegisterView {
             mVerificationCodeInput.setEnabled(true);
             ToastUtil.show(mContext, "验证码错误，请重新输入");
         }else {
+            ToastUtil.show(mContext, "验证码输入正确，请设置用户名和密码");
             //显示设置用户名密码UI
             mVerificationCodeInput.setVisibility(View.GONE);
             mGetSmsCode.setVisibility(View.GONE);
@@ -275,6 +279,7 @@ public class RegisterDialog extends Dialog implements IRegisterView {
         if(!exist){
             //用户不存在，开始注册
             mGetSmsCode.setEnabled(true);
+            ToastUtil.show(getContext(), "手机号可以注册");
         }else {
             //  用户存在，进入登录，需要用户自行关闭dialog
             ToastUtil.show(getContext(), "手机号码已注册，请直接登录");
@@ -295,5 +300,12 @@ public class RegisterDialog extends Dialog implements IRegisterView {
     @Override
     public void showServerError() {
         ToastUtil.show(mContext, "服务器繁忙，请稍后重试");
+    }
+
+    @Override
+    public void showUsernameExist() {
+//        ToastUtil.show(mContext, "用户名已存在，请重新输入");
+        mRegisterUsername.setError("用户名已存在，请重新输入");
+//        mRegister.setEnabled(false);
     }
 }

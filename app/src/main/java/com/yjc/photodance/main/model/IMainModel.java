@@ -16,6 +16,9 @@ public interface IMainModel {
 
     int UPDATE_PROGRESS = 1;
     int UPLOAD_SUC = 2;
+    int UPLOAD_FTRSTFRAME_SUC = 3;
+    int UPLOAD_VIDEO_SUC = 4;
+    int CAN_SAVE_VIDEO = 5;
 
     /**
      * 请求照片

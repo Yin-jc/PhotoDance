@@ -168,7 +168,13 @@ public class AccountManagerImpl implements IAccountManager {
                             String.valueOf(System.currentTimeMillis()) + String.valueOf(24*60*60*1000));
                 }else{
                     Log.i("bmob", "注册失败：" + e.getMessage());
-                    mHandler.sendEmptyMessage(IAccountManager.SERVER_FAIL);
+                    if (e.getErrorCode() == 9010){
+                        //网络超时
+                        mHandler.sendEmptyMessage(IAccountManager.SERVER_FAIL);
+                    }else {
+                        //用户名已存在
+                        mHandler.sendEmptyMessage(IAccountManager.USERNAME_EXIST);
+                    }
                 }
             }
         });
@@ -226,6 +232,7 @@ public class AccountManagerImpl implements IAccountManager {
 
         boolean isLogin = SharedPreferenceDao.getInstance().getBoolean("isLogin");
         if(isLogin) {
+            // ms
             if (Long.parseLong(SharedPreferenceDao.getInstance().getString("tokenValid")) >
                     System.currentTimeMillis()) {
                 //登录有效

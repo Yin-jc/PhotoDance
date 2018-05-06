@@ -87,6 +87,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         private TextView createTime;
         private TextView size;
         private TextView likeCount;
+        private TextView mimeType;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -199,6 +200,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
             createTime = cardView.findViewById(R.id.create_time);
             size = cardView.findViewById(R.id.size);
             likeCount = cardView.findViewById(R.id.like_count);
+            mimeType = cardView.findViewById(R.id.mime_type);
 
             //高级设置
             config = new PlayerConfig.Builder()
@@ -286,6 +288,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     holder.username.setText(video.getUsername());
                     holder.comment.setTag(position);
                     holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
+                    holder.mimeType.setText(video.getMimeType());
                     holder.videoView.setTitle(video.getFile().getFilename());
                     holder.videoView.setUrl(video.getFile().getFileUrl());
                     holder.videoView.setVideoController(holder.controller);
@@ -306,6 +309,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
                     holder.likeCount.setText(String.valueOf(video.getLike().size()));
                     holder.comment.setTag(position);
                     holder.commentQuantity.setText(String.valueOf(video.getComment().size()));
+                    holder.mimeType.setText(video.getMimeType());
                     holder.videoView.setTitle(video.getFile().getFilename());
                     holder.videoView.setUrl(video.getFile().getFileUrl());
                     holder.videoView.setVideoController(holder.controller);

@@ -20,11 +20,6 @@ public class Info extends DataSupport{
     private String profession;
     private String signature;
 
-    public Info(String phoneNum, String username){
-        this.phoneNum = phoneNum;
-        this.username = username;
-    }
-
     public String getPhoneNum() {
         return phoneNum;
     }
@@ -103,5 +98,13 @@ public class Info extends DataSupport{
 
     public void setSignature(String mSignature) {
         this.signature = mSignature;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
